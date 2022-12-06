@@ -5,6 +5,7 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\BillingController;
 
 
 use Illuminate\Support\Facades\Route;
@@ -45,5 +46,7 @@ Route::get('/customer/search', [CustomerController::class, 'searchCustomer']);
 Route::post('/customer', [CustomerController::class, 'save']);
 
 Route::get('/test/mail', [TestController::class, 'mail']);
+
+Route::get('/billing/list/{type}', [BillingController::class, 'list']);
 
 require __DIR__.'/auth.php';
