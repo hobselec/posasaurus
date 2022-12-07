@@ -22,30 +22,36 @@ function show_billing_dialog()
 {
 	$('.posdlg').hide();
 
-	$billing.dialog.show();
+	$billing.dialog.dialog('open')
 //	$pos.open_transactions.prop('disabled', true);
 	$pos.barcode.prop('disabled', true);
 	$payments.payment_recv_button.prop('disabled', true);
 
-	$.get('billing.php', { 'basic_list' : '1', 'display_type' : $billing.billing_display_types.val(), 'end_date' : $billing.billing_list_end_date.val(), 'random' : Math.random() }, function(response) {
+	axios.get('/pos/billing/list/' + $billing.billing_display_types.val() + '?endDate=' + $billing.billing_list_end_date.val()).then((response) => {
 
-		$billing.list.html(response.accts);
-		//restripe_rows('billing_container');
+		let rows = response.data;
 
-		$("#billing_list tr").hover(
-			function()
-			{
-				$(this).addClass("highlight");
-			},
-			function()
-			{
-				$(this).removeClass("highlight");
-			}
-			
-		); //.click(function() { $(this).css('background', 'yellow'); });	
-		
-		//$billing.container.css('width','100%');
-	
+		let billingTableRows = ''
+		let checked
+
+		for(let i = 0; i < rows.length; i++)
+		{
+			rows.print_statement ? checked = 'checked' : checked = ''
+
+			billingTableRows += `<tr id="printAcct_${rows[i].id}" onclick="view_customer_bills(${rows[i].id}, '', event)">
+								<td><label for="billing${i}" class="nice-label"></label>
+								<input id="billing${i}" type="checkbox" ${checked} 
+								onclick="set_customer_printing_status(${rows[i].id}, $(this))" />${rows[i].name}</td>
+								<td style="text-align: right">
+									<div style="width: 50%; display: inline">$ </div>
+									<div style="width: 25%; display: inline;float: right; padding-right: 50px">${rows[i].balance}</div>
+								</td>
+								</tr>`
+		}
+
+		$billing.list.html(billingTableRows);
+
+
 //		$('#billing_list_end_date').datepicker({'duration' : 0});
 
 		$("#billing_list tr").each(function() {

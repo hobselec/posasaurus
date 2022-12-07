@@ -59,18 +59,27 @@ function search_catalog(v)
 	($catalog.use_ws.prop('checked') == true) ? use_ws = 1 : use_ws = 0;
 
 
-	$.get('catalog.php', { 'use_ws' : use_ws, 'q' : $catalog.search_name.val() }, function(response) {
+	axios.get('/pos/catalog/search/' + $catalog.search_name.val() + '?use_ws=' + use_ws).then((response) => {
 
 		var rows = '';
+		let dataRow;
 
-		for(i = 0; i < response.length; i++)
+		for(let i = 0; i < response.data.length; i++)
 		{
-			if(i%2 == 0)
-				stripe = " style=\"background: #dddddd\"";
-			else
-				stripe = '';
-		
-			rows += "<tr id=\"ct_" + response[i].barcode + "\"" + stripe + "><td style=\"width: 50px; padding-left: 10px\"><button type=\"button\" onclick=\"edit_cat_row($(this), " + response[i].barcode + ")\">Edit</button></td><td style=\"text-align: center; width: 65px\">" + response[i].barcode + "</td><td style=\"width: 200px; padding-left: 25px\">" + response[i].name + "</td><td style=\"width: 170px; padding-left: 30px\">" + response[i].vendor + "</td><td style=\"width: 110px; padding-left: 15px\">" + response[i].sku + "</td><td style=\"width: 140px; padding-left: 20px\">" + response[i].mft_id + "</td><td style=\"width: 58px; text-align: right; padding-right: 15px\">" + response[i].price + "</td><td style=\"width: 46px; text-align: right; padding-right: 5px\">" + response[i].qty + "</td></tr>";
+			dataRow = response.data[i]
+			
+			rows += `<tr id="ct_${dataRow.barcode}">
+					<td>
+						<button type="button" onclick="edit_cat_row($(this), $dataRow.barcode)">Edit</button>
+					</td>
+					<td>${dataRow.barcode}</td>
+					<td>${dataRow.name}</td>
+					<td>${dataRow.vendor}</td>
+					<td>${dataRow.sku}</td>
+					<td>${dataRow.mft_id}</td>
+					<td>${dataRow.price}</td>
+					<td>${dataRow.qty}</td>
+					</tr>`
 		
 		}
 
@@ -97,7 +106,7 @@ function search_catalog(v)
 		//$('#catalog_table td').each(function() { $(this).css('border', '1px solid #000000'); });
 		//$('#catalog_headings span').each(function() { $(this).css('border', '1px solid #000000'); });
 	
-	}, 'json');
+	})
 	
 
 }

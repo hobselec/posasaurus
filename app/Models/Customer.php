@@ -14,6 +14,8 @@ class Customer extends Model
 
     protected $table = 'customers';
 
+    protected $appends = ['display_name'];
+
     protected $fillable = ['active'
                             ,'address'
                             ,'address2'
@@ -61,4 +63,13 @@ class Customer extends Model
             ->selectRaw('customer_id, SUM(total) as sum_total')
             ->groupBy('customer_id');
     }
+
+    public function getDisplayNameAttribute() {
+        if($this->use_company)
+            return $this->company;
+        else 
+            return $this->last_name . ', ' . $this->first_name;
+        
+    }
+
 }

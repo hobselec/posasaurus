@@ -6,3 +6,16 @@ Add e-mail to customer dialog
 
 turn dialogs into jquery-ui
 
+catalog needs sticky columns
+ - save item
+ - rework doitbest vs all others
+ ...transaction_items stores item_id and skn
+    convert transaction_items.item_id to primary key on catalog (add new column)
+    catalog is not cleared on doitbest catalog updates
+
+billing: 
+
+
+cart:
+
+ add extra info in includes autocomplete search

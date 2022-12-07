@@ -36,14 +36,7 @@ Admin password: &nbsp; <input type="password" size="12" maxlength="32" id="shutd
 <p style="margin-left: auto ;margin-right: auto"><button class='ui-button' type="button" onclick="print_end_report()">Print Report</button></p>
 <p style="margin-left: auto ;margin-right: auto"><button class='ui-button' type="button" onclick="print_weekly_report()">Print Weekly Report</button></p>
 <span id="weekly_report_fields" style="display: none"><input type="text" id="report_start_date" size="10" maxlength="10" /> &ndash; <input type="text" value="<?php echo date("n/d/Y"); ?>" id="report_end_date" size="10" maxlength="10" /></span>
-<p style="margin-left: auto ;margin-right: auto"><button class='ui-button' type="button" id="create_backup_button" onclick="create_backup()" disabled="disabled">Create Backup</button></p>
-<div id="backup_progress" style="display: none">Backing up and encrypting database . . .</div>
-<div id="upload_progress" style="display: none; margin-top: 15px">Uploading database offsite</div>
-<div id="progressbar"></div>
-<p><button type="button" id="shutdown_pc_button" onclick="shutdown_pos()" disabled="disabled" class='ui-button'>Shutdown POS</button> &nbsp;
- <img src="img/ajax-loader.gif" style="display: none" id="shutdown_indicator" />
- <br /><span id="shutdown_started" style="display: none">Shutdown in progress. . .</span>
-</p>
+
 </div>
 
 <div id="statement_view_dialog">

@@ -97,35 +97,30 @@ $(document).ready(function() {
 			if(!isNaN(request.term)) //avoid lookups on numbers for now
 				return;
 		
-			$.get('ac_search.php', { 'q' : request.term, 'type' : 'catalog' }, 
-			function(cdata)
+			axios.get('/pos/catalog/search/' + request.term).then((cdata) =>
 			{
 			//	response( $.map( data.items, function( item ) {
 				//		return { label: item.name, value: item.barcode	}
 						
 					//	}));
 					
-
-
-				try {
-						myarr = new Array(cdata.items.length);
+				let myarr = new Array(cdata.length);
 						
-					} catch(e){ alert('Error communicating with server'); return false; }
-				
-				for(i = 0; i < cdata.items.length; i++)
+				let items = cdata.data
+				for(let i = 0; i < items.length; i++)
 				{
 					tmpobj = new Object();
 			
-					tmpobj.label = cdata.items[i].name;
-					tmpobj.value = cdata.items[i].barcode;
-					tmpobj.extra = cdata.items[i].extra;
+					tmpobj.label = items[i].name;
+					tmpobj.value = items[i].barcode;
+					tmpobj.extra = `${items[i].product_id} ${items[i].vendor_name} &ndash; ${items[i].manufacturer_id} &ndash; Qty: ${items[i].qty}`
 				
-					myarr[i] = tmpobj;
+					myarr[i] = tmpobj
 				}
 	
 				response(myarr);
 			
-			}, 'json');
+			})
 			
 
 		}, 	open: function() {
@@ -152,13 +147,12 @@ $(document).ready(function() {
 
 			$('.ac_extra').remove();
 
-			$('.ui-autocomplete li a').each(function() {
+			$('.ui-autocomplete li div').each(function() {
 			
 			//alert($(this).html());
 
-			
 				if($(this).html() == ui.item.label)
-					$(this).parent().append("<div class=\"ac_extra\" style=\"font-size: 90%; color: #666666\">" + ui.item.extra +"</div>");
+					$(this).parent().append(`<div class="ac_extra" style="font-size: 90%; color: #666666">${ui.item.extra}</div>`)
 			
 				//$(this).html(ui.item.label + "<BR>" + ui.item.extra);
 			
@@ -403,10 +397,10 @@ function show_note(msg, type='info')
 function chg_ticket(ticket_id)
 {
 	
-	$.post('lookup_item.php', { 'load_ticket' : '1', 'ticket_id' : ticket_id }, function(response) {
+	axios.get('/pos/ticket/' + ticket_id).then((responsePayload) => {
 
-			if(response.status)
-			{
+
+		let response = responsePayload.data
 
 				cancel_payment(1);
 				
@@ -414,14 +408,14 @@ function chg_ticket(ticket_id)
 				$pos.tax.html(response.tax);
 				$pos.display_total.html(response.total);
 				
-				var tmp_subtotal = response.subtotal.replace(',', '');
+				//var tmp_subtotal = response.subtotal.replace(',', '');
 				
-				add_to_cart(tmp_subtotal, response.cart);
+				add_to_cart(response.subtotal, response.items);
 				
-				$pos.ticket_id.val(response.ticket_id);
-				$pos.ticket_display_id.html(response.ticket_display_id);
-				$pos.pay_job_id.val(response.job_id)
-				$pos.customer_job_display_name.html(response.job_name);
+				$pos.ticket_id.val(response.id);
+				$pos.ticket_display_id.html(response.display_id);
+				$pos.pay_job_id.val(response.job.id)
+				$pos.customer_job_display_name.html(response.job.name);
 				
 				$pos.open_transactions.val('');
 				
@@ -444,13 +438,13 @@ function chg_ticket(ticket_id)
 				$('#discount_percentage').val(tmppct);
 				*/
 		
-				$pos.discount.val(response.discount.replace(',', ''));
+				$pos.discount.val(response.discount);
 				
 				$('#freight_number').val(response.freight);
 				$('#labor_number').val(response.labor);
 
 				// show discount in main totals				
-				if(response.discount.replace(',', '') > 0)
+				if(response.discount > 0)
 				{
 
 					$pos.discount_icon.show();
@@ -482,10 +476,10 @@ function chg_ticket(ticket_id)
  			 	    $pos.refund_indicator.html('');
 
 				// these will be set from the db eventually i think
-				$pos.customer_display_name.html(response.customer);
-				$pos.customer_id.val(response.customer_id);
-				$pos.tax_exempt.val(response.tax_exempt);
-				$pos.allow_credit.val(response.allow_credit);
+				$pos.customer_display_name.html(response.customer.display_name);
+				$pos.customer_id.val(response.customer.id);
+				$pos.tax_exempt.val(response.customer.tax_exempt);
+				$pos.allow_credit.val(response.customer.allow_credit);
 				$pos.cash_given.val('');
 				$pos.check_no.val('');
 				$pos.cc_trans_no.val('');
@@ -495,18 +489,19 @@ function chg_ticket(ticket_id)
 				$pos.recv_by_input.hide().val('');
 				$pos.recv_by_button.html("Add received by...");
 
-				$item_descriptions = response.item_descriptions;
+				//$item_descriptions = response.item_descriptions;
 
 				if(response.recv_by != '' && response.recv_by != null)
 				{
 				    $pos.recv_by_name.html(response.recv_by).show();
 				    $pos.recv_by_label.show();
 				}
-			} else
-				show_note("Cannot load ticket");
+			
 
 			$pos.barcode.focus();
-		}, 'json');	
+		}).catch(() => {  
+			show_note("Cannot load ticket")
+		});	
 	
 	//add_to_cart(subtotal, cart);
 	
@@ -528,11 +523,8 @@ function lookup_item() {
 	$pos.add_recv_by_button.prop('disabled', false);
 	//  barcode lookup
 
-	$.post('lookup_item.php', { 'skn' : $pos.barcode.val(), 'ticket_id' : $pos.ticket_id.val(), 'tax_exempt' : 	$pos.tax_exempt.val() }, function(response) {
+	axios.put('/pos/ticket/add-item', { skn : $pos.barcode.val(), ticket_id : $pos.ticket_id.val(), tax_exempt : $pos.tax_exempt.val() }).then((response) => {
 
-			if(response.status)
-			{
-			
 				$pos.subtotal.html(response.subtotal);
 				$pos.tax.html(response.tax);
 				$pos.display_total.html(response.total);
@@ -554,10 +546,10 @@ function lookup_item() {
 
 				$pos.barcode.val('');
 
-			} else
-				show_note("Item not found");
 
-		}, 'json');
+		}).catch(() => {
+			show_note("Item not found");
+		})
 		
 }
 
@@ -648,14 +640,6 @@ function auth_return()
 	
 }
 
-function auth_cancel()
-{
-	$('#auth_dialog').hide();
-	$('#admin_passwd').val('');
-	$pos.barcode.prop('disabled', false);
-	$pos.authenticate_action = '';
-
-}
 
 // check enter key on auth keypress
 function check_auth_enterkey(evt)

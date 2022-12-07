@@ -23,6 +23,8 @@
 
 <script type="text/javascript" src="/pos/js/bootstrap.bundle.min.js"></script>
 
+<script  src="/pos/js/vscontext.js" type="text/javascript"></script>
+
 <script  src="/pos/js/core.js" type="text/javascript"></script>
 <script  src="/pos/js/includes.js" type="text/javascript"></script>
 <script  src="/pos/js/customer.js" type="text/javascript"></script>
@@ -164,8 +166,8 @@
  
 <div id="cart_container" style="font-size: 80%; overflow-x: none; overflow-y: scroll; margin-left: 10px; height: 300px; background: #ffffff; border: 1px solid #000000; width: 680px">
   
- <table id="cart" style="border-collapse: collapse; width: 100%;">
-
+ <table id="cart" class="table table-striped">
+	<tbody></tbody>
 </table>
   
 </div>
@@ -400,7 +402,8 @@ Customer Name<br />
 </div>
 <br />
 <div style="margin-top: 2px; height: 375px; overflow-x: none; overflow-y: scroll; border-top: 1px solid #000000">
-	<table id="catalog_table" style="margin-top: 0px; font-size: 90%; cursor: default; border: 1px solid #000000; background-color: #ffffff; border-collapse: collapse">
+	<table id="catalog_table" class="table table-striped">
+		<tbody></tbody>
 	</table>
 </div>
 
@@ -441,8 +444,9 @@ Barcode<br />
 </div>
 
 <!-- Billing Dialog -->
-<div id="billing_dialog" style="z-index: 90" class="posdlg">
-<div style="position: absolute; top: 0"><span style="font-size: 180%; font-weight: bold">Billing</span><span style="padding-left: 50px"><select id="billing_display_types" onchange="show_billing_dialog()">
+<div id="billing_dialog">
+
+<select id="billing_display_types" onchange="show_billing_dialog()">
 <option value="all">All Accounts</option>
 <option value="balances">Only Balances</option>
 </select></span>
@@ -450,10 +454,6 @@ Barcode<br />
 <span style="padding-left: 50px">
 <input type="date" size="10" maxlength="10" id="billing_list_end_date" title="Last billing date" value="@php echo date("Y-m-d"); @endphp" onchange="show_billing_dialog()" /></span> &nbsp; &nbsp; <button type="button" onclick="view_customer_bills(0, '', event)">View All Transactions</button> &nbsp; <img id="printAllStatementsCtrl" src="img/document-print.png" style="vertical-align: middle; cursor: pointer" onclick="printAllStatements()" title="Print Statements" /> <img src="img/loading.gif" style="display: none" id="printAllStatementsIndicator" /> &nbsp; <img id="showReportsCtrl" src="img/chart.png" style="vertical-align: middle; cursor: pointer; height: 30px" onclick="show_reports_dialog()" title="Show Aging Report" /> 
  &nbsp; &nbsp;<input type="text" class="customer_search" maxlength="20" size="20" value="Search Customer" style="color: #cccccc"/>
-</div>
-<div style="text-align: right"> &nbsp;
-   <img id="asdf" src="img/close.png" onclick="close_billing_dialog()" style="cursor: pointer" alt="Close" />
-</div>
 
 <!-- headings -->
 <div style="margin-top: 20px; width: 95%">
@@ -461,7 +461,11 @@ Barcode<br />
 </div>
 
 <div id="billing_container" style="overflow-x: none; overflow-y: scroll; margin-left: 10px; height: 350px; background: #ffffff; border: 1px solid #000000; width: 95%">
-<table id="billing_list" style="font-weight: bold; font-size: 90%; cursor: default; border-collapse: collapse; background: #ffffff;width: 100%"></table>
+	<table id="billing_list" class="table table-striped">
+		<tbody>
+			<tr><td>loading</td></tr>
+		</tbody>
+	</table>
 </div>
 
 </div>

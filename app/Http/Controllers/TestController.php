@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Mail\ReceiptEmail;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Mail\Address;
+
 
 class TestController extends Controller
 {

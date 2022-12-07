@@ -6,7 +6,7 @@ use App\Http\Controllers\JournalController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\BillingController;
-
+use App\Http\Controllers\CatalogController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +36,9 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/ticket', [TicketController::class, 'getOpenTickets']);
+Route::get('/ticket/{id}', [TicketController::class, 'loadTicket']);
+Route::put('/ticket/add-item', [TicketController::class, 'addItemToTicket']);
+
 Route::post('/journal/open', [JournalController::class, 'open']);
 
 Route::get('/customer/list', [CustomerController::class, 'getCustomers']);
@@ -48,5 +51,8 @@ Route::post('/customer', [CustomerController::class, 'save']);
 Route::get('/test/mail', [TestController::class, 'mail']);
 
 Route::get('/billing/list/{type}', [BillingController::class, 'list']);
+Route::get('/catalog/search/{term}', [CatalogController::class, 'search']);
+
+
 
 require __DIR__.'/auth.php';

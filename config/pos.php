@@ -10,7 +10,7 @@ return [
 
 	// this is the 'noname' account that gets created initially by the install sql file
 	// this value should be fine
-	'default_customer_id' => 1,
+	'default_customer_id' => 1341,
 
 	// set your company's information
 	'company_name' => "House Lumber Company",
@@ -59,5 +59,7 @@ return [
 	
 	// not implemented yet, either 'tcpdf' or 'htmldoc'
 	'pdf_printer' => "tcpdf",
+
+	'use_catalog_filter' => true
 
 ];

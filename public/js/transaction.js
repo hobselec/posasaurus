@@ -42,14 +42,6 @@ function show_payment_specialoptions()
 		return false;
 	}
 
-	if($('#admin_passwd').val() == '')
-	{
-
-		authenticate('special_options');
-
-		return false;
-	}
-
 	$pos.pause_button.prop('disabled', true);
 	$pos.void_button.prop('disabled', true);	
 	$pos.barcode.prop('disabled',true);

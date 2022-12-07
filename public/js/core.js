@@ -86,7 +86,7 @@ $(document).ready(function(){
 	subtotal : $('#subtotal'),
 	tax : $('#tax'),
 	display_total : $('#display_total'),
-	cart : $('#cart'),
+	cart : $('#cart tbody'),
 	cart_container : $('#cart_container'),
 	cash_given : $('#cash_given'),
 	cancel_button : $('#cancel_pay_button'),
@@ -140,7 +140,7 @@ $(document).ready(function(){
 	icon : $('#catalog_icon'),
 	dialog : $('#catalog_dialog'),
 	search_name : $('#catalog_search_name'),
-	catalog_table : $('#catalog_table'),
+	catalog_table : $('#catalog_table tbody'),
 	use_ws : $('#catalog_use_wholesaler'),
 	open_record : 0,
 	pre_auth_button_obj : '',
@@ -196,7 +196,7 @@ $(document).ready(function(){
   
 	dialog : $('#billing_dialog'),
 	container : $('#billing_container'),
-	list : $('#billing_list'),
+	list : $('#billing_list tbody'),
 	customer_bill_dialog : $('#customer_bill_dialog'),
 	customer_bill_name : $('#customer_bill_name'),
 	customer_bill_job_id : $('#customer_bill_job_id'),
@@ -296,6 +296,8 @@ $(document).ready(function(){
 		
     $billing.statement.dialog({ title : 'Statement', autoOpen: false, modal : false, resizable : true, draggable : true, width: 785, height: 600 });
     $billing.reports_dialog.dialog({ title : 'Reports', autoOpen: false, modal : false, resizable : false, draggable : true, width: 850, height: 600 });
+	$billing.dialog.dialog({ title : 'Billing', autoOpen: false, modal : false, resizable : false, draggable : true, width: 950, height: 600 });
+
 
     $('.ui-dialog-titlebar').css('font-size', '10pt')
 

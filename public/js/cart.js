@@ -253,12 +253,33 @@ function add_to_cart(subtotal, cart)
 	for(i = 0; i < cart.length; i++)
 	{
 
-		if(i%2)
-			bgcolor = '#dddddd';
-		else
-			bgcolor = '#ffffff';
-
-		tmpcart += "<tr style=\"background: " + bgcolor + "\" id=\"" + cart[i].item_id + "\"><td><img onclick=\"modify_item(" + cart[i].item_id + ", 'del', $(this))\" style=\"cursor: pointer; width: 12px; height: 12px\" src=\"img/del.png\" /></td><td class=\"qty\" onclick=\"edit_qty($(this), " + cart[i].item_id + ")\">" + cart[i].qty + "</td><td><table class=\"incrctrl\"><tr class=\"nostripe\"><td><img onclick=\"modify_item(" + cart[i].item_id + ", 'incr', $(this))\" style=\"cursor: pointer;\" src=\"img/up.png\"></td></tr><tr class=\"nostripe\"><td><img onclick=\"modify_item(" + cart[i].item_id + ", 'decr', $(this))\" style=\"cursor: pointer;\" src=\"img/down.png\"></td></tr></table></td><td style=\"padding-left: 60px; width: 300px; cursor: default\">" + cart[i].name + "</td><td class =\"qty\" onclick=\"edit_price($(this), " + cart[i].item_id + ")\">" + cart[i].price + "</td><td class=\"qty\">" + cart[i].amount + "</td></tr>";
+		tmpcart += `<tr id=" + cart[i].item_id + ">
+		<td><img onclick="modify_item(${cart[i].item_id}, 'del', $(this))" style="cursor: pointer; width: 12px; height: 12px" src="img/del.png" /></td>
+		 <td class="qty" onclick="edit_qty($(this), ${cart[i].item_id})">${cart[i].qty}</td>
+		 <td>
+			<table class="incrctrl">
+			<tr class="nostripe">
+				<td>
+				<img onclick="modify_item(${cart[i].item_id}, 'incr', $(this))" style="cursor: pointer" src="img/up.png">
+				</td>
+		 	</tr>
+			<tr class="nostripe">
+				<td>
+				<img onclick="modify_item(${cart[i].item_id}, 'decr', $(this))" style="cursor: pointer" src="img/down.png">
+				</td>
+			</tr>
+			</table>
+		 </td>
+		 <td style="padding-left: 60px; width: 300px; cursor: default">
+		 ${cart[i].name}
+		 </td>
+		 <td class="qty" onclick="edit_price($(this), ${cart[i].item_id})">
+		 ${cart[i].price.toFixed(2)}
+		 </td>
+		 <td class="qty">
+		 ${cart[i].amount.toFixed(2)}
+		 </td>
+		 </tr>`
 		
 		if(cart[i].amount == 0 && i == 0)
 			zeroItemWarning++;
