@@ -112,7 +112,7 @@ $(document).ready(function() {
 					tmpobj = new Object();
 			
 					tmpobj.label = items[i].name;
-					tmpobj.value = items[i].barcode;
+					tmpobj.value = items[i].id;
 					tmpobj.extra = `${items[i].product_id} ${items[i].vendor_name} &ndash; ${items[i].manufacturer_id} &ndash; Qty: ${items[i].qty}`
 				
 					myarr[i] = tmpobj
@@ -131,7 +131,8 @@ $(document).ready(function() {
 
 			//alert(event.which);
 
-			$pos.barcode.val(ui.item.value);
+			//$pos.barcode.val(ui.item.value);
+			$pos.curItemId = ui.item.value
 
 		//	event.stopPropagation(); // so enter key doesn't fire evet twice!
 
@@ -181,14 +182,8 @@ $(document).ready(function() {
 				for(i = 0; i < cdata.length; i++)
 				{
 					tmpobj = new Object();
-			
-					if(cdata[i].company != '' && cdata[i].use_company)
-						name = cdata[i].company;
-					else
-						name = cdata[i].customer;
 
-					tmpobj.label = name;
-
+					tmpobj.label = cdata[i].display_name;
 
 					tmpobj.value = cdata[i].id;
 				
@@ -227,28 +222,30 @@ $(document).ready(function() {
 	
 	// used for selecting the name on the ticket
 	$( "#customer_ticket_search" ).autocomplete({ minLength: 3, source: 
-		function(request, response)
+		function(request, acResponse)
 		{
 		
-			$.get('ac_search.php', { 'q' : request.term, 'type' : 'customer' }, 
-			function(cdata)
+			axios.get('/pos/customer/search?q=' + request.term).then((response) =>
 			{
 
-				myarr = new Array(cdata.items.length);
-				
-				for(i = 0; i < cdata.items.length; i++)
+				let cdata = response.data
+
+				let myarr = new Array(cdata.length);
+	
+				for(i = 0; i < cdata.length; i++)
 				{
 					tmpobj = new Object();
-			
-					tmpobj.label = cdata.items[i].name;
-					tmpobj.value = cdata.items[i].customer_id;
+
+					tmpobj.label = cdata[i].display_name;
+
+					tmpobj.value = cdata[i].id;
 				
 					myarr[i] = tmpobj;
 				}
 	
-				response(myarr);
+				acResponse(cdata);
 
-			}, 'json');
+			})
 			
 
 		}, 	open: function() {
@@ -363,21 +360,6 @@ $(document).ready(function() {
 	//$('#ui-datepicker-div').css('font-size','80%');
 
 
-	$('button').addClass('ui-state-default ui-corner-all');
-	
-	// add hover events
-	$('.ui-state-default').hover(
-		function(){ 
-			$(this).addClass("ui-state-hover"); 
-		},
-		function(){ 
-			$(this).removeClass("ui-state-hover"); 
-		}
-	).css('cursor','pointer');
-	
-	$('textarea, select, input[type=text], input[type=password]').addClass('ui-corner-all');
-
-
 });
 
 
@@ -414,10 +396,15 @@ function chg_ticket(ticket_id)
 				
 				$pos.ticket_id.val(response.id);
 				$pos.ticket_display_id.html(response.display_id);
-				$pos.pay_job_id.val(response.job.id)
-				$pos.customer_job_display_name.html(response.job.name);
+				if(response.job)
+				{
+					$pos.pay_job_id.val(response.job.id)
+					$pos.customer_job_display_name.html(response.job.name);
+				}
 				
 				$pos.open_transactions.val('');
+				$pos.pay_button.removeClass('disabled')
+				$pos.special_options_button.removeClass('disabled')
 				
 				// set the inputs used to modify the discount/freight/resale
 				/*
@@ -523,27 +510,30 @@ function lookup_item() {
 	$pos.add_recv_by_button.prop('disabled', false);
 	//  barcode lookup
 
-	axios.put('/pos/ticket/add-item', { skn : $pos.barcode.val(), ticket_id : $pos.ticket_id.val(), tax_exempt : $pos.tax_exempt.val() }).then((response) => {
+	axios.put('/pos/ticket/add-item', { itemId : $pos.curItemId, ticketId : $pos.ticket_id.val(), tax_exempt : $pos.tax_exempt.val() }).then((response) => {
 
 				$pos.subtotal.html(response.subtotal);
 				$pos.tax.html(response.tax);
 				$pos.display_total.html(response.total);
 			
-				add_to_cart(response.subtotal, response.cart);
+				//add_to_cart(response.subtotal, response.cart);
 				
-				if($pos.ticket_id.val() == '')
+
+
+				if(response.data.ticket.length > 0)
 				{
 					// new ticket
-					$pos.ticket_id.val(response.ticket_id);
-					$pos.ticket_display_id.html(response.ticket_display_id);
+					$pos.ticket_id.val(response.data.ticket[0].id);
+					//$pos.ticket_display_id.html(response.data.ticket[0].display_id);
 
-					option_row = "<option value=\"" + response.ticket_id + "\">#" + response.ticket_display_id + "</option>";
+					let optionRow = `<option value="${response.data.ticket[0].id}">#${response.data.ticket[0].display_id} - NONAME</option>`
 						
-					$pos.open_transactions.append(option_row);
+					$pos.open_transactions.append(optionRow);
 						
-				} else if($pos.ticket_id.val() != response.ticket_id)
-					alert("Exception 0001:  Ticket ID has changed/Uknown error.  You should cancel the current transaction and start over.\r\n\r\nsys var: " + $pos.ticket_id.val() + "...retrieved: " + response.ticket_id);
+				}// else if($pos.ticket_id.val() != response.ticket_id)
 
+				chg_ticket($pos.ticket_id.val());
+				
 				$pos.barcode.val('');
 
 

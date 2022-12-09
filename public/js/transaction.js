@@ -17,7 +17,7 @@ This file is part of Primitive Point of Sale.
     along with Primitive Point of Sale.  If not, see <http://www.gnu.org/licenses/>.
 
 */
-
+/*
 function show_payment_methods()
 {
 	if($pos.cart.html() == '')
@@ -31,8 +31,9 @@ function show_payment_methods()
 	$pos.customer_ticket_search.show();
 
 
-}
+}*/
 
+/*
 function show_payment_specialoptions()
 {
 
@@ -52,7 +53,7 @@ function show_payment_specialoptions()
 
 
 }
-
+*/
 
 
 function apply_payment_specialoptions()
@@ -350,6 +351,8 @@ function show_payment(type)
 	
 		$('#take_cash').show();
 		$('#cash_given').focus();
+		$pos.take_cc.hide();
+		$pos.take_check.hide()
 	}
 	
 	if(type == 'check')
@@ -361,12 +364,14 @@ function show_payment(type)
 
 		$('#take_cash').show();
 		$pos.check_no.focus();
+		$pos.take_cc.hide();
 	}
 		
 	if(type == 'cc')
 	{
 		$pos.cc_trans_no.val('');
 		$pos.cc_trans_no.focus();
+		$pos.take_check.hide()
 		$('#take_cc').show();
 		$('#take_cash').show();
 	}
@@ -549,21 +554,30 @@ function post_transaction(type)
 
 
 	
-	$.post('update_ticket.php', { 'ticket_id' : $pos.ticket_id.val(), 'amount_given' : amt_given, 'check_no' : check_no, 'cc_trans_no' : $pos.cc_trans_no.val(), 'payment_type' : payment_type, 'subtotal' : $pos.subtotal.html(), 'tax' : $pos.tax.html(), 'total' : total_sale, 'refund' : refund, recv_by : recv_by }, function(data) {
+	axios.post('/pos/ticket/submit',
+	 { 'ticket_id' : $pos.ticket_id.val(), 
+	 'amount_given' : amt_given, 
+	 'check_no' : check_no,
+	  'cc_trans_no' : $pos.cc_trans_no.val(), 
+	  'payment_type' : payment_type, 
+	  'subtotal' : $pos.subtotal.html(), 
+	  'tax' : $pos.tax.html(),
+	   'total' : total_sale, 
+	   'refund' : refund,
+	    recv_by : recv_by }).then((response) => {
 	
-		if(data.status)
-		{
+
 			if(cash_back > 0)
-				alert("Cash back: " + cash_back);
+				show_note("Cash back: " + cash_back);
 				
 			if(refund && payment_type != 'acct') // if refund to acct, say nothing
-				alert("Customer Refund: " + total_sale);
+				show_note("Customer Refund: " + total_sale);
 		
 			show_note("Transaction Complete!");
 
 			// print receipt
-			if($pos.printReceiptChkbox.prop('checked') && payment_type != 'acct')
-				print_receipt($pos.ticket_id.val(), amt_given, cash_back);
+			//if($pos.printReceiptChkbox.prop('checked') && payment_type != 'acct')
+			//	print_receipt($pos.ticket_id.val(), amt_given, cash_back);
 
 			// remove from open tickets
 			$('#open_transactions option').each(function() {
@@ -574,13 +588,11 @@ function post_transaction(type)
 			
 			clear_pos();
 			//$('#pause_button').click(); // clear the cart and totals
-		
-		
-		} else
-			show_note("Could not finalize the transaction");
-	
-	
-	}, 'json');
+
+	})
+	//.catch((error) {
+//		show_note("Could not finalize the transaction");
+//	})
 
 }
 

@@ -15,13 +15,14 @@
         <!-- Scripts -->
         @vite(['resources/js/app.js'])
 
+<script type="text/javascript" src="/pos/js/bootstrap.bundle.min.js"></script>
+
 <script type="text/javascript" src="/pos/js/jquery-3.6.1.min.js"></script>
 
 <script type="text/javascript" src="/pos/jquery-ui/jquery-ui.min.js"></script>
 
 <script type="text/javascript" src="/pos/js/sweetalert2.min.js"></script>
 
-<script type="text/javascript" src="/pos/js/bootstrap.bundle.min.js"></script>
 
 <script  src="/pos/js/vscontext.js" type="text/javascript"></script>
 
@@ -46,6 +47,10 @@
 </head>
 
 <body class="posbody">
+
+<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+   @csrf
+</form>
 
 <!-- Hidden Transaction variables -->
 
@@ -111,7 +116,6 @@
 <div id="main_container" >
 
 
-
 <span id="clock_container" style="color: #666666; position: absolute; top: 10px; right: 10px; width: 280px; font-size: 12pt">
 @php
  echo date("D M j, Y"). " &nbsp; &nbsp;" . date("g:i a");
@@ -120,8 +124,11 @@
 
 <!-- Ticket ID and name/job -->
 <div style="margin-top: 20px">
-<span style="padding-left: 30px; font-size: 180%"># </span><span style="font-size: 200%" id="ticket_display_id"></span>
-<span style="padding-left: 150px; font-size: 240%; font-weight: bold; color: brown" id="customer_display_name"></span> &nbsp; &nbsp; <span style="font-size: 110%; color: #996666" id="customer_job_display_name"></span><span style="font-size: 200%; color: blue" id="refund_indicator"></span>
+	<span style="padding-left: 30px; font-size: 180%"># </span>
+	<span style="font-size: 200%" id="ticket_display_id"></span>
+	<span style="padding-left: 150px; font-size: 240%; font-weight: bold; color: brown" id="customer_display_name"></span> &nbsp; &nbsp; 
+	<span style="font-size: 110%; color: #996666" id="customer_job_display_name"></span>
+	<span style="font-size: 200%; color: blue" id="refund_indicator"></span>
 </div>
 
 <!-- Totals -->
@@ -130,7 +137,11 @@
 
   Sub Total: &nbsp; $ <span id="subtotal"></span>
 
-    <p style="padding-top: 8px"><img id="discount_icon" src="img/sale.png" title="Discount" style="width: 40px; height: 35px; display: none; margin-top: 25px" alt="Discount" /> <span style="color: green" id="discount_display_total"></span></p>
+    <p style="padding-top: 8px">
+	<img id="discount_icon" src="img/sale.png" title="Discount" style="width: 40px; height: 35px; display: none; margin-top: 25px" alt="Discount" />
+	 <span style="color: green" id="discount_display_total">
+	</span>
+	</p>
 
 		Tax: $ <span id="tax"></span>
 
@@ -143,8 +154,6 @@
 		<p>
 		  <h2>Total: </h2>$<span id="display_total"></span>
 		</p>
-
-
 
 </div>
 
@@ -160,181 +169,217 @@
 
 <table style="width: 680px; border-collapse: collapse">
 <tr>
-	<th style="width: 50px"></th><th style="width: 50px">Qty</th><th style="width: 420px">Item</th><th style="width: 100px">Price</th><th style="width: 100px">Amount</th>
+	<th style="width: 50px"></th>
+	<th style="width: 50px">Qty</th>
+	<th style="width: 420px">Item</th>
+	<th style="width: 100px">Price</th>
+	<th style="width: 100px">Amount</th>
 </tr>
 </table>
  
 <div id="cart_container" style="font-size: 80%; overflow-x: none; overflow-y: scroll; margin-left: 10px; height: 300px; background: #ffffff; border: 1px solid #000000; width: 680px">
   
- <table id="cart" class="table table-striped">
-	<tbody></tbody>
-</table>
+	<table id="cart" class="table table-striped">
+		<tbody></tbody>
+	</table>
   
 </div>
   
 <table>
-<tr>
-<td>
-<select id="open_transactions" onchange="chg_ticket(this.value)" style="padding: 5px">
-<option value="">&ndash; Open Transactions &ndash;</option>
-<option value="-1" disabled="disabled" style="border-top: 1px dashed #999999"></option>
+	<tr>
+	<td>
+
+		<select id="open_transactions" onchange="chg_ticket(this.value)" class="form-select">
+		<option value="">&ndash; Open Transactions &ndash;</option>
+		<option value="-1" disabled="disabled" style="border-top: 1px dashed #999999"></option>
+		</select>
+
+	</td>
+	<td style="width: 200px; text-align: right">
+		<button type="button" onclick="clear_pos()" id="pause_button">Pause Transaction</button>
+	</td>
+	<td style="width: 200px">
+		<button type="button" id="clear_button" onclick="clear_ticket()">Void Transaction</button>
+	</td>
+	<td style=" text-align: right">
+
+	<button type="button" id="special_options_button" class="btn btn-secondary disabled btn-lg" data-bs-toggle="modal" data-bs-target="#payment_specialoptions_dialog">Special</button> 
+	<button type="button" id="pay_button" class="btn btn-primary disabled btn-lg" data-bs-toggle="modal" data-bs-target="#payment_dialog">PAY</button>
+
+	</td>
+	</tr>
+</table>
+
+<table>
+	<tr>
+	<td style="padding-top: 20px; padding-left: 200px">
+	# <input type="text" style="padding: 3px" id="barcode" onkeyup="check_enter(this.value, event)" size="60" /> 
+	&nbsp; 
+	<img title="Add new item" src="img/addnew.gif" style="width: 18px; height: 18px; cursor: pointer" onclick="add_catalog_item()" alt="Add item to Catalog" />
+	</td>
+	<td style="padding-top: 20px; "></td><!--<button type="button" id="lookup_button">Lookup Item</button></td>-->
+	</tr>
+</table>
 
 
-</select>
-</td>
-<td style="width: 200px; text-align: right"><button type="button" onclick="clear_pos()" id="pause_button">Pause Transaction</button></td>
-<td style="width: 200px"><button type="button" id="clear_button" onclick="clear_ticket()">Void Transaction</button></td>
-<td style="width: 150px; text-align: right"><button type="button" id="special_options_button" style="width: 65px; height: 30px" onclick="show_payment_specialoptions()">Special</button> <p><button type="button" id="pay_button" style="width: 80px; height: 40px" onclick="show_payment_methods()">PAY</button></p>
+
+<!-- PAYMENT SPECIAL OPTIONS -->
+<div class="modal" tabindex="-1" id="payment_specialoptions_dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Special Options</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+				
+		<div style="padding-bottom: 4px; text-align: center;">
+		<b>Discount</b>
+
+		<!-- no need for radio button given percentage is disabled
+		<label for="lbl_disc_num"><input id="lbl_disc_num" type="radio" name="discount_type_selector" value="number" onclick="$pos.disc_pct.prop('disabled', true); $pos.disc_num').removeProp('disabled')" /> &nbsp; 
+		-->
+
+		Price: &nbsp;<input style="padding: 3px" size="7" maxlength="11" type="text" id="discount_number" value="" onkeyup="add_decimals(this, event, false)" /></label> <br />
+
+		<!-- percent is disabled
+		<label for="lbl_disc_pct"><input onclick="$pos.disc_num.prop('disabled', true); $pos.disc_pct.removeProp('disabled')"  id="lbl_disc_pct" type="radio" name="discount_type_selector" value="percentage" /> &nbsp; &nbsp; &nbsp; &nbsp; %:</label> <input style="padding: 3px; text-align: right" size="7" maxlength="2" type="text" id="discount_percentage" value="" onkeyup="calculate_discount_number()" />
+		-->
+	
+		<div style="margin-top: 15px">
+			<div style="padding-bottom: 4px; text-align: center;"><b>Other</b></div>
+			&nbsp; &nbsp;<input type="checkbox" id="is_resale" /> <label for="is_resale" class="nice-label"> Resale: </label><br />
+
+			Freight: <input size="7" type="text" id="freight_number" maxlength="11" onkeyup="add_decimals(this, event, false)" />
+			<p style="margin-top: 5px">Labor: &nbsp;&nbsp; <input size="7" type="text" id="labor_number" maxlength="11" onkeyup="add_decimals(this, event, false)" /></p>
+			</div>
+
+		</div>
+
+      </div>
+      <div class="modal-footer">
+	  	<button type="button" class="btn btn-primary" onclick="apply_payment_specialoptions()">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- PAYMENT BOX -->
 
-<div id="payment_methods" style="width: 250px; height: 175px; display:none;position: absolute; left: 44%; top: 55%; border: 1px solid #000000; padding-bottom: 4px; -moz-border-radius: 5px; background: #cccccc">
+<div class="modal" tabindex="-1" id="payment_dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Payment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        
+			<div style="margin-top: 0px; margin-bottom: 10px; margin-right: 5px">
 
-<div style="position: absolute: top: 0; right: 0; text-align: right; margin: 0; padding: 0; padding: 0">
-    <a href="javascript:cancel_payment(0)"><img src="img/close.png" id="cancel_payment" style="height: 24px; width: 24px; cursor: pointer" alt="Close" /></a>
-</div>
-<div style="margin-top: 0px; margin-bottom: 10px; margin-right: 5px">
+			<input type="checkbox" id="pay_refund" value="1" onclick="save_refund_status(this.checked)" /> &nbsp; &nbsp; &nbsp;
+			<label for="pay_refund" class="nice-label">
+			Refund:
+			</label>
 
-<input type="checkbox" id="pay_refund" value="1" onclick="save_refund_status(this.checked)" /> &nbsp; &nbsp; &nbsp;
-<label for="pay_refund" class="nice-label">
-Refund:
-</label>
+			<!--
+			<button type="button" id="cancel_payment" style="color: red;" onclick="cancel_payment(0)">Cancel</button> &nbsp;
+			-->
+			<br />
+			<button type="button" id="pay_cash" style="width: 85px; padding: 5px" onclick="show_payment('cash')">Cash</button>&nbsp;&nbsp;&nbsp;
+			<button type="button" id="pay_check" style="width: 86px; padding: 5px" onclick="show_payment('check')">Check</button>
+			<div style="margin-top: 4px; margin-bottom: 4px"></div>
+			&nbsp; <button type="button" id="pay_cc" style="padding: 5px" onclick="show_payment('cc')">Credit Card</button>&nbsp;&nbsp;
+			<button type="button" id="pay_charge" style="padding: 5px" onclick="show_payment('acct')">On Account</button>
+			<div style="padding: 10px"></div>
+			<div style="margin-top: 5px" id="accts"><input type="text" value="Customer Name" style="color: #999999; padding: 4px" class="class_customer_search" id="customer_ticket_search" size="20" /><select id="pay_job_id" style="display: none; padding: 4px" onchange="choose_pay_job_id()"></select></div>
 
-<!--
- <button type="button" id="cancel_payment" style="color: red;" onclick="cancel_payment(0)">Cancel</button> &nbsp;
--->
-<br />
-<button type="button" id="pay_cash" style="width: 85px; padding: 5px" onclick="show_payment('cash')">Cash</button>&nbsp;&nbsp;&nbsp;
-<button type="button" id="pay_check" style="width: 86px; padding: 5px" onclick="show_payment('check')">Check</button>
-<div style="margin-top: 4px; margin-bottom: 4px"></div>
- &nbsp; <button type="button" id="pay_cc" style="padding: 5px" onclick="show_payment('cc')">Credit Card</button>&nbsp;&nbsp;
-<button type="button" id="pay_charge" style="padding: 5px" onclick="show_payment('acct')">On Account</button>
-<div style="padding: 10px"></div>
-<div style="margin-top: 5px" id="accts"><input type="text" value="Customer Name" style="color: #999999; padding: 4px" class="class_customer_search" id="customer_ticket_search" size="20" /><select id="pay_job_id" style="display: none; padding: 4px" onchange="choose_pay_job_id()"></select></div>
 
-</div>
-</div>
+			<!-- TRANSACTION -->
 
-<!-- PAYMENT SPECIAL OPTIONS -->
-<div id="payment_specialoptions_dialog" style="width: 250px; height: 210px; display:none;position: absolute; left: 44%; top: 55%;  border: 1px solid #000000; padding: 8px; -moz-border-radius: 5px; background: #cccccc">
-<!-- not sure about being able to close this
-<div style="position: absolute; top: 0; right: 0; text-align: right;">
-  <img src="img/close.png" onclick="closeSpecialOptions()" style="height: 32px; width: 32px; cursor: pointer" alt="Close" />
-</div>
--->
+			<div id="payment_take">
+			<span id="take_check" style="display: none">Check #: &nbsp;<input type="text" class="trans_info" id="check_no" size="10" maxlength="11" style="padding: 5px" /></span><br />
+			<span id="take_cc" style="display: none">Trans. #: &nbsp;<input type="text" class="trans_info" id="cc_trans_no" size="10" maxlength="11" style="padding: 5px" /></p><p></p></span><br />
+			<span id="take_cash" style="display: none">Amount Received: &nbsp;<input type="text" id="cash_given" size="5" maxlength="9" style="padding: 5px" /></span><br />
 
-<div style="margin-top: 4px; margin-bottom: 10px">
-<div style="padding-bottom: 4px; text-align: center;"><b>Discount</b></div>
+			<input type="checkbox" id="printReceiptChkbox" checked="checked" />
+			<label for="printReceiptChkbox" class="nice-label">Print Receipt: </label>
+			
+			</div>
 
-<!-- no need for radio button given percentage is disabled
-<label for="lbl_disc_num"><input id="lbl_disc_num" type="radio" name="discount_type_selector" value="number" onclick="$pos.disc_pct.prop('disabled', true); $pos.disc_num').removeProp('disabled')" /> &nbsp; 
--->
+      </div>
+      <div class="modal-footer">
 
-Price: &nbsp;<input style="padding: 3px" size="7" maxlength="11" type="text" id="discount_number" value="" onkeyup="add_decimals(this, event, false)" /></label> <br />
-
-<!-- percent is disabled
-<label for="lbl_disc_pct"><input onclick="$pos.disc_num.prop('disabled', true); $pos.disc_pct.removeProp('disabled')"  id="lbl_disc_pct" type="radio" name="discount_type_selector" value="percentage" /> &nbsp; &nbsp; &nbsp; &nbsp; %:</label> <input style="padding: 3px; text-align: right" size="7" maxlength="2" type="text" id="discount_percentage" value="" onkeyup="calculate_discount_number()" />
--->
-</div>
-<div style="margin-top: 15px">
-<div style="padding-bottom: 4px; text-align: center;"><b>Other</b></div>
-&nbsp; &nbsp;<input type="checkbox" id="is_resale" /> <label for="is_resale" class="nice-label"> Resale: </label><br />
-
-Freight: <input size="7" type="text" id="freight_number" maxlength="11" onkeyup="add_decimals(this, event, false)" />
-<p style="margin-top: 5px">Labor: &nbsp;&nbsp; <input size="7" type="text" id="labor_number" maxlength="11" onkeyup="add_decimals(this, event, false)" /></p>
-</div>
-<div style="margin-top: 15px">
-<button type="button" style="padding: 5px" onclick="apply_payment_specialoptions()" />Ok</button>
-</div>
- 
+		<button type="button" id="postpayment_button" class="btn btn-primary" onclick="post_transaction()">PAY and Commit</button>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- TRANSACTION -->
 
-<div id="payment_take" style="width: 240px; display:none; position: absolute; left: 44%; top: 55%;  border: 1px solid #666666; padding: 8px; -moz-border-radius: 5px; background: #cccccc">
-<span id="take_check" style="display: none">Check #: &nbsp;<input type="text" class="trans_info" id="check_no" size="10" maxlength="11" style="padding: 5px" /></span><br />
-<span id="take_cc" style="display: none">Trans. #: &nbsp;<input type="text" class="trans_info" id="cc_trans_no" size="10" maxlength="11" style="padding: 5px" /></p><p></p></span><br />
-<span id="take_cash" style="display: none">Amount Received: &nbsp;<input type="text" id="cash_given" size="5" maxlength="9" style="padding: 5px" /></span><br />
 
-<input type="checkbox" id="printReceiptChkbox" checked="checked" />
-<label for="printReceiptChkbox" class="nice-label">Print Receipt: </label>
-<p><button type="button" id="cancel_pay_button" onclick="window.setTimeout('cancel_payment(0)', 200)">Cancel</button>  &nbsp; <button type="button" id="postpayment_button" style="" onclick="post_transaction()">PAY</button></p>
-</div>
-
-</td>
-</tr>
-</table>
-
-<table>
-<tr>
-<td style="padding-top: 20px; padding-left: 200px">
-# <input type="text" style="padding: 3px" id="barcode" onkeyup="check_enter(this.value, event)" size="60" /> 
-&nbsp; 
-<img title="Add new item" src="img/addnew.gif" style="width: 18px; height: 18px; cursor: pointer" onclick="add_catalog_item()" alt="Add item to Catalog" />
-</td>
-<td style="padding-top: 20px; "></td><!--<button type="button" id="lookup_button">Lookup Item</button></td>-->
-</tr>
-</table>
+</div> <!-- main container -->
 
 <!-- CUSTOMER DIALOG -->
 
 <div id="customer_dialog" style="z-index: 100; display: none; padding: 0; margin: 0" class="posdlg">
-<div style="left: 0; top: 0"><h3>Customer Database</h3></div>
+	<div style="left: 0; top: 0"><h3>Customer Database</h3></div>
 
-<div style="position: absolute; top: 0; right: 0; text-align: right;">
-  <img src="img/close.png" onclick="close_customerdialog()" style="height: 32px; width: 32px; cursor: pointer" alt="Close" />
-</div>
+	<div style="position: absolute; top: 0; right: 0; text-align: right;">
+	<img src="img/close.png" onclick="close_customerdialog()" style="height: 32px; width: 32px; cursor: pointer" alt="Close" />
+	</div>
 
-<table>
-<tr>
-  <td style="height: 300px; vertical-align: top">
-	<span style="font-size: 80%">
-	<input type="checkbox" id="show_inactive" onclick="customerdialog('reload')" />
-<label for="show_inactive" class="nice-label">Show Inactive &nbsp; 
-	</label>
-	</span>
+	<table>
+	<tr>
+	<td style="height: 300px; vertical-align: top">
+		<span style="font-size: 80%">
+		<input type="checkbox" id="show_inactive" onclick="customerdialog('reload')" />
+	<label for="show_inactive" class="nice-label">Show Inactive &nbsp; 
+		</label>
+		</span>
+		
+		<img src="img/addnew.gif" style="cursor: pointer" onclick="add_customer_form()" title="Add Customer" alt="Add Customer" /> <br />
+		<input type="text" class="customer_search" maxlength="20" size="20" value="Search Customer" style="color: #cccccc"/><br />
+		<select size="12" onchange="edit_customer_info(this.value)" id="customer_listing" style="width: 180px"></select>
+		
+	</td>
+
+	<td style="vertical-align: top; padding-left: 15px" id="customer_jobs_cell">
 	
-	<img src="img/addnew.gif" style="cursor: pointer" onclick="add_customer_form()" title="Add Customer" alt="Add Customer" /> <br />
-	<input type="text" class="customer_search" maxlength="20" size="20" value="Search Customer" style="color: #cccccc"/><br />
-	<select size="12" onchange="edit_customer_info(this.value)" id="customer_listing" style="width: 180px"></select>
-	
-  </td>
+		<select id="customer_job_listing" onchange="load_edit_job()"></select>
+		<p><input type="text" id="customer_job_edit" maxlength="64" /></p><br />
+		<p><button type="button" onclick="save_job_edit()">Save</button></p>
+	</td>
 
-  <td style="vertical-align: top; padding-left: 15px" id="customer_jobs_cell">
-  
-	<select id="customer_job_listing" onchange="load_edit_job()"></select>
-	<p><input type="text" id="customer_job_edit" maxlength="64" /></p><br />
-	<p><button type="button" onclick="save_job_edit()">Save</button></p>
-  </td>
+	<td style="vertical-align: top; padding-left: 15px" id="customer_edit_cell">
 
-<td style="vertical-align: top; padding-left: 15px" id="customer_edit_cell">
+	Last name<div style="padding-left: 100px; display: inline"> First name</div>
+	<div style="display: inline; padding-left: 100px"> MI</div><br />
+	<input type="text" id="edit_last_name" maxlength="50" />, &nbsp;<input type="text" id="edit_first_name" maxlength="50" />, <input type="text" id="edit_mi" size="3" maxlength="3" /><br />
+	Company<br />
+	<input type="text" id="edit_company" size="40" maxlength="64" />
+	<p>Address<br />
+	<input type="text" id="edit_address" size="40" maxlength="100" /><br />
+	<input type="text" id="edit_address2" size="40" maxlength="100" /><br />
+	City <span style="padding-left: 135px; display: inline"> State</span> &nbsp;&nbsp; Zip<br />
+	<input type="text" id="edit_city" maxlength="50" />, <input type="text" id="edit_state" size="2" maxlength="30" /> &nbsp;&nbsp;<input type="text" id="edit_zip" size="5" maxlength="10" /><br />
 
-Last name<div style="padding-left: 100px; display: inline"> First name</div><div style="display: inline; padding-left: 100px"> MI</div><br />
-<input type="text" id="edit_last_name" maxlength="50" />, &nbsp;<input type="text" id="edit_first_name" maxlength="50" />, <input type="text" id="edit_mi" size="3" maxlength="3" /><br />
-Company<br />
-<input type="text" id="edit_company" size="40" maxlength="64" />
-<p>Address<br />
-<input type="text" id="edit_address" size="40" maxlength="100" /><br />
-<input type="text" id="edit_address2" size="40" maxlength="100" /><br />
-City <span style="padding-left: 135px; display: inline"> State</span> &nbsp;&nbsp; Zip<br />
-<input type="text" id="edit_city" maxlength="50" />, <input type="text" id="edit_state" size="2" maxlength="30" /> &nbsp;&nbsp;<input type="text" id="edit_zip" size="5" maxlength="10" /><br />
-
-Phone <span style="padding-left: 120px">Ext</span><br />
- <input type="text" size="20" maxlength="42" id="phone" /> &nbsp; &nbsp;<input type="text" size="4" maxlength="4" id="phone_ext" /><br />
-</p>
-List by: 
-<input type="radio" id="edit_listby_company" name="use_company" /> <label for="edit_listby_company" class="nice-label-radio"> Company</label> 
-<input type="radio" id="edit_listby_lastname" name="use_company" /> <label for="edit_listby_lastname" class="nice-label-radio">Last name</label><br />
-<input type="checkbox" id="edit_allow_credit" value="1" /> <label for="edit_allow_credit" class="nice-label">Has Credit:</label><br />
-<input type="checkbox" id="edit_tax_exempt" value="1" /> <label for="edit_tax_exempt" class="nice-label">Tax Exempt: </label><br />
-<input type="checkbox" id="edit_active" value="1" /> <label for="edit_active" class="nice-label">Active: </label>
-<input type="hidden" id="editing_customer_id" />
-<p style="margin-left: auto; margin-right: auto; text-align: center">
-<button type="button" id="save_customer_button" onclick="save_customer_info()">Save</button>
-</p>
-</td>
-</tr>
-</table>
+	Phone <span style="padding-left: 120px">Ext</span><br />
+	<input type="text" size="20" maxlength="42" id="phone" /> &nbsp; &nbsp;<input type="text" size="4" maxlength="4" id="phone_ext" /><br />
+	</p>
+	List by: 
+	<input type="radio" id="edit_listby_company" name="use_company" /> <label for="edit_listby_company" class="nice-label-radio"> Company</label> 
+	<input type="radio" id="edit_listby_lastname" name="use_company" /> <label for="edit_listby_lastname" class="nice-label-radio">Last name</label><br />
+	<input type="checkbox" id="edit_allow_credit" value="1" /> <label for="edit_allow_credit" class="nice-label">Has Credit:</label><br />
+	<input type="checkbox" id="edit_tax_exempt" value="1" /> <label for="edit_tax_exempt" class="nice-label">Tax Exempt: </label><br />
+	<input type="checkbox" id="edit_active" value="1" /> <label for="edit_active" class="nice-label">Active: </label>
+	<input type="hidden" id="editing_customer_id" />
+	<p style="margin-left: auto; margin-right: auto; text-align: center">
+	<button type="button" id="save_customer_button" onclick="save_customer_info()">Save</button>
+	</p>
+	</td>
+	</tr>
+	</table>
 </div>
 
 <div id="recv_payment_screen" style="z-index: 80; width: 400px" class="posdlg">
@@ -370,103 +415,97 @@ Customer Name<br />
 <!-- Catalog Dialog -->
 <div id="catalog_dialog" style="margin: 0; z-index: 195" class="posdlg">
 
-<div style="position: absolute; top: 0"><span style="font-size: 130%; font-weight: bold; background: #ffffff; -moz-border-radius: 3px; border-radius: 3px">Catalog</span><span style="padding-left: 50px"></span>
-</div>
+	<div style="position: absolute; top: 0"><span style="font-size: 130%; font-weight: bold; background: #ffffff; -moz-border-radius: 3px; border-radius: 3px">Catalog</span><span style="padding-left: 50px"></span>
+	</div>
 
-<div style="text-align: right; margin: 0; padding: 0">
-<img src="img/close.png" onclick="close_catalog()" style="cursor: pointer" alt="Close" />
-</div>
+	<div style="text-align: right; margin: 0; padding: 0">
+	<img src="img/close.png" onclick="close_catalog()" style="cursor: pointer" alt="Close" />
+	</div>
 
-<div style="margin-left: 150px; font-size: 130%">Search &nbsp; <input type="text" id="catalog_search_name" size="25" maxlength="30" onkeyup="search_catalog()" /> &nbsp;<img src="img/search.gif" onclick="search_catalog('go')" style="cursor: pointer; vertical-align: bottom" alt="Search Catalog" /> &nbsp; &nbsp; <img title="Add new item" src="img/addnew.gif" style="width: 18px; height: 18px; vertical-align: bottom; cursor: pointer" onclick="add_catalog_item()" alt="Add new item" />
-<br />
+	<div style="margin-left: 150px; font-size: 130%">Search &nbsp; <input type="text" id="catalog_search_name" size="25" maxlength="30" onkeyup="search_catalog()" /> &nbsp;<img src="img/search.gif" onclick="search_catalog('go')" style="cursor: pointer; vertical-align: bottom" alt="Search Catalog" /> &nbsp; &nbsp; <img title="Add new item" src="img/addnew.gif" style="width: 18px; height: 18px; vertical-align: bottom; cursor: pointer" onclick="add_catalog_item()" alt="Add new item" />
+	<br />
 
 
-@if(Config::get('pos.use_catalog_filter')) 
+	@if(Config::get('pos.use_catalog_filter')) 
 
- <input type="checkbox" id="catalog_use_wholesaler" /> &nbsp; <label for="catalog_use_wholesaler" class="nice-label"> <small>Search Principal Wholesaler Only   &nbsp;</small></label>
+	<input type="checkbox" id="catalog_use_wholesaler" /> &nbsp; <label for="catalog_use_wholesaler" class="nice-label"> <small>Search Principal Wholesaler Only   &nbsp;</small></label>
 
-@else
-<input type="hidden" id="catalog_use_wholesaler" />
-@endif
+	@else
+	<input type="hidden" id="catalog_use_wholesaler" />
+	@endif
 
-</div>
+	</div>
 
-<div id="catalog_headings" style="padding-left: 20px; padding-right: 20px; padding-top: 20px; font-size: 100%; font-weight: bold;">
-	<div style="width: 60px; padding-left: 50px; float: left">SKU</div>
-	<div style="width: 170px; float: left; padding-left: 53px ">Name</div>
-	<div style="width: 150px; float: left; padding-left: 50px ">Vendor</div>
-	<div style="width: 105px; padding-left: 20px; float: left">Barcode</div>
-	<div style="width: 147px; padding-left: 25px; float: left ">Product ID</div>
-	<div style="width: 65px; padding-left: 15px; float: left">Price</div>
-	<div style="width: 50px;  float: left; padding-left: 10px">Qty</div>
-</div>
-<br />
-<div style="margin-top: 2px; height: 375px; overflow-x: none; overflow-y: scroll; border-top: 1px solid #000000">
-	<table id="catalog_table" class="table table-striped">
-		<tbody></tbody>
-	</table>
-</div>
+	<div id="catalog_headings" style="padding-left: 20px; padding-right: 20px; padding-top: 20px; font-size: 100%; font-weight: bold;">
+		<div style="width: 60px; padding-left: 50px; float: left">SKU</div>
+		<div style="width: 170px; float: left; padding-left: 53px ">Name</div>
+		<div style="width: 150px; float: left; padding-left: 50px ">Vendor</div>
+		<div style="width: 105px; padding-left: 20px; float: left">Barcode</div>
+		<div style="width: 147px; padding-left: 25px; float: left ">Product ID</div>
+		<div style="width: 65px; padding-left: 15px; float: left">Price</div>
+		<div style="width: 50px;  float: left; padding-left: 10px">Qty</div>
+	</div>
+	<br />
+	<div style="margin-top: 2px; height: 375px; overflow-x: none; overflow-y: scroll; border-top: 1px solid #000000">
+		<table id="catalog_table" class="table table-striped">
+			<tbody></tbody>
+		</table>
+	</div>
 
 </div>
 
 <!-- Add Catalog Item Dialog -->
 
 <div class="posdlg" id="add_item_dialog" style="-moz-border-radius: 5px; border: 1px solid #000000; z-index: 196; display: none; width: 300px; height:240px; position: absolute; top: 15%; left: 20%; background: #cccccc; padding-left: 5px;" >
-<div style="text-align: right"><img src="img/close.png" onclick="$catalog.add_item_dialog.hide()" style="cursor: pointer" alt="Close" /></div>
-<div style="top: 5px; position: absolute">
-Item Name<br />
-<input type="text" id="new_item_name" size="30" maxlength="30" /><br />
-Price<br />
-<input type="text" id="new_item_price" size="10" maxlength="7" onkeyup="add_decimals(this, event, false)" /><br />
+	<div style="text-align: right"><img src="img/close.png" onclick="$catalog.add_item_dialog.hide()" style="cursor: pointer" alt="Close" /></div>
 
-<!--
-<select id="new_item_category">
-<option value="">&ndash; Choose Category &ndash;</option>
-</select>
--->
-Barcode<br />
-<input type="text" id="new_item_skn" size="14" maxlength="14" />
-&nbsp; &nbsp; &nbsp; <button type="button" onclick="save_new_item()">Save Item</button><br />
-<div style="margin-top: 5px; font-size: 80%">
-<input type="checkbox" id="new_item_to_cart" checked="checked" /> 
-<label for="new_item_to_cart" class="nice-label">Add to cart &nbsp; </label>
-</div>
-</div>
+	<div style="top: 5px; position: absolute">
+	Item Name<br />
+	<input type="text" id="new_item_name" size="30" maxlength="30" /><br />
+	Price<br />
+	<input type="text" id="new_item_price" size="10" maxlength="7" onkeyup="add_decimals(this, event, false)" /><br />
 
-</div>
-</div>
-
-<!-- Auth Dialog -->
-<div id="auth_dialog" style="background-color: #cccccc">
-<p style="font-size: 100%; background-color: #cccccc">Please enter the administrator password</p>
-<p style="background-color: #cccccc"><input type="password" id="admin_passwd" onkeyup="check_auth_enterkey(event)"/> &nbsp; <button type="button" onclick="auth_return()" id="auth_confirm">OK</button> <button type="button" onclick="auth_cancel()">Cancel</button></p>
+	<!--
+	<select id="new_item_category">
+	<option value="">&ndash; Choose Category &ndash;</option>
+	</select>
+	-->
+	Barcode<br />
+	<input type="text" id="new_item_skn" size="14" maxlength="14" />
+	&nbsp; &nbsp; &nbsp; <button type="button" onclick="save_new_item()">Save Item</button><br />
+		<div style="margin-top: 5px; font-size: 80%">
+		<input type="checkbox" id="new_item_to_cart" checked="checked" /> 
+		<label for="new_item_to_cart" class="nice-label">Add to cart &nbsp; </label>
+		</div>
+	</div>
 
 </div>
+
 
 <!-- Billing Dialog -->
-<div id="billing_dialog">
+<div id="billing_dialog" style="display: none">
 
-<select id="billing_display_types" onchange="show_billing_dialog()">
-<option value="all">All Accounts</option>
-<option value="balances">Only Balances</option>
-</select></span>
+	<select id="billing_display_types" onchange="show_billing_dialog()">
+	<option value="all">All Accounts</option>
+	<option value="balances">Only Balances</option>
+	</select></span>
 
-<span style="padding-left: 50px">
-<input type="date" size="10" maxlength="10" id="billing_list_end_date" title="Last billing date" value="@php echo date("Y-m-d"); @endphp" onchange="show_billing_dialog()" /></span> &nbsp; &nbsp; <button type="button" onclick="view_customer_bills(0, '', event)">View All Transactions</button> &nbsp; <img id="printAllStatementsCtrl" src="img/document-print.png" style="vertical-align: middle; cursor: pointer" onclick="printAllStatements()" title="Print Statements" /> <img src="img/loading.gif" style="display: none" id="printAllStatementsIndicator" /> &nbsp; <img id="showReportsCtrl" src="img/chart.png" style="vertical-align: middle; cursor: pointer; height: 30px" onclick="show_reports_dialog()" title="Show Aging Report" /> 
- &nbsp; &nbsp;<input type="text" class="customer_search" maxlength="20" size="20" value="Search Customer" style="color: #cccccc"/>
+	<span style="padding-left: 50px">
+	<input type="date" size="10" maxlength="10" id="billing_list_end_date" title="Last billing date" value="@php echo date("Y-m-d"); @endphp" onchange="show_billing_dialog()" /></span> &nbsp; &nbsp; <button type="button" onclick="view_customer_bills(0, '', event)">View All Transactions</button> &nbsp; <img id="printAllStatementsCtrl" src="img/document-print.png" style="vertical-align: middle; cursor: pointer" onclick="printAllStatements()" title="Print Statements" /> <img src="img/loading.gif" style="display: none" id="printAllStatementsIndicator" /> &nbsp; <img id="showReportsCtrl" src="img/chart.png" style="vertical-align: middle; cursor: pointer; height: 30px" onclick="show_reports_dialog()" title="Show Aging Report" /> 
+	&nbsp; &nbsp;<input type="text" class="customer_search" maxlength="20" size="20" value="Search Customer" style="color: #cccccc"/>
 
-<!-- headings -->
-<div style="margin-top: 20px; width: 95%">
-<span style="padding-left: 30px; width: 75%; font-weight: bold">Customer</span><span style="float: right; width: 18%; font-weight: bold">Amount</span>
-</div>
+	<!-- headings -->
+	<div style="margin-top: 20px; width: 95%">
+	<span style="padding-left: 30px; width: 75%; font-weight: bold">Customer</span><span style="float: right; width: 18%; font-weight: bold">Amount</span>
+	</div>
 
-<div id="billing_container" style="overflow-x: none; overflow-y: scroll; margin-left: 10px; height: 350px; background: #ffffff; border: 1px solid #000000; width: 95%">
-	<table id="billing_list" class="table table-striped">
-		<tbody>
-			<tr><td>loading</td></tr>
-		</tbody>
-	</table>
-</div>
+	<div id="billing_container" style="overflow-x: none; overflow-y: scroll; margin-left: 10px; height: 350px; background: #ffffff; border: 1px solid #000000; width: 95%">
+		<table id="billing_list" class="table table-striped">
+			<tbody>
+				<tr><td>loading</td></tr>
+			</tbody>
+		</table>
+	</div>
 
 </div>
 
@@ -475,61 +514,60 @@ Barcode<br />
 -->
 <!-- Customer tickets and billing list -->
 <div id="customer_bill_dialog" style="z-index: 110;" class="posdlg">
-<div style="text-align: right">
-<img src="img/close.png" onclick="close_customer_bill_dialog()" style="cursor: pointer" alt="Close" /></div>
+	<div style="text-align: right">
+		<img src="img/close.png" onclick="close_customer_bill_dialog()" style="cursor: pointer" alt="Close" />
+	</div>
 
-<span id="customer_bill_name" style="font-size: 16pt"></span> &nbsp; <img src="img/loading.gif" id="customer_activity_indicator" style="display: none" /><br />
-<select id="customer_bill_job_id">
-<option value="">&ndash; Choose Job &ndash;</option>
-</select> &nbsp; &nbsp; &nbsp; 
-<input type="date" id="bill_start_date" size="10" onchange="view_customer_bills($billing.customer_bill_customer_id.val())" value="" /> &nbsp; to &nbsp; <input type="date" id="bill_end_date" size="10" value="@php echo date("Y-m-d"); //$week_ago; @endphp" onchange="view_customer_bills($billing.customer_bill_customer_id.val())" /> &nbsp; 
-<select id="customer_bill_transaction_type" onchange="view_customer_bills($billing.customer_bill_customer_id.val())">
-<option value="all" selected="selected">All Transactions</option>
-<option value="payments">Payments</option>
-<option value="returns">Returns</option>
-<option value="charges">Charges</option>
-<option value="paid_transactions">Cash/Check/CC</option>
-<option value="voids">Voids</option>
-</select> &nbsp;
-<img id="print_statement_button" src="img/document-print.png" style="vertical-align: middle; cursor: pointer" onclick="print_customer_statement(0)" title="Print Statement" /> &nbsp;
+	<span id="customer_bill_name" style="font-size: 16pt"></span> &nbsp; <img src="img/loading.gif" id="customer_activity_indicator" style="display: none" /><br />
+	<select id="customer_bill_job_id">
+	<option value="">&ndash; Choose Job &ndash;</option>
+	</select> &nbsp; &nbsp; &nbsp; 
+	<input type="date" id="bill_start_date" size="10" onchange="view_customer_bills($billing.customer_bill_customer_id.val())" value="" /> &nbsp; to &nbsp; <input type="date" id="bill_end_date" size="10" value="@php echo date("Y-m-d"); //$week_ago; @endphp" onchange="view_customer_bills($billing.customer_bill_customer_id.val())" /> &nbsp; 
+	<select id="customer_bill_transaction_type" onchange="view_customer_bills($billing.customer_bill_customer_id.val())">
+	<option value="all" selected="selected">All Transactions</option>
+	<option value="payments">Payments</option>
+	<option value="returns">Returns</option>
+	<option value="charges">Charges</option>
+	<option value="paid_transactions">Cash/Check/CC</option>
+	<option value="voids">Voids</option>
+	</select> &nbsp;
+	<img id="print_statement_button" src="img/document-print.png" style="vertical-align: middle; cursor: pointer" onclick="print_customer_statement(0)" title="Print Statement" /> &nbsp;
 
- <img id="viewStatementCtrl" src="img/CCBill-20120401.png" style="width: 30px; height: 30px; vertical-align: middle; cursor: pointer" onclick="view_customer_statement()" title="View Statement" /> 
+	<img id="viewStatementCtrl" src="img/CCBill-20120401.png" style="width: 30px; height: 30px; vertical-align: middle; cursor: pointer" onclick="view_customer_statement()" title="View Statement" /> 
 
 
-<!-- <button type="button" onclick="print_customer_statement()" id="print_statement_button">Print Statement</button>-->
-&nbsp; &nbsp; <input type="text" class="ticket_search" maxlength="15" size="15" value="Find Ticket #" style="color: #cccccc" onkeyup="viewTicket(this.value, event)" />
-<input type="hidden" id="customer_bill_customer_id" />
-<!-- headings -->
-<div style="margin-top: 20px; width: 95%; font-size: 90%">
+	<!-- <button type="button" onclick="print_customer_statement()" id="print_statement_button">Print Statement</button>-->
+	&nbsp; &nbsp; <input type="text" class="ticket_search" maxlength="15" size="15" value="Find Ticket #" style="color: #cccccc" onkeyup="viewTicket(this.value, event)" />
+	<input type="hidden" id="customer_bill_customer_id" />
+	<!-- headings -->
 
-<table class="ticket_heading">
-<tr id="ticket_heading_sort_row">
- <td style="font-weight: bold; padding-left: 10px; width: 100px;"><a href="javascript:view_customer_bills('-1', 'id_sortimg')"><img src="img/arrow_down.gif" id="id_sortimg" />Ticket ID</a></td>
- <td style="float: left; width: 160px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'customer_sortimg')"><img src="img/arrow_down.gif" id="customer_sortimg" />Customer Name</td>
- <td style="text-align: center; width: 50px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'job_sortimg')"><img src="img/arrow_down.gif" id="job_sortimg" />Job</td>
- <td style="padding-left: 105px; width: 140px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'date_sortimg')"><img src="img/arrow_down.gif" id="date_sortimg" />Date</td>
- <td style="float: left; width: 65px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'amount_sortimg')"><img src="img/arrow_down.gif" id="amount_sortimg" />Amount</td>
- <td style="float: left; padding-left: 60px; width: 65px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'type_sortimg')"><img src="img/arrow_down.gif" id="type_sortimg" />Type</td>
-</tr>
-</table>
+	<table class="ticket_heading">
+	<tr id="ticket_heading_sort_row">
+	<td style="font-weight: bold; padding-left: 10px; width: 100px;"><a href="javascript:view_customer_bills('-1', 'id_sortimg')"><img src="img/arrow_down.gif" id="id_sortimg" />Ticket ID</a></td>
+	<td style="float: left; width: 160px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'customer_sortimg')"><img src="img/arrow_down.gif" id="customer_sortimg" />Customer Name</td>
+	<td style="text-align: center; width: 50px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'job_sortimg')"><img src="img/arrow_down.gif" id="job_sortimg" />Job</td>
+	<td style="padding-left: 105px; width: 140px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'date_sortimg')"><img src="img/arrow_down.gif" id="date_sortimg" />Date</td>
+	<td style="float: left; width: 65px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'amount_sortimg')"><img src="img/arrow_down.gif" id="amount_sortimg" />Amount</td>
+	<td style="float: left; padding-left: 60px; width: 65px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'type_sortimg')"><img src="img/arrow_down.gif" id="type_sortimg" />Type</td>
+	</tr>
+	</table>
 
 </div>
 
-<div id="customer_tickets_container" style="overflow-x: none; overflow-y: scroll; margin-left: 10px; height: 200px; background: #ffffff; border: 1px solid #000000; width: 95%; margin-top: 5px">
-<table id="customer_tickets_list" style="font-size: 90%; cursor: default; border-collapse: collapse; background: #ffffff; width: 100%"></table>
-</div>
+<div id="customer_tickets_container" style="display: none; overflow-x: none; overflow-y: scroll; margin-left: 10px; height: 200px; background: #ffffff; border: 1px solid #000000; width: 95%; margin-top: 5px">
+	<table id="customer_tickets_list" style="font-size: 90%; cursor: default; border-collapse: collapse; background: #ffffff; width: 100%"></table>
 
-<!-- individual ticket headings -->
-<div style="margin-top: 10px; width: 95%; font-size: 85%">
-<table style="border-collapse: collapse" class="ticket_heading">
-<tr><td style="font-weight: bold; padding-left: 20px; width: 50px;">Item ID</td><td style="width: 100px; font-weight: bold; padding-left: 15px">Quantity</td><td style="width: 210px; font-weight: bold; padding-left: 30px">Item Description</td><td style="padding-left: 105px; width: 130px; font-weight: bold">Price</td><td style="padding-left: 10px; width: 100px; font-weight: bold">Total</td></tr>
-</table>
-</div>
+	<!-- individual ticket headings -->
+	<div style="margin-top: 10px; width: 95%; font-size: 85%">
+	<table style="border-collapse: collapse" class="ticket_heading">
+	<tr><td style="font-weight: bold; padding-left: 20px; width: 50px;">Item ID</td><td style="width: 100px; font-weight: bold; padding-left: 15px">Quantity</td><td style="width: 210px; font-weight: bold; padding-left: 30px">Item Description</td><td style="padding-left: 105px; width: 130px; font-weight: bold">Price</td><td style="padding-left: 10px; width: 100px; font-weight: bold">Total</td></tr>
+	</table>
+	</div>
 
 
-<div id="ticket_items_container" style="overflow-x: none; overflow-y: scroll; margin-left: 10px; height: 170px; background: #ffffff; border: 1px solid #000000; width: 95%; margin-top: 5px">
-<table id="ticket_items_list" style="overflow-x: none; overflow-y: scroll; font-size: 85%; cursor: default; border-collapse: collapse; background: #ffffff; width: 100%"></table>
-</div>
+	<div id="ticket_items_container" style="overflow-x: none; overflow-y: scroll; margin-left: 10px; height: 170px; background: #ffffff; border: 1px solid #000000; width: 95%; margin-top: 5px">
+	<table id="ticket_items_list" style="overflow-x: none; overflow-y: scroll; font-size: 85%; cursor: default; border-collapse: collapse; background: #ffffff; width: 100%"></table>
+	</div>
 
 </div>
 
@@ -606,6 +644,9 @@ $result = DB::select("SELECT * FROM log WHERE unix_timestamp(date) > $timestamp 
 $(function() {
 //Swal.fire('Title', 'Testing!', 'info');
 
+	// prevent bootstrap conflit with jquery-ui buttons
+	$.fn.bootstrapBtn = $.fn.button.noConflict();
+
 	// enable label printer
 	$pos.useLabelPrinter =  false; 
 	$pos.useAutoDecimal = false; 
@@ -621,12 +662,7 @@ $(function() {
 
 		response.data.tickets.forEach(item => {
 
-			if(item.use_company)
-				customer = item.company
-			else
-				customer = item.customer
-
-			ticketRows += `<option value="${item.id}" style="padding: 5px">#${item.display_id} - ${customer}</option>`
+			ticketRows += `<option value="${item.id}" style="padding: 5px">#${item.display_id} - ${item.customer.display_name}</option>`
 
 		})
 		let ot = document.getElementById('open_transactions')

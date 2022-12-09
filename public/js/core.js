@@ -74,6 +74,7 @@ $(document).ready(function(){
 	labor_icon : $('#labor_icon'),
 	//notify : $("#notify_container"),
 	barcode : $("#barcode"),
+	curItemId : '',
 	ticket_id : $("#ticket_id"),
 	customer_id : $("#customer_id"),
 	customer_job_id : $("#customer_job_id"),
@@ -102,6 +103,8 @@ $(document).ready(function(){
 	void_button : $('#clear_button'),
 	refund_switch : $('#pay_refund'),
 	take_check : $('#take_check'),
+	take_cc : $('#take_cc'),
+	take_cash : $('#take_cash'),
 	pay_job_id : $('#pay_job_id'),
 	customer_job_display_name : $('#customer_job_display_name'),
 	allow_credit : $('#allow_credit'),
@@ -362,13 +365,7 @@ function clear_pos() {
 // to avoid this, since this function will be needed if a barcode scanner is hooked up
 function check_enter(sku, evt)
 {
-	if(window.event) // IE
-	{
-		keynum = evt.keyCode;
-		if(keynum == 13)
-			lookup_item();
-	}
-	else if(evt.which == 13)			//alert(evt.target);
+	if(evt.which == 13)			//alert(evt.target);
 		lookup_item();
 	
 		return false;

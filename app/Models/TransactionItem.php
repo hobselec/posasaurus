@@ -11,5 +11,7 @@ class TransactionItem extends Model
 
     protected $table = 'transaction_items';
 
-    
+    protected $fillable = [
+        'ticket_id', 'qty', 'price' , 'amount','name', 'product_id', 'catalog_id'
+    ];
 }

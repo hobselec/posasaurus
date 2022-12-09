@@ -18,4 +18,8 @@ billing:
 
 cart:
 
- add extra info in includes autocomplete search
+add to cart in TicketController
+how does new transaction start?
+
+
+2fa: https://epndavis.com/blog/laravel-fortify-two-factor-authentication/

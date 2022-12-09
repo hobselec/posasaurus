@@ -10,7 +10,7 @@ return [
 
 	// this is the 'noname' account that gets created initially by the install sql file
 	// this value should be fine
-	'default_customer_id' => 1341,
+	'default_customer_id' => 1126,
 
 	// set your company's information
 	'company_name' => "House Lumber Company",
@@ -60,6 +60,11 @@ return [
 	// not implemented yet, either 'tcpdf' or 'htmldoc'
 	'pdf_printer' => "tcpdf",
 
-	'use_catalog_filter' => true
+	'use_catalog_filter' => true,
+
+	// the system for some reason was initially designed to use a different id to display to 
+	// the customer than the 
+	// primary key, which would be too much trouble to change now
+	'display_id_offset' => 9
 
 ];

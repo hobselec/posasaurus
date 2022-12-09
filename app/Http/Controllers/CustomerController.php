@@ -39,7 +39,13 @@ class CustomerController extends Controller
 
         $q = $request->q;
 
-        $results = DB::select("SELECT first_name, last_name, company, CONCAT(last_name, ' ', first_name, ' ' , mi) AS customer_reverse, CONCAT(first_name, ' ', mi, ' ', last_name) as customer, CONCAT(first_Name, ' ', last_name) AS customer_short, id, tax_exempt, use_company FROM customers HAVING first_name like '$q%' OR last_name like '%$q%' OR customer_short LIKE '$q%' OR customer like '$q%' OR customer_reverse like '$q%' OR company LIKE '%$q%'");
+       // $results = DB::select("SELECT first_name, last_name, company, CONCAT(last_name, ' ', first_name, ' ' , mi) AS customer_reverse, CONCAT(first_name, ' ', mi, ' ', last_name) as customer, CONCAT(first_Name, ' ', last_name) AS customer_short, id, tax_exempt, use_company FROM customers HAVING first_name like '$q%' OR last_name like '%$q%' OR customer_short LIKE '$q%' OR customer like '$q%' OR customer_reverse like '$q%' OR company LIKE '%$q%'");
+        $results = Customer::where('first_name', 'like', $q)
+                            ->orWhere('last_name', 'like', $q)
+                            ->orWhere('company', 'like', $q)
+                            ->get();
+       
+       // first_name like '$q%' OR last_name like '%$q%' OR customer_short LIKE '$q%' OR customer like '$q%' OR customer_reverse like '$q%' OR company LIKE '%$q%'
 
         return response()->json($results);
     }

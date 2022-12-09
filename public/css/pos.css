@@ -26,9 +26,6 @@ img
 	padding-right: 3px;
 }
 
-tr.even { background: #dddddd; color: #000000 }
-tr.odd { background: #ffffff; color: #000000 }
-
 tr.highlight { background-color: #0099ff; color: #ffffff }
 
 .ui-autocomplete { height: 100px; overflow-y: scroll; overflow-x: hidden;}
@@ -50,23 +47,6 @@ tr.highlight { background-color: #0099ff; color: #ffffff }
 
 }
 
-#auth_dialog {
-	top: 20%;
-	left: 25%;
-	position: absolute;
-	display: none;
-	-moz-border-radius: 6px;
-	border-radius: 6px;
-	border: 1px solid #000000;
-	background: #cccccc;
-	width: 300px;
-	/*height: 75px;*/
-	font-size: 90%;
-	padding-left: 10px;
-	padding-bottom: 10px;
-	z-index: 1000000000;
-
-}
 
 #catalog_dialog {
 	top: 10%;
