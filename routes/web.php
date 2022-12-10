@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::middleware('auth')->get('/start', function () {
     return view('welcome');
 });
 
@@ -62,5 +62,5 @@ Route::middleware('auth')->get('home', function() {
     return view('home');
 });
 
-
-require __DIR__.'/auth.php';
+// these are for breeze I think, which was conflicting with Fortify's 2FA
+//require __DIR__.'/auth.php';

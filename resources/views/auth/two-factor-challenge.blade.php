@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<form method="POST" action="/two-factor-challenge">
+<form method="POST" action="/pos/two-factor-challenge">
     @csrf
 
     <label>{{ __('Code') }}</label>

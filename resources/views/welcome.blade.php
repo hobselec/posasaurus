@@ -598,9 +598,10 @@ Customer Name<br />
 
 @php
 
-$timestamp = mktime(0, 0, 0, date("n"), date("d"), date("Y"));
+$date = date('Y-n-d 00:00:00');
 
-$result = DB::select("SELECT * FROM log WHERE unix_timestamp(date) > $timestamp AND action='open'");
+$result = DB::select("SELECT * FROM log WHERE date >= '$date' AND action='open'");
+
 @endphp
 
 @if(count($result) == 0)
