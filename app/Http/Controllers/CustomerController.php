@@ -43,6 +43,9 @@ class CustomerController extends Controller
         $results = Customer::where('first_name', 'like', $q)
                             ->orWhere('last_name', 'like', $q)
                             ->orWhere('company', 'like', $q)
+                            ->with(['jobs'=>function($q) {
+                                $q->where('active', true);
+                            }])
                             ->get();
        
        // first_name like '$q%' OR last_name like '%$q%' OR customer_short LIKE '$q%' OR customer like '$q%' OR customer_reverse like '$q%' OR company LIKE '%$q%'
