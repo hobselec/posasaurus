@@ -65,6 +65,26 @@ class TicketController extends Controller
         return response()->json(['status' => true, 'ticket'=>[$ticket] ?? []]);
     }
 
+    public function setTicketCustomer(Request $request)
+    {
+        $ticket = Ticket::where('id',$request->id)->first();
+
+        if($request->has('customer_id'))
+            $ticket->customer_id = $request->customer_id;
+        if($request->has('job_id'))
+        {
+            $request->job_id == '' ? $jobId = null : $jobId = $request->job_id;
+
+            $ticket->job_id = $jobId;
+        }
+        
+        $ticket->save();
+        $ticket->load('customer');
+
+        return response()->json(['ticket' => $ticket]);
+
+    }
+
     public function submitTicket(Request $request)
     {
 
