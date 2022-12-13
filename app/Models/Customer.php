@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Ticket;
+use App\Models\CustomerJob;
 
 
 class Customer extends Model
@@ -62,6 +63,11 @@ class Customer extends Model
             ->where('payment_type','acct')
             ->selectRaw('customer_id, SUM(total) as sum_total')
             ->groupBy('customer_id');
+    }
+
+    public function jobs() {
+
+        return $this->hasMany(CustomerJob::class, 'customer_id', 'id');
     }
 
     public function getDisplayNameAttribute() {
