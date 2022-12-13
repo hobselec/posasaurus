@@ -290,26 +290,27 @@ function choose_pay_job_id()
 		return false;
 
 	// save the chosen job id
-	$.post('update_ticket.php', { 'ticket_id' : $pos.ticket_id.val(), 'job_id' : job_id }, function(response)
-	{
-		if(response.status)
+	axios.put('/pos/ticket/set-customer', { 
+		'id' : $pos.ticket_id.val(), 
+		'job_id' : job_id }).then((response) =>
 		{
-		
 
-			if(job_id > 0) // job_id = 0 indicates removal of currently set job name
-			{
-				$pos.customer_job_id.val(job_id);
-				$pos.customer_job_display_name.html(job_name).show();
-			} else
-			{
-				$pos.customer_job_id.val('');
-				$pos.customer_job_display_name.html('');
-			
-			}
-		} else
+				if(job_id != '')
+				{
+					$pos.customer_job_id.val(job_id);
+					$pos.customer_job_display_name.html(job_name).show();
+				} else
+				{
+					$pos.customer_job_id.val('');
+					$pos.customer_job_display_name.html('');
+				
+				}
+
+
+		}).catch((error) => {
 			show_note("Problem setting job name");
-	
-	}, 'json');
+		
+		})
 
 
 }
@@ -326,7 +327,7 @@ function show_payment(type)
 	{
 		show_note("Please enter the customer's name");
 		return false;
-	} else if(type == 'acct' && $pos.allow_credit.val() == 1)
+	} else if(type == 'acct' && $pos.allow_credit.val())
 	{
 		// only  time a variable is passed to post_transaction
 		post_transaction('acct');
@@ -485,7 +486,7 @@ function post_transaction(type)
 	}
 
 	// determine payment type
-	if($('#take_cc').css('display') == 'inline') // CC
+	if($('#take_cc').is(':visible')) // CC
 	{
 		if(amt_given != total_sale)
 		{
@@ -497,7 +498,7 @@ function post_transaction(type)
 		//show_note("cc");
 		payment_type = 'cc';
 	
-	} else if($('#take_check').css('display') == 'none' && type != 'acct') // cash
+	} else if(!$('#take_check').is(':visible') && type != 'acct') // cash
 	{
 		// add decimals if only a two digit number'
 
@@ -523,7 +524,7 @@ function post_transaction(type)
 		//show_note(cash_back);
 	
 	
-	} else if($('#take_check').css('display') == 'inline') // check
+	} else if($('#take_check').is(':visible')) // check
 	{
 		if(amt_given != total_sale)
 		{
@@ -615,19 +616,7 @@ function print_receipt(id, amt_given, cash_back)
 
 }
 
-function find_dymo_printer()
-{
-		var printers = dymo.label.framework.getPrinters();
 
-		if (printers.length == 0)
-			throw "No DYMO printers are installed. Please install the DYMO print drivers and development SDK";
-
-		for (var j = 0; j < printers.length; ++j)
-		{
-			if (printers[j].printerType == "LabelWriterPrinter")
-				return j;
-		}
-}
 
 function add_recv_by()
 {

@@ -230,20 +230,20 @@ $(document).ready(function() {
 
 				let cdata = response.data
 
-				let myarr = new Array(cdata.length);
-	
-				for(i = 0; i < cdata.length; i++)
+				let myarr = [];
+
+				for(let i = 0; i < cdata.length; i++)
 				{
 					tmpobj = new Object();
 
 					tmpobj.label = cdata[i].display_name;
 
-					tmpobj.value = cdata[i].id;
+					tmpobj.value = cdata[i];
 				
-					myarr[i] = tmpobj;
+					myarr.push(tmpobj);
 				}
-	
-				acResponse(cdata);
+
+				acResponse(myarr);
 
 			})
 			
@@ -253,21 +253,23 @@ $(document).ready(function() {
 				//$('.ui-autocomplete ul').css('height','100px');
 				
 		}, select: function( event, ui ) {
-		
+
+			$pos.jobs = ui.item.value.jobs
 		
 				// set customer name on the db entry
-				$.post('update_ticket.php', { 'ticket_id' : $('#ticket_id').val(), 'customer_id' : ui.item.value }, function(response)
+				axios.put('/pos/ticket/set-customer', { 
+					'id' : $('#ticket_id').val(), 
+					'customer_id' : ui.item.value.id }).then((response) =>
 				{
+// todo: figure out how to set job
 
-		
-					if(response.status)
-					{
+
 
 						$pos.customer_display_name.html(ui.item.label);
 						$pos.customer_job_display_name.html('').hide(); // hide job in case changed customer
-						$pos.customer_id.val(ui.item.value);
-						$pos.tax_exempt.val(response.tax_exempt);
-						$pos.allow_credit.val(response.allow_credit);
+						$pos.customer_id.val(ui.item.value.id);
+						$pos.tax_exempt.val(response.data.ticket.customer.tax_exempt);
+						$pos.allow_credit.val(response.data.ticket.customer.allow_credit);
 						$pos.customer_ticket_search.val('');
 						$pos.customer_ticket_search.hide();
 						
@@ -275,7 +277,7 @@ $(document).ready(function() {
 						// reset tax depending on tax exempt
 
 
-						if(response.tax_exempt == 1)
+						if(response.data.ticket.customer.tax_exempt)
 						{
 							
 							// get total, remove comma and parse as float
@@ -297,7 +299,7 @@ $(document).ready(function() {
 						
 						// update the change-ticket select box with customer's name
 						
-						var new_label = "#" + response.ticket_display_id + " - " + ui.item.label;
+						var new_label = "#" + response.data.ticket.display_id + " - " + ui.item.label;
 						$('#open_transactions option').each(function() {
 			
 							if($(this).val() == $pos.ticket_id.val())
@@ -309,36 +311,33 @@ $(document).ready(function() {
 						//
 						
 						// populate the job box
-						$.get('modify_customer.php', { 'get_customer_jobs' : '', 'job_cust_id' : ui.item.value }, function(response) 
-						{
+					//	$.get('modify_customer.php', { 'get_customer_jobs' : '', 'job_cust_id' : ui.item.value }, function(response) 
+						//{
 						
-							htmlline = "<option value=\"\"> - Choose Job -</option>";
+							let htmlline = "<option value=\"\"> - Choose Job -</option>";
 							htmlline += "<option value=\"\" disabled=\"disabled\"></option>";
-							htmlline += "<option value=\"0\">No Job Specified</option>";
+							htmlline += "<option value=\"\">No Job Specified</option>";
 							
-							for(i = 0; i < response.jobs.length; i++)
+							for(let i = 0; i < $pos.jobs.length; i++)
 							{
-								htmlline += "<option value=\"" + response.jobs[i].id + "\">" + response.jobs[i].name + "</option>";
+								htmlline += "<option value=\"" + $pos.jobs[i].id + "\">" + $pos.jobs[i].name + "</option>";
 							}
 							
-							if(response.jobs.length > 0)
+							if($pos.jobs.length > 0)
 								$pos.pay_job_id.html(htmlline).show();
-							else // if no jobs, then let the search box re-appear
-							{
-								$pos.customer_ticket_search.val('Customer Name').css('color', '#999999').show();
+							//else // if no jobs, then let the search box re-appear
+						//	{
+								$pos.customer_ticket_search.css('color', '#999999').show();
+						//	}
 
-							}
-
-						}, 'json');
+						//}, 'json');
 						
 						//$pos.pay_job_id.show();
-						
-						
-						
-					} else
-						show_note("Could not set customer!");
 					
-				}, 'json');
+					
+				}).catch((error) => {
+					show_note("Could not set customer!");
+				})
 		}
 		
 	});
@@ -466,7 +465,7 @@ function chg_ticket(ticket_id)
 				$pos.customer_display_name.html(response.customer.display_name);
 				$pos.customer_id.val(response.customer.id);
 				$pos.tax_exempt.val(response.customer.tax_exempt);
-				$pos.allow_credit.val(response.customer.allow_credit);
+				$pos.allow_credit.val(response.customer.credit);
 				$pos.cash_given.val('');
 				$pos.check_no.val('');
 				$pos.cc_trans_no.val('');

@@ -273,44 +273,65 @@
         <h5 class="modal-title">Payment</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body ui-front">
         
 			<div style="margin-top: 0px; margin-bottom: 10px; margin-right: 5px">
 
+			<div class="mb-2">
 			<input type="checkbox" id="pay_refund" value="1" onclick="save_refund_status(this.checked)" /> &nbsp; &nbsp; &nbsp;
 			<label for="pay_refund" class="nice-label">
 			Refund:
 			</label>
+			</div>
 
 			<!--
 			<button type="button" id="cancel_payment" style="color: red;" onclick="cancel_payment(0)">Cancel</button> &nbsp;
 			-->
-			<br />
-			<button type="button" id="pay_cash" style="width: 85px; padding: 5px" onclick="show_payment('cash')">Cash</button>&nbsp;&nbsp;&nbsp;
-			<button type="button" id="pay_check" style="width: 86px; padding: 5px" onclick="show_payment('check')">Check</button>
-			<div style="margin-top: 4px; margin-bottom: 4px"></div>
-			&nbsp; <button type="button" id="pay_cc" style="padding: 5px" onclick="show_payment('cc')">Credit Card</button>&nbsp;&nbsp;
-			<button type="button" id="pay_charge" style="padding: 5px" onclick="show_payment('acct')">On Account</button>
+
+			<div class="row">
+				<div class="col col-auto">
+				<button type="button" id="pay_cash" style="width: 85px; padding: 5px" onclick="show_payment('cash')">Cash</button>
+				</div>
+				<div class="col col-auto">
+				<button type="button" id="pay_check" style="width: 86px; padding: 5px" onclick="show_payment('check')">Check</button>
+				</div>
+			</div>
+			<div class="row mt-2">		
+				<div class="col col-auto">
+				<button type="button" id="pay_cc" style="padding: 5px" onclick="show_payment('cc')">Credit Card</button>
+				</div>
+				<div class="col col-auto">
+				<button type="button" id="pay_charge" style="padding: 5px" onclick="show_payment('acct')">On Account</button>
+				</div>
+			</div>
+
 			<div style="padding: 10px"></div>
-			<div style="margin-top: 5px" id="accts"><input type="text" value="Customer Name" style="color: #999999; padding: 4px" class="class_customer_search" id="customer_ticket_search" size="20" /><select id="pay_job_id" style="display: none; padding: 4px" onchange="choose_pay_job_id()"></select></div>
+
+			<div style="margin-top: 5px" id="accts">
+				<input type="text" placeholder="Customer Name" class="class_customer_search form-control" id="customer_ticket_search" size="20" />
+				
+				<select id="pay_job_id" class="form-select" onchange="choose_pay_job_id()">
+				</select>
+			</div>
 
 
 			<!-- TRANSACTION -->
 
 			<div id="payment_take">
+
 			<span id="take_check" style="display: none">Check #: &nbsp;<input type="text" class="trans_info" id="check_no" size="10" maxlength="11" style="padding: 5px" /></span><br />
 			<span id="take_cc" style="display: none">Trans. #: &nbsp;<input type="text" class="trans_info" id="cc_trans_no" size="10" maxlength="11" style="padding: 5px" /></p><p></p></span><br />
 			<span id="take_cash" style="display: none">Amount Received: &nbsp;<input type="text" id="cash_given" size="5" maxlength="9" style="padding: 5px" /></span><br />
 
 			<input type="checkbox" id="printReceiptChkbox" checked="checked" />
-			<label for="printReceiptChkbox" class="nice-label">Print Receipt: </label>
+			<label for="printReceiptChkbox" class="nice-label"> Print Receipt: </label>
 			
 			</div>
 
       </div>
       <div class="modal-footer">
 
-		<button type="button" id="postpayment_button" class="btn btn-primary" onclick="post_transaction()">PAY and Commit</button>
+		<button type="button" id="postpayment_button" class="btn btn-primary" onclick="post_transaction()">Finalize Transaction</button>
       </div>
     </div>
   </div>

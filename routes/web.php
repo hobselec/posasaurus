@@ -40,7 +40,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/ticket', [TicketController::class, 'getOpenTickets']);
     Route::get('/ticket/{id}', [TicketController::class, 'loadTicket']);
     Route::put('/ticket/add-item', [TicketController::class, 'addItemToTicket']);
+    Route::put('/ticket/set-customer', [TicketController::class, 'setTicketCustomer']);
     Route::post('/ticket/submit', [TicketController::class, 'submitTicket']);
+
 
     Route::post('/journal/open', [JournalController::class, 'open']);
 

@@ -128,7 +128,9 @@ $(document).ready(function(){
 	cart_item_description_name : $('#cart_item_description_name'),
 	cart_item_description_label : $('#cart_item_description_label'),
 	cart_item_description_barcode : $('#cart_item_description_barcode'),
-	save_cart_item_description_button : $('#save_cart_item_description_button')
+	save_cart_item_description_button : $('#save_cart_item_description_button'),
+
+	jobs : []
   };
 
   // holds a potential description for each item in the cart
@@ -353,6 +355,8 @@ function clear_pos() {
 		$pos.recv_by_label.hide();
 		$pos.recv_by_button.html('Add received by...');
 		$pos.pause_button.prop('disabled', false);
+
+		$pos.jobs = []
 
 		cancel_payment(1);
 
