@@ -524,7 +524,7 @@ function post_transaction()
 
 	
 	axios.post('/pos/ticket/submit',
-	 { ticket_id : $pos.ticket_id.val(), 
+	 { id : $pos.ticket_id.val(), 
 	 amount_given : amt_given, 
 	 check_no : check_no,
 	  cc_trans_no : $pos.cc_trans_no.val(), 
