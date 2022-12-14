@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/ticket/{id}', [TicketController::class, 'loadTicket']);
     Route::put('/ticket/add-item', [TicketController::class, 'addItemToTicket']);
     Route::put('/ticket/set-customer', [TicketController::class, 'setTicketCustomer']);
+    Route::put('/ticket/set-options', [TicketController::class, 'setTicketOptions']);
     Route::post('/ticket/submit', [TicketController::class, 'submitTicket']);
 
 

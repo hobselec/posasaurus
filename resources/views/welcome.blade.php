@@ -158,12 +158,18 @@
 </div>
 
 <!-- Received by -->
-<div style="text-align: center; margin-left: auto; margin-right: auto" id="recv_by_container">
-<span id="recv_by_label" style="display: none">Received by:</span> 
-<input id="recv_by_input" maxlength="24" size="24" style="display: none" />
- <span id="recv_by_name"></span> &nbsp; <button type="button" id="add_recv_by_button" onclick="add_recv_by()">Add received by...</button>
-  &nbsp; <img src="img/loading.gif" style="display: none" id="loading_recv_by" />
+<div style="text-align: center; margin-left: auto; margin-right: auto; display: none" id="recv_by_container">
+	<span>Received by:</span> 
+
+	<span id="recv_by_name"></span> &nbsp; 
+
+	<!-- <button type="button" id="add_recv_by_button" class="btn btn-link" onclick="$(this).addClass('visually-hidden'); $pos.">Add received by...</button>
+	<button type="button" id="save_recv_by_button" class="btn visually-hidden" onclick="apply_payment_specialoptions()">Save received by</button>
+	-->
+
 </div>
+
+&nbsp; <img src="img/loading.gif" style="display: none" id="loading_recv_by" />
 
 <!--    Cart Headings       -->
 
@@ -253,12 +259,12 @@
 			Freight: <input size="7" type="text" id="freight_number" maxlength="11" onkeyup="add_decimals(this, event, false)" />
 			<p style="margin-top: 5px">Labor: &nbsp;&nbsp; <input size="7" type="text" id="labor_number" maxlength="11" onkeyup="add_decimals(this, event, false)" /></p>
 			</div>
-
+			Received by: <input id="recv_by_input" type="text" maxlength="24" size="24"/>
 		</div>
 
       </div>
       <div class="modal-footer">
-	  	<button type="button" class="btn btn-primary" onclick="apply_payment_specialoptions()">Ok</button>
+	  	<button type="button" class="btn btn-primary" onclick="apply_payment_specialoptions()" data-bs-dismiss="modal">Ok</button>
       </div>
     </div>
   </div>
@@ -278,7 +284,7 @@
 			<div style="margin-top: 0px; margin-bottom: 10px; margin-right: 5px">
 
 			<div class="mb-2">
-			<input type="checkbox" id="pay_refund" value="1" onclick="save_refund_status(this.checked)" /> &nbsp; &nbsp; &nbsp;
+			<input type="checkbox" id="pay_refund" value="1" onclick="apply_payment_specialoptions()" />
 			<label for="pay_refund" class="nice-label">
 			Refund:
 			</label>

@@ -22,7 +22,7 @@ $(document).ready(function() {
 
 	//$('#ticket_display_id').html($('#ticket_id').val());
 
-	$("#show_inactive").prop('checked', false); // don't want this in clear_pos() i don't think since
+	$("#show_inactive").attr('checked', false); // don't want this in clear_pos() i don't think since
 
 	clear_pos();
 
@@ -366,10 +366,6 @@ $(document).ready(function() {
 function show_note(msg, type='info')
 {
     Swal.fire('Alert', msg, type)
-	//$pos.notify.notify("create", {
-///			title: msg, speed: 0, expires: 2000
-//	});	
-
 
 }
 
@@ -385,13 +381,13 @@ function chg_ticket(ticket_id)
 
 				cancel_payment(1);
 				
-				$pos.subtotal.html(response.subtotal);
-				$pos.tax.html(response.tax);
-				$pos.display_total.html(response.total);
+				$pos.subtotal.html(response.subtotal.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				$pos.tax.html(response.tax.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				$pos.display_total.html(response.total.toLocaleString('en-US', { minimumFractionDigits: 2}));
 				
 				//var tmp_subtotal = response.subtotal.replace(',', '');
 				
-				add_to_cart(response.subtotal, response.items);
+				add_to_cart(response.items);
 				
 				$pos.ticket_id.val(response.id);
 				$pos.ticket_display_id.html(response.display_id);
@@ -450,13 +446,13 @@ function chg_ticket(ticket_id)
 				}
 				
 				if(response.resale == 1)
-					$('#is_resale').prop('checked', true);
+					$('#is_resale').attr('checked', true);
 				else
-					$('#is_resale').prop('checked', false);
+					$('#is_resale').attr('checked', false);
 
 				if(response.refund == 1)
 				{
-				    $pos.refund_switch.prop('checked', true);
+				    $pos.refund_switch.attr('checked', true);
 				    $pos.refund_indicator.html('- Refund');
 				} else
  			 	    $pos.refund_indicator.html('');
@@ -469,18 +465,16 @@ function chg_ticket(ticket_id)
 				$pos.cash_given.val('');
 				$pos.check_no.val('');
 				$pos.cc_trans_no.val('');
-				$pos.add_recv_by_button.prop('disabled', false);
-				$pos.recv_by_label.hide();
-				$pos.recv_by_name.html('');
-				$pos.recv_by_input.hide().val('');
-				$pos.recv_by_button.html("Add received by...");
+
+				$pos.recv_by_input.val(response.recv_by);
 
 				//$item_descriptions = response.item_descriptions;
 
 				if(response.recv_by != '' && response.recv_by != null)
 				{
-				    $pos.recv_by_name.html(response.recv_by).show();
-				    $pos.recv_by_label.show();
+					$pos.recv_by_container.show()
+				    $pos.recv_by_name.html(response.recv_by)
+
 				}
 			
 
@@ -505,40 +499,35 @@ function lookup_item() {
 	if($pos.barcode.val() == '')
 		return false;
 		
-
-	$pos.add_recv_by_button.prop('disabled', false);
 	//  barcode lookup
 
-	axios.put('/pos/ticket/add-item', { itemId : $pos.curItemId, ticketId : $pos.ticket_id.val(), tax_exempt : $pos.tax_exempt.val() }).then((response) => {
+	axios.put('/pos/ticket/add-item', { itemId : $pos.curItemId, ticketId : $pos.ticket_id.val() }).then((response) => {
 
-				$pos.subtotal.html(response.subtotal);
-				$pos.tax.html(response.tax);
-				$pos.display_total.html(response.total);
+				$pos.subtotal.html(response.data.ticket.subtotal.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				$pos.tax.html(response.data.ticket.tax.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				$pos.display_total.html(response.data.ticket.total.toLocaleString('en-US', { minimumFractionDigits: 2}));
 			
-				//add_to_cart(response.subtotal, response.cart);
-				
-
-
-				if(response.data.ticket.length > 0)
+				if($pos.ticket_id.val() == '')
 				{
 					// new ticket
-					$pos.ticket_id.val(response.data.ticket[0].id);
+					$pos.ticket_id.val(response.data.ticket.id);
 					//$pos.ticket_display_id.html(response.data.ticket[0].display_id);
 
-					let optionRow = `<option value="${response.data.ticket[0].id}">#${response.data.ticket[0].display_id} - NONAME</option>`
+					let optionRow = `<option value="${response.data.ticket.id}">#${response.data.ticket[0].display_id} - NONAME</option>`
 						
 					$pos.open_transactions.append(optionRow);
 						
 				}// else if($pos.ticket_id.val() != response.ticket_id)
 
-				chg_ticket($pos.ticket_id.val());
+				add_to_cart(response.data.ticket.items);
+				//chg_ticket($pos.ticket_id.val());
 				
 				$pos.barcode.val('');
 
 
 		}).catch(() => {
 			show_note("Item not found");
-		})
+	})
 		
 }
 
@@ -584,65 +573,25 @@ function clear_ticket(ticket_id)
 
 
 
-function authenticate(action)
-{
-
-	if(action == null)
-	{
-		alert("Error: no action given");
-		return false;
-	}
-
-	$pos.authenticate_action = action;
-		
-	$('#auth_dialog').show();
-	$pos.barcode.prop('disabled',true);
-	$('#admin_passwd').focus();
-
-}
-
 // after entering password, return to action
 function auth_return()
 {
-	//alert($pos.authenticate_action);
-	$.post('auth.php', { 'passwd' : $('#admin_passwd').val() }, function(response) {
-		
-		if(response.auth)
-		{
+
+
 			if($pos.authenticate_action == 'editable_price')
 				edit_price($editable_price.pre_auth_cell, $editable_price.pre_auth_item_id);
 			else if($pos.authenticate_action == 'void_ticket')
 				clear_ticket($cmenu.void_ticket_id);
-			else if($pos.authenticate_action == 'special_options')
-				show_payment_specialoptions();
+
 			else if($pos.authenticate_action == 'edit_catalog')
 				edit_cat_row($catalog.pre_auth_button_obj, $catalog.pre_auth_barcode)
 				
-		} else
-		{
-			show_note("Incorrect password");
-		}
-		
+	
 		auth_cancel();
 		
-	}, 'json');
-	
-}
-
-
-// check enter key on auth keypress
-function check_auth_enterkey(evt)
-{
-	if(window.event) // IE
-		keynum = evt.keyCode;
-	else if(evt.which) // Netscape/Firefox/Opera
-		keynum = evt.which;
-
-	
-	if(keynum == 13)
-		auth_return();
 
 }
+
 
 // print_tickets = 1|0 to print tickets along with statement
 function print_customer_statement(print_tickets)
@@ -703,7 +652,7 @@ function print_end_report()
 	
 			alert(data_xml);
 			
-			$('#create_backup_button').prop('disabled', false);
+			$('#create_backup_button').attr('disabled', false);
 
 	
 	});
@@ -812,33 +761,7 @@ function add_decimals_go(cur_count)
 	$auto_decimal.box.value=box;
 }
 
-function shutdown_pos()
-{
-	if(!confirm("Are you sure you want to shut down the POS Computer?"))
-		return false;
 
-	var shutdown_password = $('#shutdown_passwd').val();
-
-	if(shutdown_password == '')
-	{
-		alert("You must enter your password");
-		return false;
-    }
-
-	$('#shutdown_indicator').show();
-
-	$.get('shutdown.php', { 'shutdown_password' : shutdown_password }, function(response) {
-	
-		if(response.authorized == '0')
-		{
-			$('#shutdown_indicator').hide();
-			alert("Incorrect password, please try again.");
-		} else if(response.authorized == '1')
-			$('#shutdown_started').show();
-
-	}, 'json');
-
-}
 
 function show_shutdown_dialog()
 {
@@ -848,74 +771,6 @@ function show_shutdown_dialog()
 
 }
 
-function create_backup()
-{
-	$('#backup_progress').show();
-
-	$.get('backups/upload_backup.php', { type : 'full_backup', 'action' : 'backup' }, function(response) {
-	
-		//$('#shutdown_status').html('Shutting down . . .');
-				//	alert(response);return false
-			// if access time is too far in the past
-			if(response.time_diff > 960)
-			{
-				alert("Backup could not complete.  Last backup was made " + Math.round(response.time_diff/60) + " minutes ago");
-				$('#backup_progress').html("Backing up and encrypting database . . .<span style=\"color: red\"> FAIL</span>");
-				return false;
-			}
-			
-			$('#backup_progress').html("Backing up and encrypting database . . . Done");
-
-			var est_time = response.est_time;
-			
-			// time x 2 since we update the progress bar every 500 milliseconds (1/2 a second)
-			$pos.progress_bar_interval = 60 / est_time;
-			
-			$('#upload_progress').show();
-		
-			var progress_bar = $("#progressbar");
-			
-			progress_bar.progressbar({ value: 0 });
-			setTimeout(updateProgress, 500);
-
-			//return false;
-			
-			$.get('backups/upload_backup.php', { type : 'full_backup' }, function(response) {
-	
-				progress_bar.progressbar("option", "value", 100);
-
-				if(response == 'Successfully uploaded')
-					$('#upload_progress').html("Uploading database offsite . . . Done");
-				else
-				{
-					$('#upload_progress').html("<span style=\"color: red\"> UPLOAD FAILED</span>");
-					alert("Upload could not be completed: " + response);
-				}
-				
-				$("#progressbar").hide();
-				
-				$('#shutdown_pc_button').prop('disabled', false);
-			});
-
-	
-	}, 'json');
-
-}
-
-function updateProgress(coeff) {
-
-  var progress;
-
-  progress = $("#progressbar").progressbar("option","value");
-
-  if (progress < 100) {
-  
-      $("#progressbar").progressbar("option", "value", progress + $pos.progress_bar_interval);
-      setTimeout(updateProgress, 500);
-	  
-  }
-  
-}
 
 function print_weekly_report()
 {

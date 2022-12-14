@@ -33,28 +33,6 @@ function show_payment_methods()
 
 }*/
 
-/*
-function show_payment_specialoptions()
-{
-
-	if($pos.cart.html() == '')
-	{
-		show_note("There are no items in the cart");
-		return false;
-	}
-
-	$pos.pause_button.prop('disabled', true);
-	$pos.void_button.prop('disabled', true);	
-	$pos.barcode.prop('disabled',true);
-	$pos.open_transactions.prop('disabled',true);
-	$pos.pay_button.prop('disabled', true); //hide();
-	$pos.payment_specialoptions_dialog.show();
-	$catalog.icon.hide();
-
-
-}
-*/
-
 
 function apply_payment_specialoptions()
 {
@@ -107,7 +85,7 @@ function apply_payment_specialoptions()
 	// another if() to check discount_number?
 	
 
-	if($('#is_resale').prop('checked') == true)
+	if($('#is_resale').attr('checked'))
 	{
 		resale = 1;
 		$pos.tax.html('0.00');
@@ -135,11 +113,21 @@ function apply_payment_specialoptions()
 	if(labor.indexOf('.') == '-1' && $pos.useAutoDecimal)
 		$pos.labor.val(labor / 100);
 
+		$('#loading_recv_by').show();
+
 	// save the special options given
-	$.post('update_ticket.php', { 'special' : '1', 'ticket_id' : $pos.ticket_id.val(), 'discount_number' : $pos.discount.val(), 'resale' : resale, 'tax_exempt' : $pos.tax_exempt.val(), 'freight' : $pos.freight.val(), labor : $pos.labor.val(), 'subtotal' : $pos.subtotal.html().replace(',', '') }, function(data)
-	{
-		if(data.status)
-		{
+	axios.put('/pos/ticket/set-options', { id : $pos.ticket_id.val(),
+		 discount : $pos.discount.val(), 
+		 resale : resale, 
+		 //'tax_exempt' : $pos.tax_exempt.val(), 
+		 freight : $pos.freight.val(), 
+		 labor : $pos.labor.val(), 
+		 refund : $pos.refund_switch.attr('checked'),
+		 recv_by : $pos.recv_by_input.val()
+		// 'subtotal' : $pos.subtotal.html().replace(',', '') 
+		}).then((response) => {
+
+			$('#loading_recv_by').hide();
 			// adjust discount
 			if($pos.discount.val() > 0)
 			{
@@ -174,7 +162,12 @@ function apply_payment_specialoptions()
 				$pos.labor_icon.hide();
 				$pos.labor_display_total.html('');
 			}
-		
+			if(response.data.ticket != '')
+    		{    			 
+    	    	$pos.recv_by_name.html(response.data.ticket.recv_by);
+				$pos.recv_by_container.show()
+    		} else
+				$pos.recv_by_container.hide()
 			//var total =  parseFloat($pos.subtotal.html().replace(',','')) - parseFloat(data.discount) + parseFloat(data.freight) + parseFloat($pos.tax.html());
 		
 
@@ -183,50 +176,26 @@ function apply_payment_specialoptions()
 
 		//	$pos.subtotal.html(response.subtotal);
 
-			$pos.tax.html(data.tax);
-			$pos.display_total.html(data.total);		
+					
+			if(response.data.ticket.refund)
+				$pos.refund_indicator.html('- Refund');
+			else
+				$pos.refund_indicator.html('');
+
+
+			$pos.tax.html(response.data.ticket.tax);
+			$pos.display_total.html(response.data.ticket.total);		
 
 
 			
-		} else
-			show_note("Problem setting special options");
-	
-		$catalog.icon.show();
-		$pos.pause_button.prop('disabled', false);
-		$pos.void_button.prop('disabled', false);
-		$pos.barcode.prop('disabled', false).focus();
-		$pos.open_transactions.prop('disabled', false);
-		$pos.payment_specialoptions_dialog.hide();
-		$pos.pay_button.prop('disabled', false);
-	
-	}, 'json');
-	
-
+	})//.catch((error) => {
+	//	$('#loading_recv_by').hide();
+	//		show_note("Problem setting special options")
+	//})
 
 
 }
 
-function save_refund_status(status)
-{
-    status ? refund = 1 : refund = 0;
-
-    $.post('update_ticket.php', { 'set_refund' : '1', 'ticket_id' : $pos.ticket_id.val(), refund : refund }, function(data)
-    {
-	if(!data.status)
-	{
-	    alert("Could not change the refund status.  Please pause the transaction and return to it and try again");
-
-	    $pos.refund_switch.prop('checked') ? $pos.refund_switch.prop('checked', false) : $pos.refund_switch.prop('checked', true);
-
-	}
-
-	if(refund && data.status)
-	    $pos.refund_indicator.html('- Refund');
-	else if(!refund && data.status)
-	    $pos.refund_indicator.html('');
-    });
-
-}
 
 // AUTOMATICALLY SET THE DISCOUNT PERCENT WHILE TYING IN THE NUMBER BOX
 // not used now since percentage is removed for now
@@ -339,7 +308,7 @@ function show_payment(type)
 
 	}
 
-	$pos.barcode.prop('disabled',true); // interferes with the focus
+	$pos.barcode.attr('disabled',true); // interferes with the focus
 
 	//$('#postpayment_button').show();
 	$('#payment_methods').hide();
@@ -347,7 +316,7 @@ function show_payment(type)
 	
 	if(type == 'cash' || type == 'check')
 	{
-		if($pos.refund_switch.prop('checked')) // no check # for return
+		if($pos.refund_switch.attr('checked')) // no check # for return
 			$pos.cash_given.val($pos.display_total.html().replace(',', ''));
 	
 		$('#take_cash').show();
@@ -360,8 +329,8 @@ function show_payment(type)
 	{
 		$('#take_check').show()
 		
-		if($pos.refund_switch.prop('checked')) // no check # for return
-			$pos.check_no.prop('disabled', true);
+		if($pos.refund_switch.attr('checked')) // no check # for return
+			$pos.check_no.attr('disabled', true);
 
 		$('#take_cash').show();
 		$pos.check_no.focus();
@@ -409,15 +378,15 @@ function cancel_payment(clear_special)
 	$('#accts').show();
 	$('#cancel_payment').show();
 	
-	$pos.pay_button.prop('disabled', false); //show();
+	$pos.pay_button.attr('disabled', false); //show();
 
-	$pos.barcode.prop('disabled', false);
+	$pos.barcode.attr('disabled', false);
 
 	if(clear_special)
 	{
 		$pos.tax_exempt.val('0');
 
-		$pos.refund_switch.prop('checked', false); //show();
+		$pos.refund_switch.attr('checked', false); //show();
 		$pos.discount_icon.hide();
 		$pos.discount_display_total.html('');
 		$pos.freight_icon.hide();
@@ -431,12 +400,6 @@ function cancel_payment(clear_special)
 function post_transaction(type)
 {
 	var check_no = $pos.check_no.val();
-
-	if($('#tmp_recv_by').length)
-	{
-	    alert("Please save the received by field by clicking the button next to it");
-	    return false;
-	}
 	
 	var amt_given_str = $pos.cash_given.val();
 	amt_given_str = amt_given_str.replace(/^0+/,""); // no 0.xx
@@ -458,7 +421,7 @@ function post_transaction(type)
 	//alert(total_sale);
 //	alert($pos.refund_switch.prop('checked'));
 	
-	$pos.refund_switch.prop('checked') ? refund = '1' : refund = 0;
+	$pos.refund_switch.attr('checked') ? refund = true : refund = false;
 
 
 	if(amt_given_str.indexOf('.') == '-1' && $pos.useAutoDecimal)
@@ -471,7 +434,7 @@ function post_transaction(type)
 	{
 		if(refund == 1 && type != 'acct') // 
 		{
-			$pos.cancel_button.prop('disabled', false);
+			$pos.cancel_button.attr('disabled', false);
 			show_note("Amount given must equal sale total");
 			return false;
 		}
@@ -480,7 +443,7 @@ function post_transaction(type)
 	if(total_sale >= 1000000)
 	{
 		alert("The total sale must be under $1,000,000.  If you need a higher limit you must enlarge the total field in the database table.");
-		$pos.cancel_button.prop('disabled', false);
+		$pos.cancel_button.attr('disabled', false);
 		return false;
 	
 	}
@@ -491,7 +454,7 @@ function post_transaction(type)
 		if(amt_given != total_sale)
 		{
 			show_note("Amount charged must equal sale total");
-			$pos.cancel_button.prop('disabled', false);
+			$pos.cancel_button.attr('disabled', false);
 			return false;
 		}
 	
@@ -506,12 +469,12 @@ function post_transaction(type)
 		if(isNaN(amt_given))
 		{
 			show_note("Invalid amount");
-			$pos.cancel_button.prop('disabled', false);			
+			$pos.cancel_button.attr('disabled', false);			
 			return false;
 		} else if(amt_given < total_sale)
 		{
 			show_note("Amount given is less than the total"); // + ' ' + amt_given + ' and  ' + total_sale);
-			$pos.cancel_button.prop('disabled', false);
+			$pos.cancel_button.attr('disabled', false);
 			return false;
 		
 		}
@@ -529,7 +492,7 @@ function post_transaction(type)
 		if(amt_given != total_sale)
 		{
 			show_note("Check amount must equal sale total");
-			$pos.cancel_button.prop('disabled', false);
+			$pos.cancel_button.attr('disabled', false);
 			return false;
 		}
 		
@@ -537,7 +500,7 @@ function post_transaction(type)
 		if(check_no == '' && !refund)
 		{
 			show_note("Please enter the check number");
-			$pos.cancel_button.prop('disabled', false);
+			$pos.cancel_button.attr('disabled', false);
 			return false;
 		}
 	
@@ -556,15 +519,15 @@ function post_transaction(type)
 
 	
 	axios.post('/pos/ticket/submit',
-	 { 'ticket_id' : $pos.ticket_id.val(), 
-	 'amount_given' : amt_given, 
-	 'check_no' : check_no,
-	  'cc_trans_no' : $pos.cc_trans_no.val(), 
-	  'payment_type' : payment_type, 
-	  'subtotal' : $pos.subtotal.html(), 
-	  'tax' : $pos.tax.html(),
-	   'total' : total_sale, 
-	   'refund' : refund,
+	 { ticket_id : $pos.ticket_id.val(), 
+	 amount_given : amt_given, 
+	 check_no : check_no,
+	  cc_trans_no : $pos.cc_trans_no.val(), 
+	  payment_type : payment_type, 
+	  subtotal : $pos.subtotal.html(), 
+	  tax : $pos.tax.html(),
+	   total : total_sale, 
+	   refund : refund,
 	    recv_by : recv_by }).then((response) => {
 	
 
@@ -577,7 +540,7 @@ function post_transaction(type)
 			show_note("Transaction Complete!");
 
 			// print receipt
-			//if($pos.printReceiptChkbox.prop('checked') && payment_type != 'acct')
+			//if($pos.printReceiptChkbox.attr('checked') && payment_type != 'acct')
 			//	print_receipt($pos.ticket_id.val(), amt_given, cash_back);
 
 			// remove from open tickets
@@ -588,7 +551,7 @@ function post_transaction(type)
 			});
 			
 			clear_pos();
-			//$('#pause_button').click(); // clear the cart and totals
+
 
 	})
 	//.catch((error) {
@@ -616,52 +579,3 @@ function print_receipt(id, amt_given, cash_back)
 
 }
 
-
-
-function add_recv_by()
-{
-    var tmpname = $pos.recv_by_name.html();
-    
-	// set name, hide box
-    if($pos.recv_by_input.css('display') != 'none') 
-    {
-        $('#loading_recv_by').show();
-    	
-    	$pos.recv_by_input.prop('disabled', true);
- 
-    	recv_by = $pos.recv_by_input.val();
-
-    	$.post('update_ticket.php', { ticket_id : $pos.ticket_id.val(), recv_by : recv_by }, function(response) {
-
-    		$pos.recv_by_input.prop('disabled', false).val('').hide();
-    		$('#loading_recv_by').hide();
-       		$pos.recv_by_button.html('Add received by...');
-    		
-    		if(response.status == 0)
-    		{
-    			alert("Could not save received by information.");
-    			return false;
-    		}
-    		
-    		if(recv_by != '')
-    		{    			 
-    	    	$pos.recv_by_name.show().html(recv_by);
-    		}
-    		else
-    			$pos.recv_by_label.hide();
-    		
-
-    	});
-
-    } else
-    {
-
-    	//$pos.recv_by_container.prepend(ibox);
-    	$pos.recv_by_button.html('Save received by');
-		$pos.recv_by_name.hide();
-		$pos.recv_by_label.show();
-		$pos.recv_by_input.show().val(tmpname).focus();
-
-    }   
-
-}
