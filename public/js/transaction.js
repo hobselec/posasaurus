@@ -122,7 +122,7 @@ function apply_payment_specialoptions()
 		 //'tax_exempt' : $pos.tax_exempt.val(), 
 		 freight : $pos.freight.val(), 
 		 labor : $pos.labor.val(), 
-		 refund : $pos.refund_switch.attr('checked'),
+		 refund : $pos.refund_switch.prop('checked'),
 		 recv_by : $pos.recv_by_input.val()
 		// 'subtotal' : $pos.subtotal.html().replace(',', '') 
 		}).then((response) => {
@@ -320,7 +320,7 @@ function show_payment(type)
 	
 	if(type == 'cash' || type == 'check')
 	{
-		if($pos.refund_switch.attr('checked')) // no check # for return
+		if($pos.refund_switch.prop('checked')) // no check # for return
 			$pos.cash_given.val($pos.display_total.html().replace(',', ''));
 	
 		$('#take_cash').show();
@@ -333,8 +333,8 @@ function show_payment(type)
 	{
 		$('#take_check').show()
 		
-		if($pos.refund_switch.attr('checked')) // no check # for return
-			$pos.check_no.attr('disabled', true);
+		if($pos.refund_switch.prop('checked')) // no check # for return
+			$pos.check_no.prop('disabled', true);
 
 		$('#take_cash').show();
 		$pos.check_no.focus();
@@ -391,7 +391,7 @@ function cancel_payment(clear_special)
 	{
 		$pos.tax_exempt.val('0');
 
-		$pos.refund_switch.attr('checked', false); //show();
+		$pos.refund_switch.prop('checked', false); //show();
 		$pos.discount_icon.hide();
 		$pos.discount_display_total.html('');
 		$pos.freight_icon.hide();
@@ -429,7 +429,7 @@ function post_transaction()
 	//alert(total_sale);
 //	alert($pos.refund_switch.prop('checked'));
 	
-	$pos.refund_switch.attr('checked') ? refund = true : refund = false;
+	$pos.refund_switch.prop('checked') ? refund = true : refund = false;
 
 
 	if(amt_given_str.indexOf('.') == '-1' && $pos.useAutoDecimal)
