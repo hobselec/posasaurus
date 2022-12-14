@@ -15,6 +15,8 @@ class Ticket extends Model
 
     protected $table = 'ticket';
 
+    protected $dates = ['date'];
+
     public function items() {
 
         return $this->hasMany(TransactionItem::class, 'ticket_id', 'id');
