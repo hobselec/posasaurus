@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use Config;
+use Carbon\Carbon;
 
 use App\Models\Ticket;
 use App\Models\CatalogItem;
@@ -67,7 +68,7 @@ class TicketController extends Controller
 
         TicketHelper::computeTotals($ticket);
         $ticket->save();
-        
+
         $ticket->load('items');
 
         return response()->json(['status' => true, 'ticket'=>$ticket]);
@@ -86,6 +87,9 @@ class TicketController extends Controller
             $ticket->job_id = $jobId;
         }
         
+        // recompute tax if tax exempt
+        TicketHelper::computeTotals($ticket);
+        
         $ticket->save();
         $ticket->load('customer');
 
@@ -101,14 +105,6 @@ class TicketController extends Controller
         $resale = $request->resale ?? 0;
         $freight = $request->freight ?? 0;
         $labor = $request->labor ?? 0;
-
-        $taxExempt = false;
-
-        if($ticket->customer)
-        {
-            if($ticket->customer->tax_exempt)
-                $taxExempt = true;
-        }
 
         $ticket->discount = $discount;
         $ticket->resale = $resale;
@@ -134,8 +130,23 @@ class TicketController extends Controller
         $customerSubtotal = $request->subtotal;
         $customerTax = $request->tax;
 
+        // not sure this is needed
+        //TicketHelper::computeTotals($ticket);
 
-        TicketHelper::computeTotals($ticket);
+        $validated = $request->validate([
+            'total' => 'required|in:' . $ticket->total,
+            'subtotal' => 'required|in:' . $ticket->subtotal,
+            'tax' => 'required|in:' . $ticket->tax
+        ]);
+
+        $ticket->payment_type = $request->payment_type;
+        $ticket->date = Carbon::now();
+
+        if($ticket->payment_type == 'cc')
+            $ticket->cc_trans_no = $request->cc_trans_no;
+        if($ticket->payment_type == 'check')
+            $ticket->check_no = $request->check_no;
+
         $ticket->save();
 
         return response()->json(['status'=>true]);

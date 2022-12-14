@@ -22,7 +22,7 @@ $(document).ready(function() {
 
 	//$('#ticket_display_id').html($('#ticket_id').val());
 
-	$("#show_inactive").attr('checked', false); // don't want this in clear_pos() i don't think since
+	$("#show_inactive").prop('checked', false); // don't want this in clear_pos() i don't think since
 
 	clear_pos();
 
@@ -420,39 +420,39 @@ function chg_ticket(ticket_id)
 				$('#discount_percentage').val(tmppct);
 				*/
 		
-				$pos.discount.val(response.discount);
+				$pos.discount.val(response.discount.toFixed(2));
 				
-				$('#freight_number').val(response.freight);
-				$('#labor_number').val(response.labor);
+				$('#freight_number').val(response.freight.toFixed(2));
+				$('#labor_number').val(response.labor.toFixed(2));
 
 				// show discount in main totals				
 				if(response.discount > 0)
 				{
 
 					$pos.discount_icon.show();
-					$pos.discount_display_total.html("$ -" + response.discount);
+					$pos.discount_display_total.html("$ -" + response.discount.toLocaleString('en-US', { minimumFractionDigits: 2}));
 			
 				}
 			
 				if(response.freight > 0)
 				{
 					$pos.freight_icon.show();
-					$pos.freight_display_total.html("$ " + response.freight);
+					$pos.freight_display_total.html("$ " + response.freight.toLocaleString('en-US', { minimumFractionDigits: 2}));
 				}
 				if(response.labor > 0)
 				{
 					$pos.labor_icon.show();
-					$pos.labor_display_total.html("$ " + response.labor);
+					$pos.labor_display_total.html("$ " + response.labor.toLocaleString('en-US', { minimumFractionDigits: 2}));
 				}
 				
 				if(response.resale == 1)
-					$('#is_resale').attr('checked', true);
+					$('#is_resale').prop('checked', true);
 				else
-					$('#is_resale').attr('checked', false);
+					$('#is_resale').prop('checked', false);
 
 				if(response.refund == 1)
 				{
-				    $pos.refund_switch.attr('checked', true);
+				    $pos.refund_switch.prop('checked', true);
 				    $pos.refund_indicator.html('- Refund');
 				} else
  			 	    $pos.refund_indicator.html('');
@@ -479,9 +479,9 @@ function chg_ticket(ticket_id)
 			
 
 			$pos.barcode.focus();
-		}).catch(() => {  
-			show_note("Cannot load ticket")
-		});	
+		})//.catch(() => {  
+		//	show_note("Cannot load ticket")
+	//	});	
 	
 	//add_to_cart(subtotal, cart);
 	

@@ -129,7 +129,10 @@ $(document).ready(function(){
 	cart_item_description_barcode : $('#cart_item_description_barcode'),
 	save_cart_item_description_button : $('#save_cart_item_description_button'),
 
-	jobs : []
+	jobs : [],
+	paymentMethodDisplay : $('#payment_method'),
+	paymentMethod : '',
+	postPaymentButton : $('#postpayment_button')
   };
 
   // holds a potential description for each item in the cart
@@ -359,6 +362,9 @@ function clear_pos() {
 		cancel_payment(1);
 
 		$pos.barcode.focus();
+		$pos.paymentMethodDisplay.html('')
+		$pos.paymentMethod = ''
+		$pos.postPaymentButton.attr('disabled', true)
 	//alert($pos.customer_display_name.html());	
 	
 }

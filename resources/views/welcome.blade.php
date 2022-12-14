@@ -284,7 +284,7 @@
 			<div style="margin-top: 0px; margin-bottom: 10px; margin-right: 5px">
 
 			<div class="mb-2">
-			<input type="checkbox" id="pay_refund" value="1" onclick="apply_payment_specialoptions()" />
+			<input type="checkbox" name="pay_refund" id="pay_refund" value="1" onclick="apply_payment_specialoptions()" />
 			<label for="pay_refund" class="nice-label">
 			Refund:
 			</label>
@@ -311,7 +311,9 @@
 				</div>
 			</div>
 
-			<div style="padding: 10px"></div>
+			<div style="padding: 10px">
+			<h5>Payment method: <span id="payment_method" style="font-weight: bold"></span></h5>
+		</div>
 
 			<div style="margin-top: 5px" id="accts">
 				<input type="text" placeholder="Customer Name" class="class_customer_search form-control" id="customer_ticket_search" size="20" />

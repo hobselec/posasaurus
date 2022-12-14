@@ -129,11 +129,11 @@ function apply_payment_specialoptions()
 
 			$('#loading_recv_by').hide();
 			// adjust discount
-			if($pos.discount.val() > 0)
+			if(response.data.discount > 0)
 			{
 				// show discount
 				$pos.discount_icon.show();
-				$pos.discount_display_total.html("$ -" + data.display_discount);
+				$pos.discount_display_total.html("$ -" + response.data.discount.toLocaleString('en-US', { minimumFractionDigits: 2}));
 			
 			} else
 			{
@@ -142,10 +142,10 @@ function apply_payment_specialoptions()
 			}
 			
 			// freight
-			if($pos.freight.val() > 0)
+			if(response.data.freight > 0)
 			{
 				$pos.freight_icon.show();
-				$pos.freight_display_total.html("$ " + data.freight);
+				$pos.freight_display_total.html("$ " + response.data.freight.toLocaleString('en-US', { minimumFractionDigits: 2}));
 			} else
 			{
 				$pos.freight_icon.hide();
@@ -153,16 +153,16 @@ function apply_payment_specialoptions()
 			}
 			
 			// labor
-			if($pos.labor.val() > 0)
+			if(response.data.labor > 0)
 			{
 				$pos.labor_icon.show();
-				$pos.labor_display_total.html("$ " + data.labor);
+				$pos.labor_display_total.html("$ " + response.data.labor.toLocaleString('en-US', { minimumFractionDigits: 2}));
 			} else
 			{
 				$pos.labor_icon.hide();
 				$pos.labor_display_total.html('');
 			}
-			if(response.data.ticket != '')
+			if(response.data.ticket.recv_by != '')
     		{    			 
     	    	$pos.recv_by_name.html(response.data.ticket.recv_by);
 				$pos.recv_by_container.show()
@@ -286,6 +286,9 @@ function choose_pay_job_id()
 
 function show_payment(type)
 {
+
+	$pos.postPaymentButton.attr('disabled', true)
+
 	if($pos.display_total.html() == '')
 	{
 		show_note("There is nothing listed on the ticket");
@@ -296,22 +299,23 @@ function show_payment(type)
 	{
 		show_note("Please enter the customer's name");
 		return false;
-	} else if(type == 'acct' && $pos.allow_credit.val())
+	} else if(type == 'acct' && !$pos.allow_credit.val())
 	{
-		// only  time a variable is passed to post_transaction
-		post_transaction('acct');
-		
-	} else if(type == 'acct')
-	{
+
 		show_note("The customer is not setup for credit");
 		return false;
 
 	}
 
+	let paymentTypes = {cc : 'Credit Card', acct : 'Account', cash : 'Cash', check : 'Check'}
+	$pos.paymentMethodDisplay.html(paymentTypes[type])
+	$pos.paymentMethod = type
+
+
 	$pos.barcode.attr('disabled',true); // interferes with the focus
 
 	//$('#postpayment_button').show();
-	$('#payment_methods').hide();
+
 	$('#payment_take').show();
 	
 	if(type == 'cash' || type == 'check')
@@ -346,11 +350,12 @@ function show_payment(type)
 		$('#take_cash').show();
 	}
 		
-
+	$pos.postPaymentButton.attr('disabled', false)
 
 }
 
 // accepts argument whether to clear the special options
+
 function cancel_payment(clear_special)
 {
 	$('#payment_methods').hide();
@@ -397,9 +402,12 @@ function cancel_payment(clear_special)
 
 }
 
-function post_transaction(type)
+
+function post_transaction()
 {
 	var check_no = $pos.check_no.val();
+
+	let paymentType = $pos.paymentMethod
 	
 	var amt_given_str = $pos.cash_given.val();
 	amt_given_str = amt_given_str.replace(/^0+/,""); // no 0.xx
@@ -408,7 +416,7 @@ function post_transaction(type)
 	
 	var cash_back = '';
 	var refund = 0;
-	var payment_type = '';
+
 	
 	var total_sale_str = $pos.display_total.html().replace(/^\s+/,""); // remove spaces
 	total_sale_str = total_sale_str.replace(',', '');
@@ -432,7 +440,7 @@ function post_transaction(type)
 	// verify amount received for refund
 	if(amt_given != total_sale)
 	{
-		if(refund == 1 && type != 'acct') // 
+		if(refund == 1 && paymentType != 'acct') // 
 		{
 			$pos.cancel_button.attr('disabled', false);
 			show_note("Amount given must equal sale total");
@@ -459,9 +467,9 @@ function post_transaction(type)
 		}
 	
 		//show_note("cc");
-		payment_type = 'cc';
+		//payment_type = 'cc';
 	
-	} else if(!$('#take_check').is(':visible') && type != 'acct') // cash
+	} else if(!$('#take_check').is(':visible') && paymentType != 'acct') // cash
 	{
 		// add decimals if only a two digit number'
 
@@ -482,7 +490,7 @@ function post_transaction(type)
 		cash_back = amt_given - total_sale;
 		cash_back = cash_back.toFixed(2)
 		
-		payment_type = 'cash';
+		//paymentType = 'cash';
 		// insert into document, the cash back
 		//show_note(cash_back);
 	
@@ -508,11 +516,8 @@ function post_transaction(type)
 		if(refund)
 			check_no = 0;
 	
-		payment_type = 'check';
+		//payment_type = 'check';
 	
-	} else if(type == 'acct')
-	{
-		payment_type = 'acct';	
 	}
 	
 
@@ -523,12 +528,13 @@ function post_transaction(type)
 	 amount_given : amt_given, 
 	 check_no : check_no,
 	  cc_trans_no : $pos.cc_trans_no.val(), 
-	  payment_type : payment_type, 
+	  payment_type : $pos.paymentMethod, 
 	  subtotal : $pos.subtotal.html(), 
 	  tax : $pos.tax.html(),
 	   total : total_sale, 
-	   refund : refund,
-	    recv_by : recv_by }).then((response) => {
+	 //  refund : refund,
+	 //  recv_by : recv_by 
+	}).then((response) => {
 	
 
 			if(cash_back > 0)
