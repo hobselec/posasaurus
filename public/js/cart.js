@@ -242,7 +242,7 @@ function restripe_rows(table_id)
 
 let row_counter = 0; // used for determining checkered rows
 
-function add_to_cart(subtotal, cart)
+function add_to_cart(cart)
 {
 
 	$pos.cart.html('');
