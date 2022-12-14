@@ -110,6 +110,7 @@ class TicketController extends Controller
         $ticket->resale = $resale;
         $ticket->freight = $freight;
         $ticket->labor = $labor;
+        $ticket->refund = $request->refund;
 
         TicketHelper::computeTotals($ticket);
         $ticket->save();
