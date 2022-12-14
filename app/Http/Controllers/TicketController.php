@@ -10,6 +10,8 @@ use App\Models\Ticket;
 use App\Models\CatalogItem;
 use App\Models\TransactionItem;
 
+use App\Helpers\TicketHelper;
+
 class TicketController extends Controller
 {
     
@@ -26,13 +28,13 @@ class TicketController extends Controller
 
         $ticket = Ticket::where('id',$request->id)->with(['items','customer','job'])->first();
 
-        $subtotal = $ticket->items->sum('price');
-        $ticket->subtotal = $ticket->items->sum('amount');
-        $ticket->tax = $ticket->subtotal * Config::get('pos.sales_tax');
+      //  $ticket->subtotal = $ticket->items->sum('amount');
+       // $ticket->tax = $ticket->subtotal * Config::get('pos.sales_tax');
         
-        $ticket->total = number_format($ticket->subtotal + $ticket->tax,2);
-        $ticket->subtotal = number_format($ticket->subtotal, 2);
-        $ticket->tax = number_format($ticket->tax, 2);
+      //  $ticket->total = number_format($ticket->subtotal + $ticket->tax,2);
+      //  $ticket->subtotal = number_format($ticket->subtotal, 2);
+     //   $ticket->tax = number_format($ticket->tax, 2);
+        TicketHelper::computeTotals($ticket);
 
         return response()->json($ticket);
     }
@@ -51,7 +53,8 @@ class TicketController extends Controller
             $ticket->display_id = $ticket->id + Config::get('pos.display_id_offset');
             $ticket->customer_id = Config::get('pos.default_customer_id');
             $ticket->save();
-        }
+        } else
+            $ticket = Ticket::where('id', $request->ticketId)->first();
 
         // new item or increment qty
         $item = TransactionItem::firstOrNew(['ticket_id' => $request->ticketId, 'catalog_id' => $catalogItem->id]);
@@ -62,7 +65,12 @@ class TicketController extends Controller
                     'catalog_id' => $catalogItem->id]);
         $item->save();
 
-        return response()->json(['status' => true, 'ticket'=>[$ticket] ?? []]);
+        TicketHelper::computeTotals($ticket);
+        $ticket->save();
+        
+        $ticket->load('items');
+
+        return response()->json(['status' => true, 'ticket'=>$ticket]);
     }
 
     public function setTicketCustomer(Request $request)
@@ -85,23 +93,50 @@ class TicketController extends Controller
 
     }
 
+    public function setTicketOptions(Request $request)
+    {
+        $ticket = Ticket::where('id',$request->id)->with('customer')->first();
+
+        $discount = $request->discount ?? 0;
+        $resale = $request->resale ?? 0;
+        $freight = $request->freight ?? 0;
+        $labor = $request->labor ?? 0;
+
+        $taxExempt = false;
+
+        if($ticket->customer)
+        {
+            if($ticket->customer->tax_exempt)
+                $taxExempt = true;
+        }
+
+        $ticket->discount = $discount;
+        $ticket->resale = $resale;
+        $ticket->freight = $freight;
+        $ticket->labor = $labor;
+
+        TicketHelper::computeTotals($ticket);
+        $ticket->save();
+
+        return response()->json(['ticket' => $ticket]);
+
+    }
+
     public function submitTicket(Request $request)
     {
 
         $ticket = Ticket::where('id',$request->id)->with(['items'])->first();
 
-        $subtotal = $ticket->items->sum('price');
-        $ticket->subtotal = $ticket->items->sum('amount');
-        $ticket->tax = $ticket->subtotal * Config::get('pos.sales_tax'); 
 
-        $ticket->total = $ticket->subtotal + $ticket->tax;
 
         // validate submitted price equals computed price
         $customerTotal = $request->total;
         $customerSubtotal = $request->subtotal;
         $customerTax = $request->tax;
 
-        //if()
+
+        TicketHelper::computeTotals($ticket);
+        $ticket->save();
 
         return response()->json(['status'=>true]);
     }
