@@ -119,12 +119,11 @@ $(document).ready(function(){
 	printReceiptChkbox : $('#printReceiptChkbox'),
 	tax_rate : '',
 	refund_indicator : $('#refund_indicator'),
-	add_recv_by_button : $('#add_recv_by_button'),
+
 	recv_by_name : $('#recv_by_name'),
 	recv_by_container : $('#recv_by_container'),
-	recv_by_label : $('#recv_by_label'),
 	recv_by_input : $('#recv_by_input'),
-	recv_by_button : $('#add_recv_by_button'),
+
 	cart_item_description_name : $('#cart_item_description_name'),
 	cart_item_description_label : $('#cart_item_description_label'),
 	cart_item_description_barcode : $('#cart_item_description_barcode'),
@@ -349,11 +348,10 @@ function clear_pos() {
 		
 		$pos.printReceiptChkbox.prop('checked', true);
 		$pos.refund_indicator.html('');
-		$pos.add_recv_by_button.prop('disabled', true);
-		$pos.recv_by_name.html('').hide();
-		$pos.recv_by_input.val('').prop('disabled', false);
-		$pos.recv_by_label.hide();
-		$pos.recv_by_button.html('Add received by...');
+
+		$pos.recv_by_name.html('')
+		$pos.recv_by_container.hide()
+
 		$pos.pause_button.prop('disabled', false);
 
 		$pos.jobs = []
