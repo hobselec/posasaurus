@@ -4,21 +4,22 @@
 
 <!-- service charge dialog -->
 <div id="service_charge_dialog" style="display: none; font-size: 12pt; z-index: 1000; width: 300px; left: 20%; top: 25%; height: 200px" class="posdlg">
-<div style="text-align: right">
-<img src="img/close.png" onclick="close_service_charge_dialog()" style="height: 24px; width: 24px; cursor: pointer" alt="Close" /></div>
-<b id="special_charge_type">Service Charge:</b><br />
-<p>Name: &nbsp; <span id="service_charge_name"></span></p>
-<p style="display: none" id="service_charge_job_container">Job: &nbsp; <select id="service_charge_job_id"></select></p>
-<p>Amount: &nbsp; <br /><input type="text" class="currency" onkeyup="add_decimals(this, event, 'save_service_charge')" size="8" maxlength="8" id="service_charge_amount" /> <button type="button" onclick="save_service_charge()">Save</button>
-</p>
-<input type="hidden" id="service_charge_customer_id" />
+    <div style="text-align: right">
+    <img src="img/close.png" onclick="close_service_charge_dialog()" style="height: 24px; width: 24px; cursor: pointer" alt="Close" />
+    </div>
+    <b id="special_charge_type">Service Charge:</b><br />
+    <p>Name: &nbsp; <span id="service_charge_name"></span></p>
+    <p style="display: none" id="service_charge_job_container">Job: &nbsp; <select id="service_charge_job_id"></select></p>
+    <p>Amount: &nbsp; <br /><input type="text" class="currency" onkeyup="add_decimals(this, event, 'save_service_charge')" size="8" maxlength="8" id="service_charge_amount" /> <button type="button" onclick="save_service_charge()">Save</button>
+    </p>
+    <input type="hidden" id="service_charge_customer_id" />
 </div>
 
 <!-- Reports dialog -->
 <div id="reports_dialog">
-<div id="reports_content" style="font-size: 10pt">
-<input type="checkbox" id="only_show_balances" value="1"><!-- filler before dialog is open -->
-</div>
+    <div id="reports_content" style="font-size: 10pt">
+    <input type="checkbox" id="only_show_balances" value="1"><!-- filler before dialog is open -->
+    </div>
 </div>
 
 <!-- opening balance-->
@@ -41,14 +42,15 @@ Closing checks: &nbsp; <input type="text" size="8" maxlength="8" id="closing_che
 </div>
 
 <div id="statement_view_dialog">
-<div id="statement_contents">
-</div>
+    <div id="statement_contents">
+    </div>
 </div>
 
 <!-- Cart item add description dialog -->
 <div id="cart_item_description_dialog" style="display: none; font-size: 12pt; z-index: 1000; width: 330px; left: 20%; top: 25%; height: 200px" class="posdlg">
 <div style="text-align: right">
-<img src="img/close.png" onclick="$dialogs.cart_item_description_dialog.hide()" style="height: 24px; width: 24px; cursor: pointer" alt="Close" /></div>
+<img src="img/close.png" onclick="$dialogs.cart_item_description_dialog.hide()" style="height: 24px; width: 24px; cursor: pointer" alt="Close" />
+</div>
 <b>Add Description:</b><br />
 <span id="cart_item_description_label"></span>
 <p>

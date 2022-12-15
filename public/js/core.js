@@ -62,6 +62,7 @@ $(document).ready(function(){
 
   window.$pos = 
   {
+	mainContainer : $('#main_container'),
 	open_transactions : $('#open_transactions'),
 	special_options_button : $('#special_options_button'),
 	payment_specialoptions_dialog : $('#payment_specialoptions_dialog'),
@@ -303,7 +304,6 @@ $(document).ready(function(){
 		
     $billing.statement.dialog({ title : 'Statement', autoOpen: false, modal : false, resizable : true, draggable : true, width: 785, height: 600 });
     $billing.reports_dialog.dialog({ title : 'Reports', autoOpen: false, modal : false, resizable : false, draggable : true, width: 850, height: 600 });
-	$billing.dialog.dialog({ title : 'Billing', autoOpen: false, modal : false, resizable : false, draggable : true, width: 950, height: 600 });
 
 
     $('.ui-dialog-titlebar').css('font-size', '10pt')

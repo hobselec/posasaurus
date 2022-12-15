@@ -22,7 +22,9 @@ function show_billing_dialog()
 {
 	$('.posdlg').hide();
 
-	$billing.dialog.dialog('open')
+	$billing.dialog.show() //dialog('open')
+	$pos.mainContainer.hide()
+	
 //	$pos.open_transactions.prop('disabled', true);
 	$pos.barcode.prop('disabled', true);
 	$payments.payment_recv_button.prop('disabled', true);

@@ -558,6 +558,7 @@ function post_transaction()
 			
 			clear_pos();
 
+			// todo: disable the save button and hide the dialog when done
 
 	})
 	//.catch((error) {

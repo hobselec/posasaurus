@@ -75,7 +75,12 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
-        <li class="nav-item">
+	  <li class="nav-item m-2">
+		<img src="img/cash_register.png" title="Point of Sale" onclick="$pos.mainContainer.show(); close_billing_dialog()" style="cursor: pointer; width: 42px; height: 42px" alt="Point of Sale" />
+
+        </li>
+
+        <li class="nav-item m-2">
 		<img src="img/customer.png" title="Customer Info" onclick="customerdialog()" style="cursor: pointer; width: 42px; height: 42px" alt="Customer Info" />
 
         </li>
@@ -113,7 +118,99 @@
 </nav>
 </header>
 
-<div id="main_container" >
+
+<!-- Billing Dialog -->
+<div id="billing_dialog" style="display: none" class="container">
+<h2>Billing</h2>
+
+	<select id="billing_display_types" onchange="show_billing_dialog()">
+	<option value="all">All Accounts</option>
+	<option value="balances">Only Balances</option>
+	</select></span>
+
+	<span style="padding-left: 50px">
+	<input type="date" size="10" maxlength="10" id="billing_list_end_date" title="Last billing date" value="@php echo date("Y-m-d"); @endphp" onchange="show_billing_dialog()" /></span> &nbsp; &nbsp; <button type="button" onclick="view_customer_bills(0, '', event)">View All Transactions</button> &nbsp; <img id="printAllStatementsCtrl" src="img/document-print.png" style="vertical-align: middle; cursor: pointer" onclick="printAllStatements()" title="Print Statements" /> <img src="img/loading.gif" style="display: none" id="printAllStatementsIndicator" /> &nbsp; <img id="showReportsCtrl" src="img/chart.png" style="vertical-align: middle; cursor: pointer; height: 30px" onclick="show_reports_dialog()" title="Show Aging Report" /> 
+	&nbsp; &nbsp;<input type="text" class="customer_search" maxlength="20" size="20" value="Search Customer" style="color: #cccccc"/>
+
+	<!-- headings -->
+	<div style="margin-top: 20px; width: 95%">
+	<span style="padding-left: 30px; width: 75%; font-weight: bold">Customer</span><span style="float: right; width: 18%; font-weight: bold">Amount</span>
+	</div>
+
+	<div id="billing_container" style="overflow-x: none; overflow-y: scroll; margin-left: 10px; height: 350px; background: #ffffff; border: 1px solid #000000; width: 95%">
+		<table id="billing_list" class="table table-striped">
+			<tbody>
+				<tr><td>loading</td></tr>
+			</tbody>
+		</table>
+	</div>
+
+</div>
+
+<!--
+<style type="text/css">#billing_container td, th { border: 1px solid #000000 }</style>
+-->
+<!-- Customer tickets and billing list -->
+<div id="customer_bill_dialog" style="z-index: 110;" class="posdlg">
+	<div style="text-align: right">
+		<img src="img/close.png" onclick="close_customer_bill_dialog()" style="cursor: pointer" alt="Close" />
+	</div>
+
+	<span id="customer_bill_name" style="font-size: 16pt"></span> &nbsp; <img src="img/loading.gif" id="customer_activity_indicator" style="display: none" /><br />
+	<select id="customer_bill_job_id">
+	<option value="">&ndash; Choose Job &ndash;</option>
+	</select> &nbsp; &nbsp; &nbsp; 
+	<input type="date" id="bill_start_date" size="10" onchange="view_customer_bills($billing.customer_bill_customer_id.val())" value="" /> &nbsp; to &nbsp; <input type="date" id="bill_end_date" size="10" value="@php echo date("Y-m-d"); //$week_ago; @endphp" onchange="view_customer_bills($billing.customer_bill_customer_id.val())" /> &nbsp; 
+	<select id="customer_bill_transaction_type" onchange="view_customer_bills($billing.customer_bill_customer_id.val())">
+	<option value="all" selected="selected">All Transactions</option>
+	<option value="payments">Payments</option>
+	<option value="returns">Returns</option>
+	<option value="charges">Charges</option>
+	<option value="paid_transactions">Cash/Check/CC</option>
+	<option value="voids">Voids</option>
+	</select> &nbsp;
+	<img id="print_statement_button" src="img/document-print.png" style="vertical-align: middle; cursor: pointer" onclick="print_customer_statement(0)" title="Print Statement" /> &nbsp;
+
+	<img id="viewStatementCtrl" src="img/CCBill-20120401.png" style="width: 30px; height: 30px; vertical-align: middle; cursor: pointer" onclick="view_customer_statement()" title="View Statement" /> 
+
+
+	<!-- <button type="button" onclick="print_customer_statement()" id="print_statement_button">Print Statement</button>-->
+	&nbsp; &nbsp; <input type="text" class="ticket_search" maxlength="15" size="15" value="Find Ticket #" style="color: #cccccc" onkeyup="viewTicket(this.value, event)" />
+	<input type="hidden" id="customer_bill_customer_id" />
+	<!-- headings -->
+
+	<table class="ticket_heading">
+	<tr id="ticket_heading_sort_row">
+	<td style="font-weight: bold; padding-left: 10px; width: 100px;"><a href="javascript:view_customer_bills('-1', 'id_sortimg')"><img src="img/arrow_down.gif" id="id_sortimg" />Ticket ID</a></td>
+	<td style="float: left; width: 160px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'customer_sortimg')"><img src="img/arrow_down.gif" id="customer_sortimg" />Customer Name</td>
+	<td style="text-align: center; width: 50px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'job_sortimg')"><img src="img/arrow_down.gif" id="job_sortimg" />Job</td>
+	<td style="padding-left: 105px; width: 140px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'date_sortimg')"><img src="img/arrow_down.gif" id="date_sortimg" />Date</td>
+	<td style="float: left; width: 65px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'amount_sortimg')"><img src="img/arrow_down.gif" id="amount_sortimg" />Amount</td>
+	<td style="float: left; padding-left: 60px; width: 65px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'type_sortimg')"><img src="img/arrow_down.gif" id="type_sortimg" />Type</td>
+	</tr>
+	</table>
+
+</div>
+
+<div id="customer_tickets_container" style="display: none; overflow-x: none; overflow-y: scroll; margin-left: 10px; height: 200px; background: #ffffff; border: 1px solid #000000; width: 95%; margin-top: 5px">
+	<table id="customer_tickets_list" style="font-size: 90%; cursor: default; border-collapse: collapse; background: #ffffff; width: 100%"></table>
+
+	<!-- individual ticket headings -->
+	<div style="margin-top: 10px; width: 95%; font-size: 85%">
+	<table style="border-collapse: collapse" class="ticket_heading">
+	<tr><td style="font-weight: bold; padding-left: 20px; width: 50px;">Item ID</td><td style="width: 100px; font-weight: bold; padding-left: 15px">Quantity</td><td style="width: 210px; font-weight: bold; padding-left: 30px">Item Description</td><td style="padding-left: 105px; width: 130px; font-weight: bold">Price</td><td style="padding-left: 10px; width: 100px; font-weight: bold">Total</td></tr>
+	</table>
+	</div>
+
+
+	<div id="ticket_items_container" style="overflow-x: none; overflow-y: scroll; margin-left: 10px; height: 170px; background: #ffffff; border: 1px solid #000000; width: 95%; margin-top: 5px">
+	<table id="ticket_items_list" style="overflow-x: none; overflow-y: scroll; font-size: 85%; cursor: default; border-collapse: collapse; background: #ffffff; width: 100%"></table>
+	</div>
+
+</div> <!-- end billing -->
+
+
+<div id="main_container">
 
 
 <span id="clock_container" style="color: #666666; position: absolute; top: 10px; right: 10px; width: 280px; font-size: 12pt">
@@ -511,94 +608,7 @@ Customer Name<br />
 </div>
 
 
-<!-- Billing Dialog -->
-<div id="billing_dialog" style="display: none">
 
-	<select id="billing_display_types" onchange="show_billing_dialog()">
-	<option value="all">All Accounts</option>
-	<option value="balances">Only Balances</option>
-	</select></span>
-
-	<span style="padding-left: 50px">
-	<input type="date" size="10" maxlength="10" id="billing_list_end_date" title="Last billing date" value="@php echo date("Y-m-d"); @endphp" onchange="show_billing_dialog()" /></span> &nbsp; &nbsp; <button type="button" onclick="view_customer_bills(0, '', event)">View All Transactions</button> &nbsp; <img id="printAllStatementsCtrl" src="img/document-print.png" style="vertical-align: middle; cursor: pointer" onclick="printAllStatements()" title="Print Statements" /> <img src="img/loading.gif" style="display: none" id="printAllStatementsIndicator" /> &nbsp; <img id="showReportsCtrl" src="img/chart.png" style="vertical-align: middle; cursor: pointer; height: 30px" onclick="show_reports_dialog()" title="Show Aging Report" /> 
-	&nbsp; &nbsp;<input type="text" class="customer_search" maxlength="20" size="20" value="Search Customer" style="color: #cccccc"/>
-
-	<!-- headings -->
-	<div style="margin-top: 20px; width: 95%">
-	<span style="padding-left: 30px; width: 75%; font-weight: bold">Customer</span><span style="float: right; width: 18%; font-weight: bold">Amount</span>
-	</div>
-
-	<div id="billing_container" style="overflow-x: none; overflow-y: scroll; margin-left: 10px; height: 350px; background: #ffffff; border: 1px solid #000000; width: 95%">
-		<table id="billing_list" class="table table-striped">
-			<tbody>
-				<tr><td>loading</td></tr>
-			</tbody>
-		</table>
-	</div>
-
-</div>
-
-<!--
-<style type="text/css">#billing_container td, th { border: 1px solid #000000 }</style>
--->
-<!-- Customer tickets and billing list -->
-<div id="customer_bill_dialog" style="z-index: 110;" class="posdlg">
-	<div style="text-align: right">
-		<img src="img/close.png" onclick="close_customer_bill_dialog()" style="cursor: pointer" alt="Close" />
-	</div>
-
-	<span id="customer_bill_name" style="font-size: 16pt"></span> &nbsp; <img src="img/loading.gif" id="customer_activity_indicator" style="display: none" /><br />
-	<select id="customer_bill_job_id">
-	<option value="">&ndash; Choose Job &ndash;</option>
-	</select> &nbsp; &nbsp; &nbsp; 
-	<input type="date" id="bill_start_date" size="10" onchange="view_customer_bills($billing.customer_bill_customer_id.val())" value="" /> &nbsp; to &nbsp; <input type="date" id="bill_end_date" size="10" value="@php echo date("Y-m-d"); //$week_ago; @endphp" onchange="view_customer_bills($billing.customer_bill_customer_id.val())" /> &nbsp; 
-	<select id="customer_bill_transaction_type" onchange="view_customer_bills($billing.customer_bill_customer_id.val())">
-	<option value="all" selected="selected">All Transactions</option>
-	<option value="payments">Payments</option>
-	<option value="returns">Returns</option>
-	<option value="charges">Charges</option>
-	<option value="paid_transactions">Cash/Check/CC</option>
-	<option value="voids">Voids</option>
-	</select> &nbsp;
-	<img id="print_statement_button" src="img/document-print.png" style="vertical-align: middle; cursor: pointer" onclick="print_customer_statement(0)" title="Print Statement" /> &nbsp;
-
-	<img id="viewStatementCtrl" src="img/CCBill-20120401.png" style="width: 30px; height: 30px; vertical-align: middle; cursor: pointer" onclick="view_customer_statement()" title="View Statement" /> 
-
-
-	<!-- <button type="button" onclick="print_customer_statement()" id="print_statement_button">Print Statement</button>-->
-	&nbsp; &nbsp; <input type="text" class="ticket_search" maxlength="15" size="15" value="Find Ticket #" style="color: #cccccc" onkeyup="viewTicket(this.value, event)" />
-	<input type="hidden" id="customer_bill_customer_id" />
-	<!-- headings -->
-
-	<table class="ticket_heading">
-	<tr id="ticket_heading_sort_row">
-	<td style="font-weight: bold; padding-left: 10px; width: 100px;"><a href="javascript:view_customer_bills('-1', 'id_sortimg')"><img src="img/arrow_down.gif" id="id_sortimg" />Ticket ID</a></td>
-	<td style="float: left; width: 160px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'customer_sortimg')"><img src="img/arrow_down.gif" id="customer_sortimg" />Customer Name</td>
-	<td style="text-align: center; width: 50px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'job_sortimg')"><img src="img/arrow_down.gif" id="job_sortimg" />Job</td>
-	<td style="padding-left: 105px; width: 140px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'date_sortimg')"><img src="img/arrow_down.gif" id="date_sortimg" />Date</td>
-	<td style="float: left; width: 65px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'amount_sortimg')"><img src="img/arrow_down.gif" id="amount_sortimg" />Amount</td>
-	<td style="float: left; padding-left: 60px; width: 65px; font-weight: bold"><a href="javascript:view_customer_bills('-1', 'type_sortimg')"><img src="img/arrow_down.gif" id="type_sortimg" />Type</td>
-	</tr>
-	</table>
-
-</div>
-
-<div id="customer_tickets_container" style="display: none; overflow-x: none; overflow-y: scroll; margin-left: 10px; height: 200px; background: #ffffff; border: 1px solid #000000; width: 95%; margin-top: 5px">
-	<table id="customer_tickets_list" style="font-size: 90%; cursor: default; border-collapse: collapse; background: #ffffff; width: 100%"></table>
-
-	<!-- individual ticket headings -->
-	<div style="margin-top: 10px; width: 95%; font-size: 85%">
-	<table style="border-collapse: collapse" class="ticket_heading">
-	<tr><td style="font-weight: bold; padding-left: 20px; width: 50px;">Item ID</td><td style="width: 100px; font-weight: bold; padding-left: 15px">Quantity</td><td style="width: 210px; font-weight: bold; padding-left: 30px">Item Description</td><td style="padding-left: 105px; width: 130px; font-weight: bold">Price</td><td style="padding-left: 10px; width: 100px; font-weight: bold">Total</td></tr>
-	</table>
-	</div>
-
-
-	<div id="ticket_items_container" style="overflow-x: none; overflow-y: scroll; margin-left: 10px; height: 170px; background: #ffffff; border: 1px solid #000000; width: 95%; margin-top: 5px">
-	<table id="ticket_items_list" style="overflow-x: none; overflow-y: scroll; font-size: 85%; cursor: default; border-collapse: collapse; background: #ffffff; width: 100%"></table>
-	</div>
-
-</div>
 
 
 @include("layouts.dialogs")
