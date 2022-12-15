@@ -164,12 +164,6 @@ class TicketController extends Controller
     {
         $ticket = Ticket::where('id',$request->id)->with(['items'])->first();
 
-        $ticket->items->each(function($item) {
-
-            $item->catalog->decrement('qty', $item->qty);
-        
-        });
-
         $ticket->payment_type='VOID';
         $ticket->date = Carbon::now();
         $ticket->save();
