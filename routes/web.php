@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/ticket/set-customer', [TicketController::class, 'setTicketCustomer']);
     Route::put('/ticket/set-options', [TicketController::class, 'setTicketOptions']);
     Route::post('/ticket/submit', [TicketController::class, 'submitTicket']);
-
+    Route::delete('/ticket/void/{id}', [TicketController::class, 'voidTicket']);
 
     Route::post('/journal/open', [JournalController::class, 'open']);
 

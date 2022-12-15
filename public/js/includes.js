@@ -545,16 +545,10 @@ function clear_ticket(ticket_id)
 		clear_pos_vars = 1;
 	}
 
-	$.post('update_ticket.php', { 'ticket_id' : ticket_id }, function(response) {
+	axios.delete('/pos/ticket/void/' + ticket_id).then((response) => {
 		
 		// clear display
-		if(!response.status)
-		{
-			show_note("Cannot void ticket!");
-			return false;
-			
-		} else
-			show_note("Ticket Voided");
+		show_note("Ticket Voided");
 			
 		// remove from select box
 		$('#open_transactions option').each(function() {
@@ -566,7 +560,10 @@ function clear_ticket(ticket_id)
 		if(clear_pos_vars == 1)
 			clear_pos();
 		
-	}, 'json');
+	}).catch((e) => {
+
+		show_note("Cannot void ticket!");
+	})
 
 	
 }

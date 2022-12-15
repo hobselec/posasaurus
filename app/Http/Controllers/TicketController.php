@@ -150,7 +150,31 @@ class TicketController extends Controller
 
         $ticket->save();
 
+        // should make this a transaction
+        $ticket->items->each(function($item) {
+
+            $item->catalog->decrement('qty', $item->qty);
+        
+        });
+
         return response()->json(['status'=>true]);
+    }
+
+    public function voidTicket(Request $request)
+    {
+        $ticket = Ticket::where('id',$request->id)->with(['items'])->first();
+
+        $ticket->items->each(function($item) {
+
+            $item->catalog->decrement('qty', $item->qty);
+        
+        });
+
+        $ticket->payment_type='VOID';
+        $ticket->date = Carbon::now();
+        $ticket->save();
+
+        return response()->json(['status' => true]);
     }
 
 }

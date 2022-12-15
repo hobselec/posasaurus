@@ -230,29 +230,7 @@
 
 <!-- Totals -->
 
-<div style="float: right; height: 300px; text-align: right; margin-top: 10px; font-size: 120%; margin-right: 5px">
 
-  Sub Total: &nbsp; $ <span id="subtotal"></span>
-
-    <p style="padding-top: 8px">
-	<img id="discount_icon" src="img/sale.png" title="Discount" style="width: 40px; height: 35px; display: none; margin-top: 25px" alt="Discount" />
-	 <span style="color: green" id="discount_display_total">
-	</span>
-	</p>
-
-		Tax: $ <span id="tax"></span>
-
-		<p>
-		  <span><img id="freight_icon" src="img/lorrygreen.png" title="freight charges" style="width: 40px; height: 40px; display: none" alt="Freight" /></span> &nbsp; &nbsp; <span id="freight_display_total"></span>
-		</p>
-		<p>
-		  <span><img id="labor_icon" src="img/gears.png" title="labor charges" style="display: none; vertical-align: bottom" alt="Labor" /></span> &nbsp; &nbsp; <span id="labor_display_total"></span>
-		</p>
-		<p>
-		  <h2>Total: </h2>$<span id="display_total"></span>
-		</p>
-
-</div>
 
 <!-- Received by -->
 <div style="text-align: center; margin-left: auto; margin-right: auto; display: none" id="recv_by_container">
@@ -269,6 +247,8 @@
 &nbsp; <img src="img/loading.gif" style="display: none" id="loading_recv_by" />
 
 <!--    Cart Headings       -->
+<div class="row">
+	<div class="col col-auto">
 
 <table style="width: 680px; border-collapse: collapse">
 <tr>
@@ -287,6 +267,36 @@
 	</table>
   
 </div>
+</div>
+<div class="col col-auto">
+
+	<div style="float: right; height: 300px; text-align: right; margin-top: 10px; font-size: 120%; margin-right: 5px">
+
+	Sub Total: &nbsp; $ <span id="subtotal"></span>
+
+		<p style="padding-top: 8px">
+		<img id="discount_icon" src="img/sale.png" title="Discount" style="width: 40px; height: 35px; display: none; margin-top: 25px" alt="Discount" />
+		<span style="color: green" id="discount_display_total">
+		</span>
+		</p>
+
+			Tax: $ <span id="tax"></span>
+
+			<p>
+			<span><img id="freight_icon" src="img/lorrygreen.png" title="freight charges" style="width: 40px; height: 40px; display: none" alt="Freight" /></span> &nbsp; &nbsp; <span id="freight_display_total"></span>
+			</p>
+			<p>
+			<span><img id="labor_icon" src="img/gears.png" title="labor charges" style="display: none; vertical-align: bottom" alt="Labor" /></span> &nbsp; &nbsp; <span id="labor_display_total"></span>
+			</p>
+			<p>
+			<h2>Total: </h2>$<span id="display_total"></span>
+			</p>
+
+	</div>
+
+</div>
+
+</div> <!-- end row -->
   
 <table>
 	<tr>

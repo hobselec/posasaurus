@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\CatalogItem;
+
 class TransactionItem extends Model
 {
     use HasFactory;
@@ -14,4 +16,9 @@ class TransactionItem extends Model
     protected $fillable = [
         'ticket_id', 'qty', 'price' , 'amount','name', 'product_id', 'catalog_id'
     ];
+
+    public function catalog()
+    {
+        return $this->belongsTo(CatalogItem::class, 'catalog_id', 'id');
+    }
 }
