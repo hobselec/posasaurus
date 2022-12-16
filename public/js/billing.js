@@ -344,6 +344,7 @@ function load_ticket_transactions(ticketId, parent_row)
 	});
 	
 	parent_row.addClass('bg-info')
+	$('#ticket_tbody tr:not([class=bg-info])').hide()
 	
 	for(let i = 0; i < $billing.tickets.length; i++)
 	{
@@ -568,5 +569,17 @@ function refresh_listing_total(customer_id, new_balance)
 	}
 
     });
+
+}
+
+function closeTicket()
+{
+	$('#ticket_tbody tr').each(function() {
+		$(this).removeClass('bg-info')
+	});
+	
+	
+	$('#ticket_tbody tr').show()
+	
 
 }

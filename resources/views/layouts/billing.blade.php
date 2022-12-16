@@ -105,6 +105,7 @@
 
 
 	<!--<div id="ticket_items_container" style="overflow-x: none; overflow-y: scroll; margin-left: 10px; height: 170px; background: #ffffff; border: 1px solid #000000; width: 95%; margin-top: 5px">-->
+<button type="button" class="btn btn-link" onclick="closeTicket()">Close Ticket</button>
 
 	<table class="table table-sm table-striped table-hover" id="billing_ticket_items_table" style="display: none">
         <thead>
