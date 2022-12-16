@@ -415,6 +415,7 @@ function view_customer_statement()
 {
 	$('#customer_activity_indicator').show();
 	
+	let id
 	if($billing.customer_bill_customer_id.val() > 0)
 		id = $billing.customer_bill_customer_id.val();
 	else
@@ -431,13 +432,15 @@ function view_customer_statement()
 
 	
 	// encode date slashes
-	var tmpdate = $billing.billing_list_end_date.val();
-	edate = tmpdate.replace(/\//g, "%2F");
-	
-	$.post('view_statement.php', {'customer_id' : id, 'start_date' : $billing.bill_start_date.val(), 'end_date' : $billing.bill_end_date.val(), action : 'view', 'rnd' : Math.random() }, function(response) {
+	let date = $billing.billing_list_end_date.val();
 
-	    $billing.statement.dialog('open')
-	    $billing.statement_contents.html(response);
+	
+	axios.get(`/pos/billing/statement/${id}?start_date=${$billing.bill_start_date.val()}&end_date=${$billing.bill_end_date.val()}`).then((response) => {
+
+
+		$('#billing_data_view').hide()
+		$('#billing_statement_view').show()
+	    $billing.statement_contents.html(response.data.html);
 	    
 	    $('#customer_activity_indicator').hide();
 

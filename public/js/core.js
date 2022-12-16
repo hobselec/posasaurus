@@ -235,7 +235,7 @@ $(document).ready(function(){
 	printAllStatementsIndicator : $('#printAllStatementsIndicator'),
 
 	special_charge_type : $('#special_charge_type'),
-	statement : $('#statement_view_dialog'),
+	//statement : $('#statement_view_dialog'),
 	statement_contents : $('#statement_contents'),
 
 	reports_dialog : $('#reports_dialog'),
@@ -305,11 +305,15 @@ $(document).ready(function(){
 
     $billing.billing_display_types.val('balances');
 
-		
-    $billing.statement.dialog({ title : 'Statement', autoOpen: false, modal : false, resizable : true, draggable : true, width: 785, height: 600 });
     $billing.reports_dialog.dialog({ title : 'Reports', autoOpen: false, modal : false, resizable : false, draggable : true, width: 850, height: 600 });
 
-	$billing.customer_bill_dialog.dialog({ title : 'Tickets', autoOpen: false, modal : true, resizable : false, draggable : true, width: 1150, height: 600 });
+	$billing.customer_bill_dialog.dialog(
+		{ title : 'Tickets', autoOpen: false, modal : true, resizable : false, draggable : true, 
+			width: 1150, height: 600, close : function() {	
+			$('#billing_data_view').show();
+			$('#billing_statement_view').hide() 
+		}
+ 	});
 
     $('.ui-dialog-titlebar').css('font-size', '10pt')
 

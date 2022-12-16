@@ -41,10 +41,6 @@ Closing checks: &nbsp; <input type="text" size="8" maxlength="8" id="closing_che
 
 </div>
 
-<div id="statement_view_dialog">
-    <div id="statement_contents">
-    </div>
-</div>
 
 <!-- Cart item add description dialog -->
 <div id="cart_item_description_dialog" style="display: none; font-size: 12pt; z-index: 1000; width: 330px; left: 20%; top: 25%; height: 200px" class="posdlg">

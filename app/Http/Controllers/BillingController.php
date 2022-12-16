@@ -134,4 +134,19 @@ class BillingController extends Controller
 
         return response()->json(['ticket' => $ticket]);
     }
+
+    /** 
+     * view statement
+     * 
+     * 
+     */
+    public function statement(Request $request)
+    {
+        $customerId = $request->id;
+     
+
+        $statement = 'this is it';
+
+        return response()->json(['html' => $statement]);
+    }
 }
