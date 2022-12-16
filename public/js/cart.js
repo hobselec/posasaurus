@@ -90,16 +90,23 @@ function check_update_qty(evt, qty)
 }
 
 // remove, increment, decrement item quantity 0in cart
-function modify_item(item_id, action, new_qty)
+function modify_item(item_id, action, qty = '', price = '')
 {
 	let method = 'put'
 	if(action == 'del')
 		method = 'delete'
 
+	let postData = { 'ticketId' : $pos.ticket_id.val(), itemId : item_id }
+
+	if(qty != '')
+		postData.qty = qty
+	if(price != '')
+		postData.price = price
+
 	// request to modify
 	axios({method: method,
 			url : '/pos/ticket/item',
-			data : { 'ticketId' : $pos.ticket_id.val(), itemId : item_id, qty : new_qty }
+			data : postData
 	 }).then((responseData) =>
 		{
 			let response = responseData.data.ticket
@@ -108,94 +115,29 @@ function modify_item(item_id, action, new_qty)
 			$pos.tax.html(response.tax.toLocaleString('en-US', { minimumFractionDigits: 2}));
 			$pos.display_total.html(response.total.toLocaleString('en-US', { minimumFractionDigits: 2}));
 			
-			//var tmp_subtotal = response.subtotal.replace(',', '');
-			
+
 			add_to_cart(response.items);
 
 			
-		})//.catch((error) => {
-			//alert("Problem modifying the item.  Please restart the transaction");
-		//})
+		}).catch((error) => {
+			show_note("Problem modifying the item.  Please restart the transaction");
+		})
 	
 	
 
 }
 
-function modify_item_price(item_id, new_price)
-{
 
-	$.post('lookup_item.php', { 'ticket_id' : $pos.ticket_id.val(), 'item_id' : item_id , 'change_price' : '1', 'new_price' : new_price, 'tax_exempt' : $pos.tax_exempt.val(), 'discount' : $pos.discount.val(), freight : $pos.freight.val(), labor : $pos.labor.val()   }, function(response)
-	{
-		if(!response.status)
-		{
-			show_note("Could not update price");
-			return false;
-		}
-		else
-		{
-
-			$('#cart tr').each(function() {
-	
-				if($(this).find("td:first").html().indexOf("modify_item(" + item_id + ",", 0) != '-1')
-				{
-					var qty = $(this).find("td").eq(1).html();
-					var amt = new_price*qty;
-					
-			
-					$(this).find("td").eq(7).html(amt.toFixed(2)) // set new amt
-
-					return false;
-				}
-
-			});
-			
-			$pos.subtotal.html(response.subtotal);
-			$pos.tax.html(response.tax);
-			$pos.display_total.html(response.total);
-			$pos.discount_display_total.html(response.display_discount);
-
-
-		}
-
-	});
-
-
-}
-
-function restripe_rows(table_id)
-{
-	var i = 0;
-	
-	var selector = '#' + table_id + ' tr';
-
-	$(selector).each(function()
-	{
-	
-		if(i%2)
-			bgcolor = '#dddddd';
-		else
-			bgcolor = '#ffffff';
-
-		// don't want to stripe the inner increment/decrement table
-		if($(this).attr('class') != 'nostripe')
-			$(this).css('background', bgcolor);	
-	
-		i++;
-	});
-
-}
-
-let row_counter = 0; // used for determining checkered rows
 
 function add_to_cart(cart)
 {
 
 	$pos.cart.html('');
 
-	tmpcart = '';
-	zeroItemWarning = 0; // warn if an item cost is zero
+	let tmpcart = '';
+	let zeroItemWarning = 0; // warn if an item cost is zero
 
-	for(i = 0; i < cart.length; i++)
+	for(let i = 0; i < cart.length; i++)
 	{
 
 		tmpcart += `<tr id="${cart[i].id}">
@@ -245,7 +187,7 @@ function add_to_cart(cart)
 	});
 
 	if(zeroItemWarning > 0)
-		alert("There is an item priced at zero in the cart.");
+		show_note("There is an item priced at zero in the cart.");
 
 	//
 	//var scroll_distance = document.documentElement.scrollTop;
@@ -279,24 +221,13 @@ function restore_price()
 //
 function edit_price(cell_obj, item_id)
 {
-	// first time, just store the cell and item_id
-	if($('#admin_passwd').val() == '')
-	{
-		$editable_price.pre_auth_cell = cell_obj;
-		$editable_price.pre_auth_item_id = item_id;
+
+	//	$editable_price.pre_auth_cell = cell_obj;
+	//	$editable_price.pre_auth_item_id = item_id;
+
 	
-		//$('#auth_confirm').click("");
-	
-		authenticate('editable_price');
-
-		//$('#auth_confirm').click(edit_price(cell_obj, item_id, $('admin_passwd').val()));
-		return false;
-	}
-
-
-			
-		// check that the cell is not a number,
-		// item id is not current stored, and this is only editable field open
+	// check that the cell is not a number,
+	// item id is not current stored, and this is only editable field open
 	if(isNaN($editable_price.cur_price) || $editable_price.cur_item_id != '' || $editable_item.cur_item_id != '')
 		return false;
 
@@ -326,42 +257,33 @@ function check_update_price(evt, price)
 	else if(evt.which) // Firefox/Opera
 		keynum = evt.which;
 
-	if(keynum == 13)
+	if(keynum != 13)
+		return
+
+	// so event doesn't propogate on 'enter key'
+	$('#cur_edit_item_price').blur();
+
+	if(isNaN(price))
 	{
-
-		// so event doesn't propogate on 'enter key'
-		$('#cur_edit_item_price').blur();
-
-		if(isNaN(price))
-		{
-			show_note("Not a valid number");
-			restore_price();
-			return false;
-		
-		}
-
-		if(price.indexOf('.') == '-1' && $pos.useAutoDecimal)
-			price /= 100;
-
-		
-		price = parseFloat(price);
-
-		//var password = prompt("Enter the administrator password");
-		//if($('#auth_dialog').css('display') == 'none')
-		//	alert($('#auth_dialog').css('display'));
-
-
-		$editable_price.cur_price = price.toFixed(2);
-			
-		modify_item_price($editable_price.cur_item_id, $editable_price.cur_price) 
-
-
+		show_note("Not a valid number");
 		restore_price();
-		$pos.barcode.focus();
-			
-
-
+		return false;
 	}
+
+	if(price.indexOf('.') == '-1' && $pos.useAutoDecimal)
+		price /= 100;
+
+		
+	price = parseFloat(price);
+
+
+	$editable_price.cur_price = price.toFixed(2);
+			
+	modify_item($editable_price.cur_item_id, 'price', '', $editable_price.cur_price) 
+
+	//restore_price();
+	$pos.barcode.focus();
+
 }
 
 function save_cart_item_description()

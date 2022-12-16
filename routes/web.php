@@ -44,7 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/ticket/set-options', [TicketController::class, 'setTicketOptions']);
     Route::post('/ticket/submit', [TicketController::class, 'submitTicket']);
     Route::delete('/ticket/void/{id}', [TicketController::class, 'voidTicket']);
-    Route::put('/ticket/item', [TicketController::class, 'modifyItemQty']);
+    Route::put('/ticket/item', [TicketController::class, 'modifyItem']);
     Route::delete('/ticket/item', [TicketController::class, 'deleteItem']);
 
     Route::post('/journal/open', [JournalController::class, 'open']);

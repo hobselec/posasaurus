@@ -174,17 +174,23 @@ class TicketController extends Controller
     /** 
      * changes of quantity in cart
      * 
-     * @param Request $request ['itemId' => integer, 'ticketId' => integer, 'qty' => integer]
+     * either qty or price should be given
+     * 
+     * @param Request $request ['itemId' => integer, 'ticketId' => integer, 'qty' => integer, 'price' => float]
      */
-    public function modifyItemQty(Request $request) 
+    public function modifyItem(Request $request) 
     {
         $validated = $request->validate([
-            'qty' => 'integer|min:1'
+            'qty' => 'sometimes|required_without:price|integer|min:1',
+            'price' => 'sometimes|required_without:qty|numeric|min:0'
             
         ]);
 
-        //TransactionItem::where('id', $request->itemId)->update(['qty'=>$request->qty, 'amount' => $request->qty * ])
-        $result = DB::update("UPDATE transaction_items SET qty=$request->qty, amount=price*$request->qty WHERE id=$request->itemId");
+        if($request->qty != '')
+            $result = DB::update("UPDATE transaction_items SET qty=$request->qty, amount=price*$request->qty WHERE id=$request->itemId");
+        else
+            $result = DB::update("UPDATE transaction_items SET price=$request->price, amount=$request->price*qty WHERE id=$request->itemId");
+
         if(!$result)
             abort(500);
 
