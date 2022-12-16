@@ -24,7 +24,7 @@ function show_billing_dialog()
 
 	$billing.dialog.show() //dialog('open')
 	$pos.mainContainer.hide()
-	
+
 //	$pos.open_transactions.prop('disabled', true);
 	$pos.barcode.prop('disabled', true);
 	$payments.payment_recv_button.prop('disabled', true);
@@ -43,7 +43,9 @@ function show_billing_dialog()
 			billingTableRows += `<tr id="printAcct_${rows[i].id}" onclick="view_customer_bills(${rows[i].id}, '', event)">
 								<td><label for="billing${i}" class="nice-label"></label>
 								<input id="billing${i}" type="checkbox" ${checked} 
-								onclick="set_customer_printing_status(${rows[i].id}, $(this))" />${rows[i].name}</td>
+								onclick="set_customer_printing_status(${rows[i].id}, $(this))" />
+								${rows[i].name}
+								</td>
 								<td style="text-align: right">
 									<div style="width: 50%; display: inline">$ </div>
 									<div style="width: 25%; display: inline;float: right; padding-right: 50px">${rows[i].balance}</div>
@@ -56,10 +58,10 @@ function show_billing_dialog()
 
 //		$('#billing_list_end_date').datepicker({'duration' : 0});
 
-		$("#billing_list tr").each(function() {
-		
+		$("#billing_list tbody>tr").each(function() {
+	
 			$(this).vscontext({menuBlock: 'vs-context-menu', menuType : 'balances'});
-		
+
 		});	
 
 		
@@ -185,7 +187,7 @@ function viewTicket(id, evt)
 		return;
 
 	// limit the search to the customer currently viewing
-	$.get('billing.php', { ticket_id : id, ticket_search : 1, limit_customer_id : $billing.customer_bill_customer_id.val() }, function(response) {
+	axios.get('/pos/billing/ticket/' + id + '?limit_customer_id=' + $billing.customer_bill_customer_id.val()).then((response) => {
 		
 		$billing.customer_tickets_list.html('');
 		$billing.customer_tickets_list.html(response.ticket_headings);
@@ -197,14 +199,14 @@ function viewTicket(id, evt)
 		
 		});
 
-	}, 'json');
+	});
 
 
 }
 
 // show tickets under a customer name 
 //
-function view_customer_bills(customer_id, sort_type, evt)
+function view_customer_bills(customer_id = '', sort_type = '', evt)
 {
 	//$billing.customer_tickets_container.html('');
 	$('#customer_activity_indicator').show();
@@ -254,14 +256,60 @@ function view_customer_bills(customer_id, sort_type, evt)
 
 	}
 
+	let transactionType = $billing.customer_bill_transaction_type.val()
+	let startDate = $billing.bill_start_date.val()
+	let endDate = $billing.bill_end_date.val()
+	let customerId = $billing.customer_bill_customer_id.val()
 
-	$.get('billing.php', { 'customer_id' : $billing.customer_bill_customer_id.val(), 'transaction_type' : $billing.customer_bill_transaction_type.val(), 'start_date' : $billing.bill_start_date.val(), 'end_date' : $billing.bill_end_date.val(), 'sort_type' : sort_type }, function(response) {
+	axios.get(`/pos/billing/customer/${customerId}?transaction_type=${transactionType}&start_date=${startDate}&end_date=${endDate}&sort_type=${sort_type}`).then((response) => {
 
-	//customer_bill_name and customer_bill_job_id
 
-			$billing.customer_bill_name.html(response.name);
-			$billing.customer_tickets_list.html(response.tickets);
+			let tickets = ''
+			if(response.data.tickets.length == 0)
+				tickets = `<tr><td colspan="6" style="width: 650px; text-align: center; margin-left: auto; margin-right: auto; font-weight: bold">No tickets found</td></tr>`
+
+			$billing.tickets = response.data.tickets
+
+			$billing.ticket_items_table.hide()
+
+			let ticket, ticketTotal, ticketJob, typeIndicator
+			for(let i = 0; i < response.data.tickets.length; i++)
+			{
+				ticket = response.data.tickets[i]
+
+				ticketTotal = ticket.total.toLocaleString('en-US', { minimumFractionDigits: 2})
+				ticket.job ? ticketJob = ticket.job.name : ticketJob = ''
+
+				if(ticket.display_type == 'PAYMENT' || ticket.display_type == 'discount')
+				{
+					typeIndicator = ' &ndash; '
+				} else if(ticket.refund )
+					typeIndicator = 'R ';
+				else
+					typeIndicator = ''
+
+				tickets += `<tr onclick="load_ticket_transactions(${ticket.id}, $(this))" id="printTicket_${ticket.id}">
+				<td style="width: 120px">${ticket.display_id}</td>
+				<td style="width: 200px">${ticket.customer.display_name}</td>
+				<td style="width: 120px">${ticketJob}</td>
+				<td style="width: 140px">${ticket.display_date}</td>
+				<td style="width: 100px; text-align: right">${typeIndicator}$ ${ticketTotal}</td>
+				<td style="padding-left: 70px; width: 124px">${ticket.display_type}</td>
+				</tr>`
+			}
+
+			$billing.customer_bill_name.html(response.data.customer.display_name);
+			//$billing.customer_tickets_list.html(tickets);
+			$billing.ticket_tbody.html(tickets)
 			$billing.ticket_items_list.html('');
+
+			let jobs = response.data.jobs
+			let jobsHtml = ''
+			for(let i = 0; i < jobs.length; i++)
+			{
+				jobsHtml += `<option value="${jobs[i].id}">${jobs[i].name}</option>`
+			}
+			$billing.customer_bill_job_id.html(`<option value="">&ndash; Choose Job &ndash;</option>` + jobsHtml)
 			
 			// changed to image, this doesn't work now, but it won't print anyway
 //			if($billing.customer_bill_customer_id.val() == 0) // no printing except for single customers
@@ -270,18 +318,8 @@ function view_customer_bills(customer_id, sort_type, evt)
 //				$billing.print_statement_button.prop('disabled', false);
 		
 
-		$billing.customer_bill_dialog.show();	
+		$billing.customer_bill_dialog.dialog('open')	
 		
-		$("#customer_tickets_list tr").hover(
-			function()
-			{
-				$(this).addClass("highlight");
-			},
-			function()
-			{
-				$(this).removeClass("highlight");
-			}
-		); //.click(function() { /$(this).css('font-weight', 'bold'); */});
 
 		
 		$("#customer_tickets_list tr").each(function() {
@@ -292,40 +330,54 @@ function view_customer_bills(customer_id, sort_type, evt)
 		
 		$('#customer_activity_indicator').hide();
 	
-	}, 'json');
+	})
 
 
 }
 
 
-function load_ticket_transactions(ticket_id, parent_row)
+function load_ticket_transactions(ticketId, parent_row)
 {
 	// reset onclick highlighting
-	$('#customer_tickets_list tr').each(function() {
-		$(this).css('font-weight', 'normal');
+	$('#ticket_tbody tr').each(function() {
+		$(this).removeClass('bg-info')
 	});
 	
-	parent_row.css('font-weight', 'bold');
+	parent_row.addClass('bg-info')
 	
-	$.get('billing.php', { 'ticket_id' : ticket_id }, function(response) {
+	for(let i = 0; i < $billing.tickets.length; i++)
+	{
+		
 
-		$billing.ticket_items_list.html(response.ticket_items);
-/*
-		$("#ticket_items_list tr").hover(
-			function()
+		if($billing.tickets[i].id == ticketId)
+		{
+			let ticketItemsHtml = ''
+
+			for(j = 0; j < $billing.tickets[i].items.length; j++)
 			{
-				$(this).addClass("highlight");
-			},
-			function()
-			{
-				$(this).removeClass("highlight");
+				let item = $billing.tickets[i].items[j]
+				let total = item.price * item.qty
+				let ticketId = $billing.tickets[i].display_id
+
+				ticketItemsHtml += `<tr>
+				<td>${ticketId}</td>
+				<td>${item.id}</td>
+				<td>${item.qty}</td>
+				<td>${item.name}</td>
+				<td>${item.price}</td>
+				<td>${total}</td>
+				</tr>
+				`
+
 			}
-		);
-	*/
-	
-		//$('#tmp td').each(function() { $(this).css('border', '1px solid #000000'); });
 
-	}, 'json');
+			$billing.ticket_items_list.html(ticketItemsHtml)
+
+			break
+		}
+	}
+
+	$billing.ticket_items_table.show()
 
 
 }
@@ -333,6 +385,8 @@ function load_ticket_transactions(ticket_id, parent_row)
 // update the customer's record on whether to print a statement in the bulk printing routine
 function set_customer_printing_status(customer_id, chkbox)
 {
+	// not sure if needed
+	return
 
     let x  = chkbox.prop('checked');
 

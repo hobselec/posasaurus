@@ -32,7 +32,7 @@
 					return false;
 			});
         
-			$(this).mousedown(function(e){
+			$(this).on('mousedown', function(e){
 
 						// since i don't know how many places i will place the context menu...
 						
@@ -66,6 +66,7 @@
 							// hide/show certain parts of the menu
 							if(options.menuType == 'balances')
 							{
+
 								$('.ticket_cmenu_action').hide();
 								$('.balances_cmenu_action').show();			
 								$('.items_cmenu_action').hide();

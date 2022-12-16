@@ -215,11 +215,8 @@ $(document).ready(function() {
 				$(this).css('color', '#cccccc').val('Search Customer');
 			}
 		}
-	}).click(function() { $(this).val('').css('color', '#000000'); }).blur(function() { $(this).val('Search Customer').css('color', '#cccccc'); });
-			
+	})
 
-	$('.ticket_search').click(function() { $(this).val('').css('color', '#000000'); }).blur(function() { $(this).val('Search Ticket').css('color', '#cccccc'); });
-	
 	// used for selecting the name on the ticket
 	$( "#customer_ticket_search" ).autocomplete({ minLength: 3, source: 
 		function(request, acResponse)

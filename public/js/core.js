@@ -215,6 +215,7 @@ $(document).ready(function(){
 	customer_bill_customer_id : $('#customer_bill_customer_id'),
 	customer_bill_transaction_type : $('#customer_bill_transaction_type'),
 	ticket_items_list : $('#ticket_items_list'),
+	ticket_tbody : $('#ticket_tbody'),
 	ticket_items_container : $('#ticket_items_cotainer'),
 	billing_display_types : $('#billing_display_types'),
 	billing_list_end_date : $('#billing_list_end_date'),
@@ -226,6 +227,9 @@ $(document).ready(function(){
 	service_charge_customer_id : $('#service_charge_customer_id'),
 	service_charge_job_id : $('#service_charge_job_id'),
 	service_charge_job_container : $('#service_charge_job_container'),
+	ticket_items_table : $('#billing_ticket_items_table'),
+
+	tickets : [],
 
 	printAllStatementsCtrl : $('#printAllStatementsCtrl'),
 	printAllStatementsIndicator : $('#printAllStatementsIndicator'),
@@ -305,6 +309,7 @@ $(document).ready(function(){
     $billing.statement.dialog({ title : 'Statement', autoOpen: false, modal : false, resizable : true, draggable : true, width: 785, height: 600 });
     $billing.reports_dialog.dialog({ title : 'Reports', autoOpen: false, modal : false, resizable : false, draggable : true, width: 850, height: 600 });
 
+	$billing.customer_bill_dialog.dialog({ title : 'Tickets', autoOpen: false, modal : true, resizable : false, draggable : true, width: 1150, height: 600 });
 
     $('.ui-dialog-titlebar').css('font-size', '10pt')
 

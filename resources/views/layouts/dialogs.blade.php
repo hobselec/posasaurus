@@ -37,7 +37,7 @@ Closing checks: &nbsp; <input type="text" size="8" maxlength="8" id="closing_che
 <p style="margin-left: auto ;margin-right: auto"><button class='ui-button' type="button" onclick="print_weekly_report()">Print Weekly Report</button></p>
 <span id="weekly_report_fields" style="display: none"><input type="text" id="report_start_date" size="10" maxlength="10" /> &ndash; <input type="text" value="<?php echo date("n/d/Y"); ?>" id="report_end_date" size="10" maxlength="10" /></span>
 
-<button type="btn btn-link" onclick="event.preventDefault();document.getElementById('logout-form').submit();">Log out</button>
+<button type="button" class="btn btn-link" onclick="event.preventDefault();document.getElementById('logout-form').submit();">Log out</button>
 
 </div>
 

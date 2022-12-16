@@ -58,6 +58,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/test/mail', [TestController::class, 'mail']);
 
     Route::get('/billing/list/{type}', [BillingController::class, 'list']);
+    Route::get('/billing/customer/{id?}', [BillingController::class, 'customer']);
+    Route::get('/billing/ticket/{displayId}', [BillingController::class, 'getTicket']);
+
     Route::get('/catalog/search/{term}', [CatalogController::class, 'search']);
 });
 

@@ -17,6 +17,8 @@ class Ticket extends Model
 
     protected $dates = ['date'];
 
+    protected $appends = ['display_type', 'display_date'];
+
     public function items() {
 
         return $this->hasMany(TransactionItem::class, 'ticket_id', 'id');
@@ -48,4 +50,32 @@ class Ticket extends Model
         return $value ?? 0;
     }
 
+    public function getDisplayTypeAttribute() {
+
+        $payment_type = strtoupper($this->payment_type);
+
+        if($this->payment_type == 'ACCT_CASH')
+			$payment_type = 'CASH REFUND';
+		else if($this->payment_type == 'ACCT_CHECK')
+			$payment_type = 'CHECK REFUND';
+        else if(str_contains($this->payment_type, "payment_"))
+            $payment_type = 'PAYMENT';
+        else if($this->payment_type == 'acct')
+            $payment_type = 'CHARGE';
+        else if($this->payment_type == 'svc_charge')
+            $payment_type = 'SVC CHG';
+        else if($this->payment_type == 'discount')
+            $payment_type = 'DISCOUNT';
+
+        return $payment_type;
+        
+    }
+
+    public function getDisplayDateAttribute() {
+
+        if(!$this->date)
+            return null;
+
+        return $this->date->format('m/d/y g:i a');
+    }
 }
