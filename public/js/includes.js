@@ -35,11 +35,12 @@ $(document).ready(function() {
 	});
 
 	// force focus back to barcode
-	$(document).click(function(evt) {
+	$(document).on('click', function(evt) {
 	
 		if($editable_item.cur_item_id != '') // remove editable item in cart
 		{
-			if(evt.target.id != 'cur_edit_cell') // only restore in an onblur to the cell
+			console.log(evt.target.id)
+			if(evt.target.id != 'cur_edit_cell' && evt.target.id != 'cur_edit_item') // only restore in an onblur to the cell
 				restore_qty();
 			else
 				return false;

@@ -171,4 +171,46 @@ class TicketController extends Controller
         return response()->json(['status' => true]);
     }
 
+    /** 
+     * changes of quantity in cart
+     * 
+     * @param Request $request ['itemId' => integer, 'ticketId' => integer, 'qty' => integer]
+     */
+    public function modifyItemQty(Request $request) 
+    {
+        $validated = $request->validate([
+            'qty' => 'integer|min:1'
+            
+        ]);
+
+        //TransactionItem::where('id', $request->itemId)->update(['qty'=>$request->qty, 'amount' => $request->qty * ])
+        $result = DB::update("UPDATE transaction_items SET qty=$request->qty, amount=price*$request->qty WHERE id=$request->itemId");
+        if(!$result)
+            abort(500);
+
+        $ticket = Ticket::where('id', $request->ticketId)->with(['items'])->first();
+
+        TicketHelper::computeTotals($ticket);
+        $ticket->save();
+
+        return response()->json(['ticket' => $ticket]);
+    }
+
+    /**
+     * delete item from cart
+     * 
+     * @param Request $request ['itemId' => integer, 'ticketId' => integer ]
+     */
+    public function deleteItem(Request $request) 
+    {
+        TransactionItem::where('id', $request->itemId)->delete();
+
+        $ticket = Ticket::where('id' ,$request->ticketId)->with(['items'])->first();
+        
+        TicketHelper::computeTotals($ticket);
+        $ticket->save();
+
+        return response()->json(['ticket' => $ticket]);
+    }
+
 }

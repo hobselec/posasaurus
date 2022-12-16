@@ -18,6 +18,8 @@ This file is part of Primitive Point of Sale.
 
 */
 
+//const { default: axios } = require("axios");
+
 // EDITABLE QTY FUNCTIONS
 //
 // change a qty input box back to a text qty
@@ -47,11 +49,12 @@ function edit_qty(cell_obj, item_id)
 
 	$editable_item.cur_cell = cell_obj; // store this for reference later
 
-	$editable_item.edit_contents = "<input id=\"cur_edit_item\" type=\"text\" style=\"width: 20px\" value=\"" + $editable_item.cur_qty + "\" onkeyup=\"check_update_qty(event, this.value)\" />";
+	$editable_item.edit_contents = `<input id="cur_edit_item" type="number" value="${$editable_item.cur_qty}" 
+									onkeyup="check_update_qty(event, this.value)" />`
 
 	cell_obj.html($editable_item.edit_contents);
 	
-	$('#cur_edit_item').focus().select();
+	//$('#cur_edit_item').focus().select();
 
 	$editable_item.cur_item_id = item_id;
 
@@ -74,7 +77,7 @@ function check_update_qty(evt, qty)
 			{
 				$editable_item.cur_qty = qty;
 			
-				modify_item($editable_item.cur_item_id, 'edit', qty)
+				modify_item($editable_item.cur_item_id, 'chg', qty)
 			} else
 			{
 
@@ -86,91 +89,33 @@ function check_update_qty(evt, qty)
 		}
 }
 
-// remove, increment, decrement item in cart
+// remove, increment, decrement item quantity 0in cart
 function modify_item(item_id, action, new_qty)
 {
-
-	//show_note(item_id + ' and ' + action);
-	$dialogs.cart_item_description_dialog.hide(); // remove in case of del
-	qty = 0;
-
-	stop_flag = 0;
-//alert("look for" + item_id);return false;
-	$('#cart tr').each(function() {
-
-		// look at first cell for item_id (delete button is in this space)
-	
-		if($(this).find("td:first").html().indexOf("modify_item(" + item_id + ",", 0) != '-1')
-		{
-			// delete is easy
-			if(action == 'del')
-			{
-			
-				$(this).remove();
-				restripe_rows('cart');
-
-				// remove item descriptions
-			        for(i = 0; i < $item_descriptions.length; i++)
-    			        {
-				    if($item_descriptions[i].barcode == item_id)
-				    {
-	    			        $item_descriptions[i].description = '';
-					break;
-				    }
-			        }
-				
-				return false;
-			}
-	
-			qty = $(this).find("td").eq(1).html(); //.eq(0).html());
-			
-			//alert($(this).find("td:first").html());return false;
-			
-			if(action == 'incr')
-				qty++;
-			else if(action == 'decr' && qty > 1)
-				qty--;
-			else if(action == 'edit')
-				qty = new_qty;
-			else
-				stop_flag = 1; // prevent decrementing to zero
-			
-			$(this).find("td").eq(1).html(qty); // set new qty
-			
-			amt = $(this).find("td").eq(6).html();
-			
-			tmp = amt*qty;
-			
-			$(this).find("td").eq(7).html(tmp.toFixed(2)) // set new amt
-			
-			return false; // found it now quit
-
-		}
-	
-	});
-
-	if(stop_flag == 1)
-		return false;
-
+	let method = 'put'
+	if(action == 'del')
+		method = 'delete'
 
 	// request to modify
-	$.post('lookup_item.php', { 'ticket_id' : $pos.ticket_id.val(), 'item_id' : item_id , 'modify_action' : action, 'update_qty' : qty, 'tax_exempt' : $pos.tax_exempt.val(), discount : $pos.discount.val(), freight : $pos.freight.val(), labor : $pos.labor.val() }, function(response)
+	axios({method: method,
+			url : '/pos/ticket/item',
+			data : { 'ticketId' : $pos.ticket_id.val(), itemId : item_id, qty : new_qty }
+	 }).then((responseData) =>
 		{
+			let response = responseData.data.ticket
 
-			if(!response.status)
-				alert("Problem modifying the item.  Please restart the transaction");
+			$pos.subtotal.html(response.subtotal.toLocaleString('en-US', { minimumFractionDigits: 2}));
+			$pos.tax.html(response.tax.toLocaleString('en-US', { minimumFractionDigits: 2}));
+			$pos.display_total.html(response.total.toLocaleString('en-US', { minimumFractionDigits: 2}));
 			
-			$pos.subtotal.html(response.subtotal);
-			$pos.tax.html(response.tax);
-			$pos.display_total.html(response.total);
+			//var tmp_subtotal = response.subtotal.replace(',', '');
 			
-			if(response.display_discount != '0.00')
-				$pos.discount_display_total.html('$ -' + response.display_discount);
-
-			//apply_payment_specialoptions()
+			add_to_cart(response.items);
 
 			
-		}, 'json');
+		})//.catch((error) => {
+			//alert("Problem modifying the item.  Please restart the transaction");
+		//})
 	
 	
 
@@ -253,27 +198,29 @@ function add_to_cart(cart)
 	for(i = 0; i < cart.length; i++)
 	{
 
-		tmpcart += `<tr id=" + cart[i].item_id + ">
-		<td><img onclick="modify_item(${cart[i].item_id}, 'del', $(this))" style="cursor: pointer; width: 12px; height: 12px" src="img/del.png" /></td>
-		 <td class="qty" onclick="edit_qty($(this), ${cart[i].item_id})">${cart[i].qty}</td>
+		tmpcart += `<tr id="${cart[i].id}">
+		<td><img onclick="modify_item(${cart[i].id}, 'del', $(this))" style="cursor: pointer; width: 12px; height: 12px" src="img/del.png" /></td>
+		 <td class="qty" onclick="edit_qty($(this), ${cart[i].id})">${cart[i].qty}</td>
 		 <td>
+		 <!-- remove since may be inefficient/unreliable
 			<table class="incrctrl">
 			<tr class="nostripe">
 				<td>
-				<img onclick="modify_item(${cart[i].item_id}, 'incr', $(this))" style="cursor: pointer" src="img/up.png">
+				<img onclick="modify_item(${cart[i].id}, 'add', $(this))" style="cursor: pointer" src="img/up.png">
 				</td>
 		 	</tr>
 			<tr class="nostripe">
 				<td>
-				<img onclick="modify_item(${cart[i].item_id}, 'decr', $(this))" style="cursor: pointer" src="img/down.png">
+				<img onclick="modify_item(${cart[i].id}, 'sub', $(this))" style="cursor: pointer" src="img/down.png">
 				</td>
 			</tr>
 			</table>
+			-->
 		 </td>
 		 <td style="padding-left: 60px; width: 300px; cursor: default">
 		 ${cart[i].name}
 		 </td>
-		 <td class="qty" onclick="edit_price($(this), ${cart[i].item_id})">
+		 <td class="qty" onclick="edit_price($(this), ${cart[i].id})">
 		 ${cart[i].price.toFixed(2)}
 		 </td>
 		 <td class="qty">
