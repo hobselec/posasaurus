@@ -435,7 +435,7 @@ function view_customer_statement()
 	let date = $billing.billing_list_end_date.val();
 
 	
-	axios.get(`/pos/billing/statement/${id}?start_date=${$billing.bill_start_date.val()}&end_date=${$billing.bill_end_date.val()}`).then((response) => {
+	axios.get(`/pos/billing/statement/${id}?startDate=${$billing.bill_start_date.val()}&endDate=${$billing.bill_end_date.val()}`).then((response) => {
 
 
 		$('#billing_data_view').hide()

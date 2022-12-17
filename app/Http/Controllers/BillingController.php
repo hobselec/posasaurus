@@ -3,16 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Blade;
 
 use App\Models\Customer;
 use App\Models\Ticket;
+
 use Carbon\Carbon;
+use DB;
+use Config;
+
 
 class BillingController extends Controller
 {
     public function list(Request $request)
     {
-        $endDate = $request->endDate;
+        $endDate = Carbon::parse($request->endDate)->endOfDay();
 
         $customer = Customer::
             with(['debts'=>function($q) use($endDate) {
@@ -32,11 +37,11 @@ class BillingController extends Controller
             $payments = $c->payments->count() > 0 ? $c->payments[0]->sum_total : 0;
             $returns = $c->returns->count() > 0 ? $c->returns[0]->sum_total : 0;
 
-            $obj = ['name' => '', 'id' => $c->id,
+            $obj = ['name' => $c->display_name, 'id' => $c->id,
                 'balance' => number_format($debts - $payments - $returns, 2),
                 'print_statement' => $c->print_statement];
 
-            $c->use_company ? $obj['name'] = $c->company : $obj['name'] = $c->last_name . ', ' . $c->first_name;
+            //$c->use_company ? $obj['name'] = $c->company : $obj['name'] = $c->last_name . ', ' . $c->first_name;
 
             return $obj;
         });
@@ -138,14 +143,150 @@ class BillingController extends Controller
     /** 
      * view statement
      * 
-     * 
+     * @param Request $request ['id' => integer, 'startDate' => date, 'endDate' => date]
      */
     public function statement(Request $request)
     {
         $customerId = $request->id;
-     
 
-        $statement = 'this is it';
+        $startDate = Carbon::parse($request->startDate);
+        $endDate = Carbon::parse($request->endDate)->endOfDay();
+
+
+        $customer = Customer::
+            with(['debts'=>function($q) use($endDate) {
+            $q->where('date', '<=', $endDate);
+            }])
+            ->with(['payments'=>function($q) use($endDate) {
+                $q->where('date', '<=', $endDate);
+            }])
+            ->with(['returns'=>function($q) use($endDate) {
+                $q->where('date', '<=', $endDate);
+            }])
+            ->where('id', $customerId)
+            ->first();
+        $customerData = $customer;
+
+        $debts = $customer->debts->count() > 0 ? $customer->debts[0]->sum_total : 0;
+        $payments = $customer->payments->count() > 0 ? $customer->payments[0]->sum_total : 0;
+        $returns = $customer->returns->count() > 0 ? $customer->returns[0]->sum_total : 0;
+
+        $curBalance = number_format($debts - $payments - $returns, 2);
+              
+   
+        
+        // get balance forward
+        $startDateYmd = $startDate->format('Y-m-d 00:00:00');
+        $result = DB::select("SELECT * FROM ticket WHERE customer_id=$customerId AND date < '$startDateYmd' AND payment_type != 'VOID' ORDER BY DATE ASC");
+
+        //$item_lines = '';
+
+        // || $row->payment_type='acct_cash' || $row->payment_type='acct_check'
+
+        $customer = (object) ['debts'=>0, 'credits'=>0, 
+                            'date' => $startDate->format('m/d/Y'), 
+                            'forwardBalance' => 0,
+                            'curBalance' => $curBalance, 
+                            'curTickets' => [], 
+                            'balanceForwardDate' => $startDateYmd,
+                            'curTickets' => []
+                            ];
+
+        for($i = 0; $i < count($result); $i++)
+        {
+            $row = $result[$i];
+ 
+
+            if($row->payment_type == 'check' && $row->refund) // returned checks are not a credit
+                continue;
+            
+            if(($row->payment_type == 'acct' && !$row->refund) || $row->payment_type == 'svc_charge' || $row->payment_type == 'acct_cash' || $row->payment_type == 'acct_check')
+            {
+
+                $customer->debts += $row->total;
+            }
+            else if(substr($row->payment_type, 0, 8) == 'payment_' || ($row->refund && $row->payment_type != 'cash' && $row->payment_type != 'cc') || $row->payment_type == 'discount')
+            {
+                $customer->credits += $row->total;
+            }
+		
+	    }
+
+        $customer->forwardBalance = number_format($customer->credits + $customer->debts, 2);
+
+        // now look at current period
+
+        $date_limits = "AND ticket.date < '$endDate' AND ticket.date >= '$startDateYmd'";
+	    $q2 = "SELECT ticket.*, UNIX_TIMESTAMP(ticket.date) AS ts, customer_jobs.name AS job_name FROM ticket LEFT JOIN customer_jobs ON ticket.job_id=customer_jobs.id WHERE ticket.customer_id=$customerId $date_limits AND payment_type != 'VOID' AND (payment_type = 'ACCT' OR payment_type LIKE 'PAYMENT_%' OR payment_type LIKE 'svc_charge' OR payment_type LIKE 'discount'  OR payment_type='acct_cash' OR payment_type='acct_check') ORDER BY ticket.date ASC";
+
+	    $result = DB::select($q2);
+
+
+        for($i = 0; $i < count($result); $i++)
+        {
+            $row = $result[$i];
+    
+    
+            if(substr($row->payment_type, 0, 8) == 'payment_' || ($row->refund && $row->payment_type != 'cash') || $row->payment_type == 'discount' )
+                $customer->credits += $row->total;
+            else if(($row->payment_type == 'acct' && !$row->refund) || $row->payment_type == 'svc_charge' || $row->payment_type == 'acct_cash' || $row->payment_type == 'acct_check')
+            {
+                // only returns and payments can be applied to the running balance if occuring after the end date
+                //if($row->ts > $timestamp)
+                //	continue;
+        
+                $customer->debts += $row->total;
+            
+            }
+    
+            if(substr($row->payment_type, 0, 8)  == 'payment_')
+            {
+                $transaction_type = 'PMT #' . $row->display_id;
+                $total = -1 * $row->total;
+            } else if($row->payment_type == 'svc_charge')
+            {
+                $transaction_type = "SVC CHG #" . $row->display_id;
+                $total = $row->total;
+            } else if($row->payment_type == 'discount')
+            {
+                $transaction_type = "DISCOUNT #" . $row->display_id;
+                $total = -1 * $row->total;
+            }
+            else if($row->payment_type == 'acct_cash' || $row->payment_type == 'acct_check')
+            {
+                $parts = explode("_", $row->payment_type);
+            
+                $transaction_type = strtoupper($parts[1]) . " REF #" . $row->display_id;
+                $total = -1 * $row->total;
+            }
+            else
+            {
+                $transaction_type = "INV #" . $row->display_id;
+                $total = $row->total;
+            }
+    
+            if($row->refund)
+                $total = -1 * $row->total; // mark negative for return/refund
+    
+            $row->job_name != '' ? $job_name = "&ndash; " . $row->job_name : $job_name = '';
+    
+            $customer->curTickets[] = (object) ['date' => Carbon::parse($row->date)->format('m/d/Y'), 
+                            'type' => $transaction_type . ' ' . $job_name, 
+                            'total' => number_format($total, 2),
+                            'curBalance' => number_format($customer->credits + $customer->debts, 2)];
+         //   $doc1 .= "\n<TR><TD style=\"width: 20%\"><CENTER>" . date("m/d/Y", strtotime($row->date)) . "</CENTER></TD>";
+         //   $doc1 .= "<TD style=\"width: 35%\">&nbsp; &nbsp; &nbsp;$transaction_type $job_name</TD>";
+          //  $doc1 .= "<TD  ALIGN=\"RIGHT\" style=\"width: 20%\">" . number_format($total, 2) . "</TD>
+          //<TD align=\"right\" style=\"width: 25%\">" . number_format($ca->get_balance(), 2) . "</TD></TR>\r\n";
+    
+        }
+
+        $posConfig = Config::get('pos');
+
+        $statement = Blade::render("@include('layouts.statement')", 
+                                    ['statement' => $customer, 
+                                    'config' => $posConfig,
+                                    'customer' => $customerData]);
 
         return response()->json(['html' => $statement]);
     }
