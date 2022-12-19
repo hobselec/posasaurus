@@ -174,9 +174,9 @@ class BillingController extends Controller
         $curBalance = number_format($debts - $payments - $returns, 2);
               
    
-        
+
         // get balance forward
-        $startDateYmd = $startDate->format('Y-m-d 00:00:00');
+        $startDateYmd = $startDate->format('Y-m-d 00:00:00'); 
         $result = DB::select("SELECT * FROM ticket WHERE customer_id=$customerId AND date < '$startDateYmd' AND payment_type != 'VOID' ORDER BY DATE ASC");
 
         //$item_lines = '';
@@ -188,7 +188,7 @@ class BillingController extends Controller
                             'forwardBalance' => 0,
                             'curBalance' => $curBalance, 
                             'curTickets' => [], 
-                            'balanceForwardDate' => $startDateYmd,
+                            'balanceForwardDate' => $startDate->format('m/d/Y'),
                             'curTickets' => []
                             ];
 
@@ -212,7 +212,7 @@ class BillingController extends Controller
 		
 	    }
 
-        $customer->forwardBalance = number_format($customer->credits + $customer->debts, 2);
+        $customer->forwardBalance = number_format($customer->debts - $customer->credits, 2);
 
         // now look at current period
 
@@ -268,17 +268,13 @@ class BillingController extends Controller
             if($row->refund)
                 $total = -1 * $row->total; // mark negative for return/refund
     
-            $row->job_name != '' ? $job_name = "&ndash; " . $row->job_name : $job_name = '';
+            $row->job_name != '' ? $job_name = "- " . $row->job_name : $job_name = '';
     
             $customer->curTickets[] = (object) ['date' => Carbon::parse($row->date)->format('m/d/Y'), 
                             'type' => $transaction_type . ' ' . $job_name, 
                             'total' => number_format($total, 2),
-                            'curBalance' => number_format($customer->credits + $customer->debts, 2)];
-         //   $doc1 .= "\n<TR><TD style=\"width: 20%\"><CENTER>" . date("m/d/Y", strtotime($row->date)) . "</CENTER></TD>";
-         //   $doc1 .= "<TD style=\"width: 35%\">&nbsp; &nbsp; &nbsp;$transaction_type $job_name</TD>";
-          //  $doc1 .= "<TD  ALIGN=\"RIGHT\" style=\"width: 20%\">" . number_format($total, 2) . "</TD>
-          //<TD align=\"right\" style=\"width: 25%\">" . number_format($ca->get_balance(), 2) . "</TD></TR>\r\n";
-    
+                            'curBalance' => number_format( $customer->debts - $customer->credits, 2)];
+
         }
 
         $posConfig = Config::get('pos');

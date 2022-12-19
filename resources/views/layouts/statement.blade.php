@@ -48,7 +48,7 @@
 	<TR>
 	  <TD width="40%" colspan="2"></TD>
 	  <TD width="30%">Net 30</TD>
-	  <TD width="30%" align="right"> {{ $customer->curBalance }} ??</TD>
+	  <TD width="30%" align="right"> {{ $statement->curBalance }} </TD>
 	</TR>
 
 	<TR>
@@ -59,9 +59,9 @@
 	</TR>
 
     <TR>
-    <TD style="width: 20%"><CENTER>{{ $customer->balanceForwardDate }}</CENTER></TD>
+    <TD style="width: 20%"><CENTER>{{ $statement->balanceForwardDate }}</CENTER></TD>
     <TD style="width: 35%"></td><td style="width: 20%; text-align: center"> &nbsp; &nbsp;Balance Forward</TD>
-    <TD style="text-align: right; width: 25%"> {{ $customer->forwardBalance }} </TD>
+    <TD style="text-align: right; width: 25%"> {{ $statement->forwardBalance }} </TD>
     </TR>
 
     @foreach($statement->curTickets as $ticket)
