@@ -63,6 +63,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/billing/customer/{id?}', [BillingController::class, 'customer']);
     Route::get('/billing/ticket/{displayId}', [BillingController::class, 'getTicket']);
     Route::get('/billing/statement/{id?}', [BillingController::class, 'statement']);
+    Route::get('/billing/print-statement/{id}', [BillingController::class, 'printStatement']);
 
     Route::get('/catalog/search/{term}', [CatalogController::class, 'search']);
 });
