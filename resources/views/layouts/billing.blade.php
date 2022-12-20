@@ -63,7 +63,7 @@
         </select>
     </div>
     <div class="col col-auto">
-        <img id="print_statement_button" src="img/document-print.png" style="vertical-align: middle; cursor: pointer" onclick="print_customer_statement(0)" title="Print Statement" /> &nbsp;
+        <img id="print_statement_button" src="img/document-print.png" style="vertical-align: middle; cursor: pointer" onclick="printCustomerStatement(0)" title="Print Statement" /> &nbsp;
     </div>
     <div class="col col-auto">
         <img id="viewStatementCtrl" src="img/CCBill-20120401.png" style="width: 30px; height: 30px; vertical-align: middle; cursor: pointer" onclick="view_customer_statement()" title="View Statement" /> 
