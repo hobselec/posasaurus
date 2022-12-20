@@ -586,3 +586,26 @@ function closeTicket()
 	
 
 }
+
+// print_tickets = 1|0 to print tickets along with statement
+function printCustomerStatement(print_tickets = 0)
+{
+
+//	$('#customer_activity_indicator').show();
+	let id
+
+	if($billing.customer_bill_customer_id.val() > 0)
+		id = $billing.customer_bill_customer_id.val();
+	else
+	{ // context menu action
+		var customer_ident = $cmenu.id.val();
+		var tmp = customer_ident.split("_");
+
+		id = tmp[1];
+		
+	}
+
+
+	location.href = `/pos/billing/print-statement/${id}?startDate=${$billing.bill_start_date.val()}&endDate=${$billing.bill_end_date.val()}&printTickets=${print_tickets}`
+
+}

@@ -588,38 +588,6 @@ function auth_return()
 }
 
 
-// print_tickets = 1|0 to print tickets along with statement
-function print_customer_statement(print_tickets)
-{
-	$('#customer_activity_indicator').show();
-	
-	if($billing.customer_bill_customer_id.val() > 0)
-		id = $billing.customer_bill_customer_id.val();
-	else
-	{
-		var customer_ident = $cmenu.id.val();
-		
-		var tmp = customer_ident.split("_");
-		
-		id = tmp[1];
-		
-	}
-	
-	// encode date slashes
-	var tmpdate = $billing.billing_list_end_date.val();
-	date = tmpdate.replace(/\//g, "%2F");
-	
-	//'date' : $billing.bill_end_date.val()
-
-	$.post('print_statements.php', {'customer_id' : id, 'start_date' : $billing.bill_start_date.val(), 'end_date' : $billing.bill_end_date.val(), 'action' : 'print', 'print_tickets' : print_tickets, 'rnd' : Math.random() }, function() {
-		
-		$('#customer_activity_indicator').hide();
-		
-	
-	});
-	
-}
-
 
 function print_end_report()
 {

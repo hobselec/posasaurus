@@ -539,8 +539,8 @@
 		<input type="hidden" id="context_menu_type" />
 		<input type="hidden" id="context_menu_id" />
         <ul>
-            <li class="balances_cmenu_action"><a href="javascript:print_customer_statement()">Print Statement</a></li>
-  	    <li class="balances_cmenu_action"><a href="javascript:print_customer_statement(1)">Print Statement & Tickets</a></li>
+            <li class="balances_cmenu_action"><a href="javascript:printCustomerStatement()">Print Statement</a></li>
+  	    <li class="balances_cmenu_action"><a href="javascript:printCustomerStatement(1)">Print Statement & Tickets</a></li>
             <!--<li class="balances_cmenu_action"><a href="javascript:customerdialog();edit_customer_info(1127);" >Edit Contact</a></li>-->
 	    <li class="balances_cmenu_action"><a href="javascript:alert('not implemented');" >Edit Contact</a></li>
 	    <li class="balances_cmenu_action"><a href="javascript:show_service_charge_dialog('svc_charge')" >Add Service Charge...</a></li>

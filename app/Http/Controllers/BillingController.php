@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Blade;
 
 use App\Models\Customer;
 use App\Models\Ticket;
 
+use App\Helpers\StatementHelper;
+
 use Carbon\Carbon;
 use DB;
 use Config;
+use Dompdf\Dompdf;
 
 
 class BillingController extends Controller
@@ -143,7 +145,7 @@ class BillingController extends Controller
     /** 
      * view statement
      * 
-     * @param Request $request ['id' => integer, 'startDate' => date, 'endDate' => date]
+     * @param Request $request ['id' => integer (customer.id), 'startDate' => date, 'endDate' => date]
      */
     public function statement(Request $request)
     {
@@ -152,138 +154,57 @@ class BillingController extends Controller
         $startDate = Carbon::parse($request->startDate);
         $endDate = Carbon::parse($request->endDate)->endOfDay();
 
+        $statementData = StatementHelper::getStatement($customerId, $startDate, $endDate, false);
 
-        $customer = Customer::
-            with(['debts'=>function($q) use($endDate) {
-            $q->where('date', '<=', $endDate);
-            }])
-            ->with(['payments'=>function($q) use($endDate) {
-                $q->where('date', '<=', $endDate);
-            }])
-            ->with(['returns'=>function($q) use($endDate) {
-                $q->where('date', '<=', $endDate);
-            }])
-            ->where('id', $customerId)
-            ->first();
-        $customerData = $customer;
+        return response()->json(['html' => $statementData->statement]);
+    }
 
-        $debts = $customer->debts->count() > 0 ? $customer->debts[0]->sum_total : 0;
-        $payments = $customer->payments->count() > 0 ? $customer->payments[0]->sum_total : 0;
-        $returns = $customer->returns->count() > 0 ? $customer->returns[0]->sum_total : 0;
+    /**
+     * print single
+     * 
+     * returns a pdf
+     * 
+     * @param Request $request ['id' => array of customer ids, 'startDate' => date, 'endDate' => date, 'printTickets' => boolean]
+     * @return \Illuminate\Http\Response stream
+     */
+    public function printStatement(Request $request)
+    {
+        $customerId = $request->id;
 
-        $curBalance = number_format($debts - $payments - $returns, 2);
-              
-   
+        $startDate = Carbon::parse($request->startDate);
+        $endDate = Carbon::parse($request->endDate)->endOfDay();
 
-        // get balance forward
-        $startDateYmd = $startDate->format('Y-m-d 00:00:00'); 
-        $result = DB::select("SELECT * FROM ticket WHERE customer_id=$customerId AND date < '$startDateYmd' AND payment_type != 'VOID' ORDER BY DATE ASC");
+        $statementData = StatementHelper::getStatement($customerId, $startDate, $endDate, $request->printTickets);
 
-        //$item_lines = '';
+        $statementHtml = $statementData->statement;
 
-        // || $row->payment_type='acct_cash' || $row->payment_type='acct_check'
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($statementHtml);
 
-        $customer = (object) ['debts'=>0, 'credits'=>0, 
-                            'date' => $startDate->format('m/d/Y'), 
-                            'forwardBalance' => 0,
-                            'curBalance' => $curBalance, 
-                            'curTickets' => [], 
-                            'balanceForwardDate' => $startDate->format('m/d/Y'),
-                            'curTickets' => []
-                            ];
+        //todo: look at invoies and append
 
-        for($i = 0; $i < count($result); $i++)
-        {
-            $row = $result[$i];
- 
+        $dompdf->render();
 
-            if($row->payment_type == 'check' && $row->refund) // returned checks are not a credit
-                continue;
-            
-            if(($row->payment_type == 'acct' && !$row->refund) || $row->payment_type == 'svc_charge' || $row->payment_type == 'acct_cash' || $row->payment_type == 'acct_check')
-            {
+        $pdf = $dompdf->output();
 
-                $customer->debts += $row->total;
-            }
-            else if(substr($row->payment_type, 0, 8) == 'payment_' || ($row->refund && $row->payment_type != 'cash' && $row->payment_type != 'cc') || $row->payment_type == 'discount')
-            {
-                $customer->credits += $row->total;
-            }
-		
-	    }
-
-        $customer->forwardBalance = number_format($customer->debts - $customer->credits, 2);
-
-        // now look at current period
-
-        $date_limits = "AND ticket.date < '$endDate' AND ticket.date >= '$startDateYmd'";
-	    $q2 = "SELECT ticket.*, UNIX_TIMESTAMP(ticket.date) AS ts, customer_jobs.name AS job_name FROM ticket LEFT JOIN customer_jobs ON ticket.job_id=customer_jobs.id WHERE ticket.customer_id=$customerId $date_limits AND payment_type != 'VOID' AND (payment_type = 'ACCT' OR payment_type LIKE 'PAYMENT_%' OR payment_type LIKE 'svc_charge' OR payment_type LIKE 'discount'  OR payment_type='acct_cash' OR payment_type='acct_check') ORDER BY ticket.date ASC";
-
-	    $result = DB::select($q2);
-
-
-        for($i = 0; $i < count($result); $i++)
-        {
-            $row = $result[$i];
-    
-    
-            if(substr($row->payment_type, 0, 8) == 'payment_' || ($row->refund && $row->payment_type != 'cash') || $row->payment_type == 'discount' )
-                $customer->credits += $row->total;
-            else if(($row->payment_type == 'acct' && !$row->refund) || $row->payment_type == 'svc_charge' || $row->payment_type == 'acct_cash' || $row->payment_type == 'acct_check')
-            {
-                // only returns and payments can be applied to the running balance if occuring after the end date
-                //if($row->ts > $timestamp)
-                //	continue;
         
-                $customer->debts += $row->total;
-            
-            }
-    
-            if(substr($row->payment_type, 0, 8)  == 'payment_')
-            {
-                $transaction_type = 'PMT #' . $row->display_id;
-                $total = -1 * $row->total;
-            } else if($row->payment_type == 'svc_charge')
-            {
-                $transaction_type = "SVC CHG #" . $row->display_id;
-                $total = $row->total;
-            } else if($row->payment_type == 'discount')
-            {
-                $transaction_type = "DISCOUNT #" . $row->display_id;
-                $total = -1 * $row->total;
-            }
-            else if($row->payment_type == 'acct_cash' || $row->payment_type == 'acct_check')
-            {
-                $parts = explode("_", $row->payment_type);
-            
-                $transaction_type = strtoupper($parts[1]) . " REF #" . $row->display_id;
-                $total = -1 * $row->total;
-            }
-            else
-            {
-                $transaction_type = "INV #" . $row->display_id;
-                $total = $row->total;
-            }
-    
-            if($row->refund)
-                $total = -1 * $row->total; // mark negative for return/refund
-    
-            $row->job_name != '' ? $job_name = "- " . $row->job_name : $job_name = '';
-    
-            $customer->curTickets[] = (object) ['date' => Carbon::parse($row->date)->format('m/d/Y'), 
-                            'type' => $transaction_type . ' ' . $job_name, 
-                            'total' => number_format($total, 2),
-                            'curBalance' => number_format( $customer->debts - $customer->credits, 2)];
+        $headers = [
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0'
+        ,   'Content-type'        => 'application/pdf'
+        ,   'Content-Disposition' => 'attachment; filename=statement.pdf'
+        ,   'Expires'             => '0'
+        ,   'Pragma'              => 'public'
+        ];
 
-        }
 
-        $posConfig = Config::get('pos');
+        $callback = function() use($pdf) {
+            $fp = fopen('php://output', 'w');
+            fwrite($fp, $pdf);
+            fclose($fp);
 
-        $statement = Blade::render("@include('layouts.statement')", 
-                                    ['statement' => $customer, 
-                                    'config' => $posConfig,
-                                    'customer' => $customerData]);
+        };
 
-        return response()->json(['html' => $statement]);
+       return response()->stream($callback, 200, $headers);
+        
     }
 }
