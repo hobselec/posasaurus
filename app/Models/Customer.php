@@ -65,6 +65,12 @@ class Customer extends Model
             ->groupBy('customer_id');
     }
 
+    public function tickets() {
+
+        return $this->hasMany(Ticket::class, 'customer_id', 'id');
+    }
+  
+
     public function jobs() {
 
         return $this->hasMany(CustomerJob::class, 'customer_id', 'id');
