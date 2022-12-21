@@ -110,7 +110,7 @@
 
 
 	@if($ticket->discount > 0)
-	$	- {{ $ticket->discount }}<br />
+	$	- {{ number_format($ticket->discount, 2) }}<br />
 	@endif
 
 	@if($ticket->tax > 0)
@@ -121,11 +121,11 @@
 	@endif
 
 	@if($ticket->freight > 0)
-	$	{{ $freight }}<br />
+	$	{{ number_format($ticket->freight, 2) }}<br />
 	@endif
 
 	@if($ticket->labor > 0)
-	$	{{ $ticket->labor }} <br />
+	$	{{ number_format($ticket->labor, 2) }} <br />
 	@endif
 
 
