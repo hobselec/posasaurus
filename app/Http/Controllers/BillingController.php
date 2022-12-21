@@ -177,6 +177,8 @@ class BillingController extends Controller
         $statementData = StatementHelper::getStatement($customerId, $startDate, $endDate, $request->printTickets);
 
         $statementHtml = $statementData->statement;
+        foreach($statementData->invoices as $invoice)
+            $statementHtml .= $invoice;
 
         $dompdf = new Dompdf();
         $dompdf->loadHtml($statementHtml);
