@@ -1,34 +1,37 @@
-<html>
-<head>
-<title></title>
+
 <style type="text/css">
 .invoice_border th, .invoice_border td { border: 1px solid #000000 }
-
+.page_break { page-break-before: always; }
 </style>
-</head>
 
-<body style="text-align: center; font-family: sans-serif">
-<BASEFONT FACE="arial" SIZE=1>
+<div style="font-size: 10pt" class="page_break">
 
-<CENTER><B>
-{{ $customer->display_name }}<br />
-	{{ $customer->address }}<br />
-	{{ $customer->city }}, &nbsp; {{ $customer->state }} &nbsp; {{ $customer->zip }}
-
-</CENTER>
+<div class="font-weight: bold; margin-left: auto; margin-right: auto; text-align: center">
+<center>
+	{{ $config['company_name'] }}<BR>
+    {{ $config['company_address'] }}<BR>
+    {{ $config['company_city'] }}, {{ $config['company_state'] }} &nbsp; {{ $config['company_zip'] }}<BR>
+    Phone: {{ $config['company_phone'] }}
+</center>
+</div>
 
 <P></P>
 
-<CENTER>
-<table width="90%" BORDER=1 class="invoice_heading_table" style="margin-left: auto; margin-right: auto; border-collapse: collapse; border: 1px solid #000000">
+
+<table class="invoice_heading_table" style="width: 90%; margin-left: auto; margin-right: auto; border-collapse: collapse; border: 1px solid #000000">
 <tr class="invoice_border">
     <th>Customer No.</th><th>Job Name</th><th>Invoice No.</th><th>Received by</th><th style="width: 80px">Date</th><th style="width: 80px">Time</th>
 </tr>
-<tr class="invoice_border">
-    <td><center>$customer_id</center></td><td><center>$job_name</center></td><td><CENTER>$ticket_display_id</CENTER></td><td><center>$recv_by</center></td><td><CENTER>$ticket_date</CENTER></td><td><CENTER>$ticket_time</CENTER></td>
+<tr class="invoice_border" style="text-align: center">
+    <td>{{ $customer->id }}</td>
+	<td>{{ $ticket->job->name  ?? ''}}</td>
+	<td>{{ $ticket->display_id }}</td>
+	<td>{{ $ticket->recv_by }}</td>
+	<td>{{ $ticket->date->format('m/d/Y') }}</td>
+	<td>{{ $ticket->date->format('g:i a') }}</td>
 </tr>
 </table>
-</CENTER>
+
 
 <P></P>
 
@@ -37,73 +40,115 @@
 
 <CENTER>
 <table WIDTH="95%" BORDER=0 CELLPADDING="4px" class="items_list" style="margin-top: 15px; margin-left: auto; margin-right: auto; border: none">
-<tr><th>Quantity</th><th>SKU</th><th>Description</th><th align="center">Price</th><th align="center">Amount</th></tr>
+<tr>
+	<th>Quantity</th><th>SKU</th><th>Description</th><th align="center">Price</th><th align="center">Amount</th>
+</tr>
 
 
 
 @foreach($ticket->items as $item)
-<tr>
-	<td style=""><center>$item->qty</center></td>
-	<td style=""><center>$item->item_id</center></td>
-	<td class="item_name"><CENTER>$item->name</CENTER></td>
-	<td align="right" style="text-align: right; padding-right: 10px;">$refund_indicator $item->price</td>
-	<td align="right" style="text-align: right; padding-right: 10px;">$refund_indicator $item->amount</td>
+<tr style="text-align: center">
+	<td>{{ $item->qty }}</td>
+	<td><center>
+		@if($item->legacy_item_barcode != '')
+		DB {{ $item->legacy_item_barcode }}
+		@elseif($item->product_id !=  '')
+		{{ $item->product_id }}
+		@else
+		HL {{ $item->id }}
+		@endif
+	</center>
+	</td>
+	<td class="item_name"><CENTER>{{ $item->name }}</CENTER></td>
+	<td align="right" style="text-align: right; padding-right: 10px;">$
+	@if($item->refund)
+	- 
+	@endif
+	{{ $item->price }}
+	</td>
+	<td align="right" style="text-align: right; padding-right: 10px;">$
+	@if($item->refund)
+	- 
+	@endif 
+	{{ $item->amount }}
+	</td>
 </tr>
 @endforeach
 
 
-<tr class="totals_row"><td colspan="3" style="border-right: none"></td>
-<td align="right" style="border-left: none; text-align: right; padding-right: 10px">Subtotal <br />
+<tr class="totals_row">
+	<td colspan="3" style="border-right: none"></td>
+	<td align="right" style="border-left: none; text-align: right; padding-right: 10px">Subtotal <br />
 
 
 
-if($discount > 0)
+@if($ticket->discount > 0)
 	Discount<br />
+@endif
 
-if($tax != '')
-Tax<br />
+@if($ticket->tax > 0)
+	Tax<br />
+@endif
 
-if($freight > 0)
+@if($ticket->freight > 0)
 	Freight <br />
+@endif
 
-if($labor > 0)
+@if($ticket->labor > 0)
 	Labor <br />
+@endif
+
+	<p><FONT FACE="arial">Total Amount</FONT></p>
+	<p><FONT FACE="arial">Payment Type</FONT></p>
+	</td>
+
+	<td align="right" style="text-align: right; padding-right: 10px; border-bottom: 1px solid #000000">$
+	@if($item->refund)
+		- 
+	@endif 
+	{{ number_format($ticket->subtotal, 2) }}<br />
 
 
-<p><FONT FACE="arial">Total Amount</FONT></p>
-<p><FONT FACE="arial">Payment Type</FONT></p>
-</td><td align="right" style="text-align: right; padding-right: 10px; border-bottom: 1px solid #000000">
-$refund_indicator$subtotal<br />
+	@if($ticket->discount > 0)
+	$	- {{ $discount }}<br />
+	@endif
+
+	@if($ticket->tax > 0)
+	$	@if($item->refund)
+			- 
+		@endif 
+	{{ number_format($ticket->tax, 2) }}<br />
+	@endif
+
+	@if($ticket->freight > 0)
+	$	{{ $freight }}<br />
+	@endif
+
+	@if($ticket->labor > 0)
+	$	{{ $ticket->labor }} <br />
+	@endif
 
 
-if($discount > 0)
-	" -" . $discount . "<br />
-	
-if($tax != '')
-$refund_indicator$tax<br />
+	<p><FONT FACE="arial">
+	@if($item->refund)
+		- 
+	@endif 
 
-if($freight > 0)
-	$freight <br />
+	$ {{ number_format($ticket->total, 2) }}</FONT>
+	</p>
+	<p><FONT FACE="arial">
+	{{ strtoupper($ticket->payment_type) }}
 
-if($labor > 0)
-	$doc1 .= "$labor <br />
+	@if($ticket->payment_type == 'CHECK' || $ticket->payment_type == 'PAYMENT_CHECK')
+		- {{ $ticket->check_no }}
+	@endif
+	</FONT>
+	</p>
 
-
-$total = number_format($total, 2);
-
-$payment_type = strtoupper($payment_type);
-
-if($payment_type == 'CHECK' || $payment_type == 'PAYMENT_CHECK')
-    $payment_type .= ' - ' . $check_no;
-
-
-<p><FONT FACE="arial">$refund_indicator$total</FONT></p>
-<p><FONT FACE="arial">$payment_type</FONT></p>
-
-</td></tr>
+	</td>
+</tr>
 
 </table>
 </CENTER>
 
-</body>
-</html>
+</div>
