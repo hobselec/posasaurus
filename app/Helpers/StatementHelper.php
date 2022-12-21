@@ -155,7 +155,7 @@ class StatementHelper {
                                     'customer' => $customerData]);
 
         if($getInvoices)
-            $invoices = static::getInvoice($customerData->id, array_column($customer->curTickets, 'id'));
+            $invoices = static::getInvoice($customerData->id, array_column($customer->curTickets, 'id'), true);
         else
             $invoices = [];
 
@@ -168,9 +168,10 @@ class StatementHelper {
      * 
      * @param integer $customerId
      * @param array $invoices (id of ticket.id)
+     * @param bool $breakPage used when adding to statement
      * @return array of html invoices
      */
-    public static function getInvoice(int $customerId, array $invoices) : array
+    public static function getInvoice(int $customerId, array $invoices, bool $breakPage = false) : array
     {
         //generate_invoice($ticket_id, $show_heading = 1, $mode = 'simple', $basic_html = 1)
         $posConfig = Config::get('pos');
@@ -190,6 +191,7 @@ class StatementHelper {
             
             $invoices[] = Blade::render("@include('layouts.statementInvoice')", 
             ['ticket' => $ticket,
+            'breakPage' => $breakPage,
             'config' => $posConfig,
             'customer' => $customer]);
         }

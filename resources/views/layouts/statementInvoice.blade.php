@@ -1,10 +1,13 @@
-
+@if(!$breakPage)
+<html>
+<body>
+@endif
 <style type="text/css">
 .invoice_border th, .invoice_border td { border: 1px solid #000000 }
 .page_break { page-break-before: always; }
 </style>
 
-<div style="font-size: 10pt" class="page_break">
+<div style="font-size: 10pt" @if($breakPage) class="page_break"@endif>
 
 <div class="font-weight: bold; margin-left: auto; margin-right: auto; text-align: center">
 <center>
@@ -152,3 +155,7 @@
 </CENTER>
 
 </div>
+@if(!$breakPage)
+</body>
+</html>
+@endif
