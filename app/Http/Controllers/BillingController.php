@@ -160,7 +160,7 @@ class BillingController extends Controller
     }
 
     /**
-     * print single
+     * print single statement
      * 
      * returns a pdf
      * 
@@ -182,8 +182,6 @@ class BillingController extends Controller
 
         $dompdf = new Dompdf();
         $dompdf->loadHtml($statementHtml);
-
-        //todo: look at invoies and append
 
         $dompdf->render();
 
@@ -207,6 +205,74 @@ class BillingController extends Controller
         };
 
        return response()->stream($callback, 200, $headers);
+        
+    }
+
+    /**
+     * print invoice
+     * 
+     * returns a pdf
+     * 
+     * @param Request $request ['id' => ticket id]
+     * @return \Illuminate\Http\Response stream
+     */
+    public function printInvoice(Request $request)
+    {
+        $ticket = Ticket::where('id', $request->id)->with('customer')->first();
+
+        $invoices = StatementHelper::getInvoice($ticket->customer->id, [$request->id]);
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($invoices[0]);
+
+        $dompdf->render();
+
+        $pdf = $dompdf->output();
+
+        
+        $headers = [
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0'
+        ,   'Content-type'        => 'application/pdf'
+        ,   'Content-Disposition' => 'attachment; filename=statement.pdf'
+        ,   'Expires'             => '0'
+        ,   'Pragma'              => 'public'
+        ];
+
+
+        $callback = function() use($pdf) {
+            $fp = fopen('php://output', 'w');
+            fwrite($fp, $pdf);
+            fclose($fp);
+
+        };
+
+       return response()->stream($callback, 200, $headers);
+
+    }
+
+    /**
+     * email invoice
+     *
+     * 
+     * @param Request $request ['id' => ticket id]
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function emailInvoice(Request $request)
+    {
+
+        $ticket = Ticket::where('id', $request->id)->with('customer')->first();
+
+        $invoices = StatementHelper::getInvoice($ticket->customer->id, [$request->id]);
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($invoices[0]);
+
+        $dompdf->render();
+
+        $pdf = $dompdf->output();
+
+        // todo:
+        // send e-mail to $ticket->customer->email
         
     }
 }
