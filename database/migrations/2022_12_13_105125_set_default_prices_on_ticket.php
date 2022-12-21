@@ -15,12 +15,14 @@ return new class extends Migration
     {
         Schema::table('ticket', function (Blueprint $table) {
 
-            $table->float('discount', 8, 2)->default(0)->change();
-            $table->float('tax', 6, 2)->default(0)->change();
-            $table->float('subtotal', 8, 2)->default(0)->change();
-            $table->float('total', 8, 2)->default(0)->change();
-            $table->float('freight', 8, 2)->default(0)->change();
-            $table->float('labor', 8, 2)->default(0)->change();
+            // laravel float() changes these to double!
+
+            DB::statement('alter table ticket change column discount discount float(8,2) default 0');
+            DB::statement('alter table ticket change column tax tax float(8,2) default 0');
+            DB::statement('alter table ticket change column subtotal subtotal float(8,2) default 0');
+            DB::statement('alter table ticket change column total total float(8,2) default 0');
+            DB::statement('alter table ticket change column freight freight float(8,2) default 0');
+            DB::statement('alter table ticket change column labor labor float(8,2) default 0');
         });
     }
 
