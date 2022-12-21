@@ -1,3 +1,5 @@
+const { default: axios } = require("axios");
+
 function contextmenu_add_cart_item_description()
 {
 
@@ -27,29 +29,34 @@ function contextmenu_add_cart_item_description()
 
 
 
-function contextmenu_print_receipt(rtype)
+function contextmenu_print_invoice()
 {
 	var ticket_ident = $cmenu.id.val();
 	
 	var tmp = ticket_ident.split("_");
 	
-	var pticket_id = tmp[1];
+	let ticketId = tmp[1];
 	
-	if(rtype == 'invoice')
-	{
+	location.href=`/pos/billing/print-invoice/${ticketId}`
+
+}
+
+function contextmenu_email_invoice()
+{
+	var ticket_ident = $cmenu.id.val();
 	
-		$.get('print.php', {'ticket_id' : pticket_id, 'action' : 'print' }, 
-			function(response) { }
-		);
-	} else if(rtype == 'receipt')
-	{
-		print_receipt(pticket_id, '', '');
-	}
+	var tmp = ticket_ident.split("_");
+	
+	let ticketId = tmp[1];
+
+	axios.get(`/pos/billing/email-invoice/${ticketId}`).then(() => {
+		show_note('email sent')
+	})
 
 }
 
 
-function contextmenu_void_receipt(auth)
+function contextmenu_void_transaction()
 {
 	// warn with ticket id
 	var tmp = $cmenu.id.val();
@@ -69,9 +76,6 @@ function contextmenu_void_receipt(auth)
 	
 	if(confirm("Void ticket " + display_ticket_id + "?"))
 	{
-
-		if(auth == null)
-		    authenticate('void_ticket');
 	
 		var ticket_ident = $cmenu.id.val();
 	
