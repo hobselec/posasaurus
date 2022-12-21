@@ -67,13 +67,13 @@
 	@if($item->refund)
 	- 
 	@endif
-	{{ $item->price }}
+	{{ number_format($item->price, 2) }}
 	</td>
 	<td align="right" style="text-align: right; padding-right: 10px;">$
 	@if($item->refund)
 	- 
 	@endif 
-	{{ $item->amount }}
+	{{ number_format($item->amount, 2) }}
 	</td>
 </tr>
 @endforeach
