@@ -548,7 +548,7 @@
 	    <li class="balances_cmenu_action"><a href="javascript:issue_cash_refund('discount')" >Issue Cash Refund...</a></li>
 		    
 	    <li class="ticket_cmenu_action"><a href="javascript:contextmenu_email_invoice()">E-mail Invoice</a></li>
-            <li class="ticket_cmenu_action"><a href="javascript:contextmenu_print_invoice(;">Print Invoice</a></li>
+            <li class="ticket_cmenu_action"><a href="javascript:contextmenu_print_invoice()">Print Invoice</a></li>
             <li class="ticket_cmenu_action"><a href="javascript:contextmenu_void_transaction()">Void Transaction</a></li>
 	   
 	    <li class="items_cmenu_action"><a href="javascript:contextmenu_add_cart_item_description()">Add description...</a></li>
