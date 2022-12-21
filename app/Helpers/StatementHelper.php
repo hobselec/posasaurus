@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Blade;
 
 class StatementHelper {
 
+    /**
+     * get statement
+     * 
+     * @return object ['statement' => string $statement of html, 'invoices' => array $invoices of html];
+     * 
+     */
     public static function getStatement(int $customerId, Carbon $startDate, Carbon $endDate, bool $getInvoices) : object
     {
 
