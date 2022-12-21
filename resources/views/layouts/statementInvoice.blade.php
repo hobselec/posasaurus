@@ -110,7 +110,7 @@
 
 
 	@if($ticket->discount > 0)
-	$	- {{ $discount }}<br />
+	$	- {{ $ticket->discount }}<br />
 	@endif
 
 	@if($ticket->tax > 0)
