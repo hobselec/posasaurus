@@ -107,15 +107,17 @@
 
 
         <!--<div id="ticket_items_container" style="overflow-x: none; overflow-y: scroll; margin-left: 10px; height: 170px; background: #ffffff; border: 1px solid #000000; width: 95%; margin-top: 5px">-->
-    <button type="button" class="btn btn-link" onclick="closeTicket()">Close Ticket</button>
+        <div id="billing_ticket_items_container" style="display: none">
+            <button type="button" class="btn btn-link" onclick="closeTicket()">Close Ticket</button>
 
-        <table class="table table-sm table-striped table-hover" id="billing_ticket_items_table" style="display: none">
-            <thead>
-            <tr><th>Ticket ID</th><th>Item ID</th><th>Quantity</th><th>Item Description</th><th>Price</th><th>Total</th></tr>
-            </thead>
-            <tbody id="ticket_items_list">
-            </tbody>
-        </table>
+            <table class="table table-sm table-striped table-hover" id="billing_ticket_items_table">
+                <thead>
+                <tr><th>Ticket ID</th><th>Item ID</th><th>Quantity</th><th>Item Description</th><th>Price</th><th>Total</th></tr>
+                </thead>
+                <tbody id="ticket_items_list">
+                </tbody>
+            </table>
+        </div>
     </div>
 
     </div> <!-- end billing view -->

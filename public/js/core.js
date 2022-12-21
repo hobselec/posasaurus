@@ -216,7 +216,7 @@ $(document).ready(function(){
 	customer_bill_transaction_type : $('#customer_bill_transaction_type'),
 	ticket_items_list : $('#ticket_items_list'),
 	ticket_tbody : $('#ticket_tbody'),
-	ticket_items_container : $('#ticket_items_cotainer'),
+	//ticket_items_container : $('#ticket_items_cotainer'),
 	billing_display_types : $('#billing_display_types'),
 	billing_list_end_date : $('#billing_list_end_date'),
 	print_statement_button : $('#print_statement_button'),
@@ -227,7 +227,7 @@ $(document).ready(function(){
 	service_charge_customer_id : $('#service_charge_customer_id'),
 	service_charge_job_id : $('#service_charge_job_id'),
 	service_charge_job_container : $('#service_charge_job_container'),
-	ticket_items_table : $('#billing_ticket_items_table'),
+	ticket_items_container : $('#billing_ticket_items_container'),
 
 	tickets : [],
 

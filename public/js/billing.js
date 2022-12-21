@@ -270,7 +270,7 @@ function view_customer_bills(customer_id = '', sort_type = '', evt)
 
 			$billing.tickets = response.data.tickets
 
-			$billing.ticket_items_table.hide()
+			$billing.ticket_items_container.hide()
 
 			let ticket, ticketTotal, ticketJob, typeIndicator
 			for(let i = 0; i < response.data.tickets.length; i++)
@@ -378,7 +378,7 @@ function load_ticket_transactions(ticketId, parent_row)
 		}
 	}
 
-	$billing.ticket_items_table.show()
+	$billing.ticket_items_container.show()
 
 
 }
@@ -583,7 +583,7 @@ function closeTicket()
 	
 	
 	$('#ticket_tbody tr').show()
-	
+	$billing.ticket_items_container.hide()
 
 }
 
