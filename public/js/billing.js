@@ -318,17 +318,17 @@ function view_customer_bills(customer_id = '', sort_type = '', evt)
 //				$billing.print_statement_button.prop('disabled', false);
 		
 
-		$billing.customer_bill_dialog.dialog('open')	
-		
+			$billing.customer_bill_dialog.dialog('open')	
+			
 
-		
-		$("#customer_tickets_list tr").each(function() {
-		
-			$(this).vscontext({ menuBlock: 'vs-context-menu', menuType : 'tickets' });
-		
-		});	
-		
-		$('#customer_activity_indicator').hide();
+			
+			$("#ticket_tbody tr").each(function() {
+			
+				$(this).vscontext({ menuBlock: 'vs-context-menu', menuType : 'tickets' });
+			
+			});	
+			
+			$('#customer_activity_indicator').hide();
 	
 	})
 
