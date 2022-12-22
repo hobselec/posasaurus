@@ -200,10 +200,5 @@ class StatementHelper {
 
     }
 
-    public static function printTickets()
-    {
-
-  
-    }
 
 }
