@@ -452,7 +452,7 @@ function printAllStatements()
 function printAllStatementsStart()
 {
 	let i = 0;
-	let print_ids = new Array();
+	let printIds = []
 
     $('#billing_list tr').each(function() {
 
@@ -471,10 +471,7 @@ function printAllStatementsStart()
 
 
 		if(tmp.prop('checked'))
-		{
-
-			print_ids.push(customer_id);
-		}
+			printIds.push(customer_id);
 
 		// we should get the response back from the server and deselect then
 		tmp.prop('checked', false);
@@ -483,7 +480,7 @@ function printAllStatementsStart()
     });
 
 	
-	axios.post('/pos/billing/print-statements', { id : print_ids,  endDate : $billing.billing_list_end_date.val() }).then((response) => {
+	axios.post('/pos/billing/print-statements', { customers : printIds,  endDate : $billing.billing_list_end_date.val() }).then((response) => {
 
 
 		
