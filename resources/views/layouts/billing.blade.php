@@ -9,15 +9,16 @@
 	</select>
 
 	<span style="padding-left: 50px">
-	<input type="date" size="10" maxlength="10" id="billing_list_end_date" title="Last billing date" value="@php echo date("Y-m-d"); @endphp" onchange="show_billing_dialog()" /></span> &nbsp; &nbsp; <button type="button" onclick="view_customer_bills('', '', event)">View All Transactions</button> &nbsp; <img id="printAllStatementsCtrl" src="img/document-print.png" style="vertical-align: middle; cursor: pointer" onclick="printAllStatements()" title="Print Statements" /> <img src="img/loading.gif" style="display: none" id="printAllStatementsIndicator" /> &nbsp; <img id="showReportsCtrl" src="img/chart.png" style="vertical-align: middle; cursor: pointer; height: 30px" onclick="show_reports_dialog()" title="Show Aging Report" /> 
+	<input type="date" size="10" maxlength="10" id="billing_list_end_date" title="Last billing date" value="{{ date("Y-m-d") }}" onchange="show_billing_dialog()" /></span> &nbsp; &nbsp; <button type="button" onclick="view_customer_bills('', '', event)">View All Transactions</button> &nbsp; <img id="printAllStatementsCtrl" src="img/document-print.png" style="vertical-align: middle; cursor: pointer" onclick="printAllStatements()" title="Print Statements" /> <img src="img/loading.gif" style="display: none" id="printAllStatementsIndicator" /> &nbsp; <img id="showReportsCtrl" src="img/chart.png" style="vertical-align: middle; cursor: pointer; height: 30px" onclick="show_reports_dialog()" title="Show Aging Report" /> 
 	&nbsp; &nbsp;<input type="text" class="customer_search" maxlength="20" size="20" placeholder="Search Customer" />
 
 	<!-- headings -->
-	<div style="margin-top: 20px; width: 95%">
-	<span style="font-weight: bold">Print</span><span style="padding-left: 30px; width: 75%; font-weight: bold">Customer</span><span style="float: right; width: 18%; font-weight: bold">Amount</span>
+	<div style="margin-top: 20px; max-width: 800px">
+	<span style="padding-left: 30px; width: 80%; font-weight: bold">Customer</span>
+    <span style="float: right; width: 20%; font-weight: bold">Amount</span>
 	</div>
 
-	<div id="billing_container" style="overflow-x: hidden; overflow-y: scroll; margin-left: 10px; height: 350px; background: #ffffff; border: 1px solid #000000; width: 95%">
+	<div id="billing_container" style="overflow-x: hidden; overflow-y: scroll; margin-left: 10px; height: 350px; background: #ffffff; border: 1px solid #000000; max-width: 800px">
 		<table id="billing_list" class="table table-striped">
 			<tbody style="cursor: pointer">
 				<tr><td>loading</td></tr>
