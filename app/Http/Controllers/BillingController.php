@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use DB;
 use Config;
 use Dompdf\Dompdf;
+use App\Jobs\PrintStatements;
 
 
 class BillingController extends Controller
@@ -164,7 +165,7 @@ class BillingController extends Controller
      * 
      * returns a pdf
      * 
-     * @param Request $request ['id' => array of customer ids, 'startDate' => date, 'endDate' => date, 'printTickets' => boolean]
+     * @param Request $request ['id' => customer id, 'startDate' => date, 'endDate' => date, 'printTickets' => boolean]
      * @return \Illuminate\Http\Response stream
      */
     public function printStatement(Request $request)
@@ -274,5 +275,27 @@ class BillingController extends Controller
         // todo:
         // send e-mail to $ticket->customer->email
         
+    }
+
+     /**
+     * print multiple statement
+     * 
+     * returns a pdf
+     * 
+     * @param Request $request ['id' => array of customer ids, 'endDate' => date]
+     * @return \Illuminate\Http\Response stream
+     */
+    public function printStatements(Request $request)
+    {
+        $customers = $request->customers;
+
+        // todo: check endDate in other function uses endOfDay()
+        $endDate = Carbon::parse($request->endDate);
+
+        // todo: multiple accounts need a page break before next customer
+
+        PrintStatements::dispatch(['customers' => $customers, 'endDate' => $endDate]);
+
+        return response()->json(['status' => true]);
     }
 }
