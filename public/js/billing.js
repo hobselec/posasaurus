@@ -38,17 +38,17 @@ function show_billing_dialog()
 
 		for(let i = 0; i < rows.length; i++)
 		{
-			rows.print_statement ? checked = 'checked' : checked = ''
+			rows[i].print_statement ? checked = 'checked' : checked = ''
 
 			billingTableRows += `<tr id="printAcct_${rows[i].id}" onclick="view_customer_bills(${rows[i].id}, '', event)">
-								<td><label for="billing${i}" class="nice-label"></label>
-								<input id="billing${i}" type="checkbox" ${checked} 
-								onclick="set_customer_printing_status(${rows[i].id}, $(this))" />
-								${rows[i].name}
+								<td>
+								<input id="billing${i}" type="checkbox" ${checked} />
+								<label for="billing${i}" class="nice-label"></label>
+								&nbsp; ${rows[i].name}
 								</td>
-								<td style="text-align: right">
-									<div style="width: 50%; display: inline">$ </div>
-									<div style="width: 25%; display: inline;float: right; padding-right: 50px">${rows[i].balance}</div>
+								<td style="text-align: right; padding-right: 10px">
+									<div style="display: inline">$ </div>
+									<div style="display: inline; text-align: right">${rows[i].balance}</div>
 								</td>
 								</tr>`
 		}
@@ -214,19 +214,12 @@ function view_customer_bills(customer_id = '', sort_type = '', evt)
 	//if(sort_type == false)
 	if(evt != undefined)
 	{
-	    if(window.event) // IE, event is different than firefox
-	    {
-		if(evt.srcElement.type == 'checkbox')
-		    return; // cancel window when clicking the printing checkbox
-		
-	    } else if(evt.which)
-	    {
-		if(evt.target.type == 'checkbox')
+
+		if(evt.target.classList.contains('nice-label') || evt.target.type == 'checkbox')
 		    return;
-	    }
 	
 	}
-	
+
 	if(sort_type == undefined || sort_type == '')
 		sort_type = 'date_sortimg';
 
