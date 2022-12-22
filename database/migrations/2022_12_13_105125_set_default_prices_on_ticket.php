@@ -23,6 +23,11 @@ return new class extends Migration
             DB::statement('alter table ticket change column total total float(8,2) default 0');
             DB::statement('alter table ticket change column freight freight float(8,2) default 0');
             DB::statement('alter table ticket change column labor labor float(8,2) default 0');
+
+            DB::statement('update ticket set freight=0 where freight is null');
+            DB::statement('update ticket set labor=0 where freight is null');
+            DB::statement('update ticket set discount=0 where discount is null');
+
         });
     }
 
