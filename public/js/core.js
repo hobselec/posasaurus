@@ -479,15 +479,15 @@ function printAllStatementsStart()
 		// we should get the response back from the server and deselect then
 		tmp.prop('checked', false);
 
-		i = i + 2000;
+
     });
 
 	
-	$.post('print_statements.php', { action : 'print_all_statements', print_tickets : 1, end_date : $billing.billing_list_end_date.val(),  customer_id : print_ids, 'rnd' : Math.random() }, function(response) {
+	axios.post('/pos/billing/print-statements', { id : print_ids,  endDate : $billing.billing_list_end_date.val() }).then((response) => {
 
-//		tmp.prop('checked', false);
+
 		
-	});
+	})
 
 	//console.log(print_ids);
 	
