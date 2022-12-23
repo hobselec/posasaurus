@@ -289,8 +289,7 @@ class BillingController extends Controller
     {
         $customers = $request->customers;
 
-        // todo: check endDate in other function uses endOfDay()
-        $endDate = Carbon::parse($request->endDate);
+        $endDate = Carbon::parse($request->endDate)->endOfDay();
 
         // todo: multiple accounts need a page break before next customer
 
