@@ -53,10 +53,13 @@ class PrintStatements implements ShouldQueue
 
         $statementHtml = '';
 
-        foreach($this->params['customers'] as $customerId)
+        foreach($this->params['customers'] as $i => $customerId)
         {
 
             $statementData = StatementHelper::getStatement($customerId, $startDate, $endDate, true);
+
+            if($i > 0)
+                $statementData->statement = "<div class=\"page_break\">" . $statementData->statement . "</div>";
 
             $statementHtml .= $statementData->statement;
             foreach($statementData->invoices as $invoice)
