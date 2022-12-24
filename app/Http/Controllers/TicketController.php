@@ -12,6 +12,10 @@ use App\Models\CatalogItem;
 use App\Models\TransactionItem;
 
 use App\Helpers\TicketHelper;
+use App\Helpers\StatementHelper;
+
+use App\Mail\ReceiptEmail;
+use Illuminate\Support\Facades\Mail;
 
 class TicketController extends Controller
 {
@@ -156,6 +160,12 @@ class TicketController extends Controller
             $item->catalog->decrement('qty', $item->qty);
         
         });
+
+        if($ticket->customer->email != '')
+        {
+            $invoice = StatementHelper::getInvoice($ticket->customer->id, [$ticket->id]);
+            Mail::to($ticket->customer->email)->send(new ReceiptEmail($invoice[0]));
+        }
 
         return response()->json(['status'=>true]);
     }
