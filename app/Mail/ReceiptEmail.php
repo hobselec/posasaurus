@@ -16,14 +16,16 @@ class ReceiptEmail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
+    public string $msgHtml;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($msgHtml)
     {
-        //
+        $this->msgHtml = $msgHtml;
     }
 
     /**
@@ -34,8 +36,8 @@ class ReceiptEmail extends Mailable implements ShouldQueue
     public function envelope()
     {
         return new Envelope(
-            from: new Address('jer.house@gmail.com', 'Jeremy House'),
-            subject: 'Receipt Email',
+            from: new Address(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')),
+            subject: env("APP_NAME") . ' Invoice',
         );
     }
 
@@ -47,7 +49,8 @@ class ReceiptEmail extends Mailable implements ShouldQueue
     public function content()
     {
         return new Content(
-            view: 'mails.receipt',
+           // view: 'mails.receipt',
+           htmlString : $this->msgHtml
         );
     }
 
