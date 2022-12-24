@@ -446,11 +446,12 @@ function show_reports_dialog()
 {
 	$('#only_show_balances').is(':checked') ? only_show_balances = 1 : only_show_balances = 0;
 
-    $.get('aging.php', { print : 0, only_show_balances : only_show_balances, end_date : $billing.billing_list_end_date.val() }, function(response) {
+    axios.get(`/pos/billing/aging-report?onlyShowBalances=${only_show_balances}&endDate=${$billing.billing_list_end_date.val()}`
+		).then((response) => {
 
-	$('#reports_content').html(response);
+		$('#reports_content').html(response.data.report);
 
-    });
+    })
 
     $billing.reports_dialog.dialog('open');
 

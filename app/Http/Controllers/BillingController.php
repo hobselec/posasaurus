@@ -297,4 +297,22 @@ class BillingController extends Controller
 
         return response()->json(['status' => true]);
     }
+
+    public function agingReport(Request $request)
+    {
+        $customer = Customer::where('active', true)->get();
+
+        $endDate = Carbon::parse($request->endDate)->endOfDay();
+        $showOnlylBalance = $request->showOnlyBalances;
+
+        $days_ago_30 = $endDate->copy()->subDays(30);
+        $days_ago_60 = $endDate->copy()->subDays(60);
+        $days_ago_90 = $endDate->copy()->subDays(90);
+        $days_ago_120 = $endDate->copy()->subDays(120);
+        $days_ago_150 = $endDate->copy()->subDays(150);
+
+
+
+        return response()->json(['report' => 'test']);
+    }
 }

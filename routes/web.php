@@ -66,7 +66,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/billing/print-statement/{id}', [BillingController::class, 'printStatement']);
     Route::get('/billing/print-invoice/{id}', [BillingController::class, 'printInvoice']);
     Route::get('/billing/email-invoice/{id}', [BillingController::class, 'emailInvoice']);
-    Route::post('/billing/print-statements/', [BillingController::class, 'printStatements']);
+    Route::post('/billing/print-statements', [BillingController::class, 'printStatements']);
+    Route::get('/billing/aging-report', [BillingController::class, 'agingReport']);
 
     Route::get('/catalog/search/{term}', [CatalogController::class, 'search']);
 });
