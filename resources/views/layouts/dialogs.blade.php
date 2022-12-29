@@ -24,7 +24,7 @@
 
 <!-- opening balance-->
 <div id="startup_dialog" style="display: none; font-size: 12pt" class="posdlg">
-Opening cash: &nbsp; <input type="text" class="currency" onkeyup="add_decimals(this, event, 'save_opening_balance')" size="8" maxlength="8" id="open_cash" />
+Opening cash: &nbsp; <input type="text" class="currency" autocomplete="off" onkeyup="add_decimals(this, event, 'save_opening_balance')" size="8" maxlength="8" id="open_cash" />
 <div id="debug_container"></div>
 </div>
 
