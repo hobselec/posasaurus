@@ -28,20 +28,30 @@ $print_icon &nbsp; <label><input type="checkbox" id="only_show_balances" onclick
     <th>Total</th>
   </tr>
 
-  @if($results->count() == 0)
+  @if(count($results) == 0)
   <tr><td colspan="7">
     No customers found
-</td>
-</tr>
+    </td>
+    </tr>
+    @endif
+
+    @foreach($results as $customer)
+    <tr>
+        <td>{{ $customer->name }}</td>
+
+        @foreach($customer->periods as $period)
+            <td>$ {{ number_format($period->balance, 2) }}</td>
+        @endforeach
+    </tr>
+
+    @endforeach
 
 <tr>
     <th>Totals</th>
-    <th>$   number_format($column_totals[0], 2)  </th>
-    <th>$ " . number_format($column_totals[1], 2)  </th
-    ><th>$  " . number_format($column_totals[2], 2) </th>
-    <th>$ " . number_format($column_totals[3], 2) </th>
-<th>$ " . number_format($column_totals[4], 2) <th>
-    $ " . number_format($column_totals[5], 2) . "</th>
+    @foreach($totals as $total)
+    <th>$  {{ number_format($total, 2) }} </th>
+    @endforeach
+    
 </tr>
 
 </body>

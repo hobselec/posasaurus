@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Blade;
 
 use App\Models\Customer;
 use App\Models\Ticket;
@@ -300,19 +302,14 @@ class BillingController extends Controller
 
     public function agingReport(Request $request)
     {
-        $customer = Customer::where('active', true)->get();
+        $report = Cache::get('agingReport');
+        $customerTotals = $report['customers'];
+        $totals = $report['totals'];
 
-        $endDate = Carbon::parse($request->endDate)->endOfDay();
-        $showOnlylBalance = $request->showOnlyBalances;
+        $results = array_filter($customerTotals, fn($item) => $item->periods[5]->balance > 0);
 
-        $days_ago_30 = $endDate->copy()->subDays(30);
-        $days_ago_60 = $endDate->copy()->subDays(60);
-        $days_ago_90 = $endDate->copy()->subDays(90);
-        $days_ago_120 = $endDate->copy()->subDays(120);
-        $days_ago_150 = $endDate->copy()->subDays(150);
+        $report = Blade::render("@include('layouts.aging')", ['results' => $results, 'totals' => $totals]);
 
-
-
-        return response()->json(['report' => 'test']);
+        return response()->json(['report' => $report]);
     }
 }
