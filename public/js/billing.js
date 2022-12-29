@@ -189,16 +189,22 @@ function viewTicket(id, evt)
 	// limit the search to the customer currently viewing
 	axios.get('/pos/billing/ticket/' + id + '?limit_customer_id=' + $billing.customer_bill_customer_id.val()).then((response) => {
 		
-		$billing.customer_tickets_list.html('');
-		$billing.customer_tickets_list.html(response.ticket_headings);
-		$billing.ticket_items_list.html(response.ticket_items);	
+		let ticket = formatTicketRow(response.data.ticket)
+	
+		//$billing.customer_bill_name.html(response.data.customer.display_name);
+		//$billing.customer_tickets_list.html(tickets);
+		$billing.ticket_tbody.html(ticket)
+		$billing.ticket_items_list.html('');
 
-		$("#customer_tickets_list tr").each(function() {
-		
+
+		$("#ticket_tbody tr").each(function() {
+			
 			$(this).vscontext({ menuBlock: 'vs-context-menu', menuType : 'tickets' });
 		
-		});
+		});	
 
+	}).catch(() => {
+		show_note("No ticket was found")
 	});
 
 
@@ -270,25 +276,7 @@ function view_customer_bills(customer_id = '', sort_type = '', evt)
 			{
 				ticket = response.data.tickets[i]
 
-				ticketTotal = ticket.total.toLocaleString('en-US', { minimumFractionDigits: 2})
-				ticket.job ? ticketJob = ticket.job.name : ticketJob = ''
-
-				if(ticket.display_type == 'PAYMENT' || ticket.display_type == 'discount')
-				{
-					typeIndicator = ' &ndash; '
-				} else if(ticket.refund )
-					typeIndicator = 'R ';
-				else
-					typeIndicator = ''
-
-				tickets += `<tr onclick="load_ticket_transactions(${ticket.id}, $(this))" id="printTicket_${ticket.id}">
-				<td style="width: 120px">${ticket.display_id}</td>
-				<td style="width: 200px">${ticket.customer.display_name}</td>
-				<td style="width: 120px">${ticketJob}</td>
-				<td style="width: 140px">${ticket.display_date}</td>
-				<td style="width: 100px; text-align: right">${typeIndicator}$ ${ticketTotal}</td>
-				<td style="padding-left: 70px; width: 124px">${ticket.display_type}</td>
-				</tr>`
+				tickets += formatTicketRow(ticket)
 			}
 
 			$billing.customer_bill_name.html(response.data.customer.display_name);
@@ -358,8 +346,8 @@ function load_ticket_transactions(ticketId, parent_row)
 				<td>${item.id}</td>
 				<td>${item.qty}</td>
 				<td>${item.name}</td>
-				<td>${item.price}</td>
-				<td>${total}</td>
+				<td>${item.price.toLocaleString('en-US', { minimumFractionDigits: 2})}</td>
+				<td>${total.toLocaleString('en-US', { minimumFractionDigits: 2})}</td>
 				</tr>
 				`
 
@@ -602,4 +590,29 @@ function printCustomerStatement(print_tickets = 0)
 
 	location.href = `/pos/billing/print-statement/${id}?startDate=${$billing.bill_start_date.val()}&endDate=${$billing.bill_end_date.val()}&printTickets=${print_tickets}`
 
+}
+
+// helper function used for loading tickets and searching tickets
+
+function formatTicketRow(ticket)
+{
+	let typeIndicator = '';
+
+	let ticketTotal = ticket.total.toLocaleString('en-US', { minimumFractionDigits: 2})
+	ticket.job ? ticketJob = ticket.job.name : ticketJob = ''
+
+	if(ticket.display_type == 'PAYMENT' || ticket.display_type == 'discount')
+		typeIndicator = ' &ndash; '
+	else if(ticket.refund )
+		typeIndicator = 'R ';
+
+
+	return `<tr onclick="load_ticket_transactions(${ticket.id}, $(this))" id="printTicket_${ticket.id}">
+	<td style="width: 120px">${ticket.display_id}</td>
+	<td style="width: 200px">${ticket.customer.display_name}</td>
+	<td style="width: 120px">${ticketJob}</td>
+	<td style="width: 140px">${ticket.display_date}</td>
+	<td style="width: 100px; text-align: right">${typeIndicator}$ ${ticketTotal}</td>
+	<td style="padding-left: 70px; width: 124px">${ticket.display_type}</td>
+	</tr>`
 }
