@@ -10,7 +10,7 @@
 
 	<span style="padding-left: 50px">
 	<input type="date" size="10" maxlength="10" id="billing_list_end_date" title="Last billing date" value="{{ date("Y-m-d") }}" onchange="show_billing_dialog()" /></span> &nbsp; &nbsp; <button type="button" onclick="view_customer_bills('', '', event)">View All Transactions</button> &nbsp; <img id="printAllStatementsCtrl" src="img/document-print.png" style="vertical-align: middle; cursor: pointer" onclick="printAllStatements()" title="Print Statements" /> <img src="img/loading.gif" style="display: none" id="printAllStatementsIndicator" /> &nbsp; <img id="showReportsCtrl" src="img/chart.png" style="vertical-align: middle; cursor: pointer; height: 30px" onclick="show_reports_dialog()" title="Show Aging Report" /> 
-	&nbsp; &nbsp;<input type="text" class="customer_search" maxlength="20" size="20" placeholder="Search Customer" />
+	&nbsp; &nbsp;<input type="search" class="customer_search" maxlength="20" size="20" placeholder="Search Customer" />
 
 	<!-- headings -->
 	<div style="margin-top: 20px; max-width: 800px">
@@ -71,7 +71,7 @@
     </div>
     <div class="col col-auto">
         <!-- <button type="button" onclick="print_customer_statement()" id="print_statement_button">Print Statement</button>-->
-        <input type="text" class="ticket_search" maxlength="15" size="15" placeholder="Find Ticket #" onkeyup="viewTicket(this.value, event)" />
+        <input type="search" class="ticket_search" maxlength="15" size="15" placeholder="Find Ticket #" onkeyup="viewTicket(this.value, event)" />
     </div>
         
     </div>
