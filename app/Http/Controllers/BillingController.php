@@ -131,13 +131,18 @@ class BillingController extends Controller
         return response()->json(['tickets' => $tickets, 'customer' => $customer, 'jobs' => $jobs ?? []]);
     }
 
+    /**
+     * search single ticket by display_id
+     * 
+     * 
+     */
     public function getTicket(Request $request)
     {
         $where = [['display_id', $request->displayId]];
         if($request->limit_customer_id != '')
             $where[] = ['customer_id', $request->limit_customer_id];
 
-        $ticket = Ticket::where($where)->with('items')->first();
+        $ticket = Ticket::where($where)->with(['customer', 'items'])->first();
 
         if(!$ticket)
             abort(404);
