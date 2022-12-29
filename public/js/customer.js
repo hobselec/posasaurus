@@ -59,22 +59,6 @@ $(window).ready(function(){
 			
 	});
 
-	$pos.class_customer_search.bind('click', function()
-	{
-		if($(this).val() == 'Customer Name')
-			$(this).val('').css('color', '#000000');
-			
-
-			
-	});
-
-	$pos.class_customer_search.bind('blur', function()
-	{
-		if($(this).val() == '')
-			$(this).css('color', '#999999').val('Customer Name');	
-
-	});
-
 	
 	// advance to next box on enter key
 	$('#payment_take .trans_info').keyup(function(evt) {
