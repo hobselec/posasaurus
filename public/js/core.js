@@ -169,7 +169,9 @@ $(document).ready(function(){
 	payment_recv_display_balance : $('#payment_recv_display_balance'),
 	payment_recv_hour : $('#payment_recv_hour'),
 	payment_recv_minute : $('#payment_recv_minute'),
-	payment_recv_ampm : $('#payment_recv_ampm')
+	payment_recv_ampm : $('#payment_recv_ampm'),
+
+	customerSelection : {}
   };
   
   window.$editable_item =
@@ -345,7 +347,6 @@ function clear_pos() {
 		$pos.open_transactions.val('').prop('disabled', false);
 		$pos.check_no.prop('disabled', false);
 		$edit_customer.customer_job_edit.val('');
-		$pos.customer_ticket_search.val('Customer Name').css('color', '#999999');
 		$pos.allow_credit.val('0');
 		$pos.discount.val('0');
 		$pos.freight.val('0');

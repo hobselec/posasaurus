@@ -90,7 +90,7 @@ $(document).ready(function() {
 	//
 	//	AUTOCOMPLETE -- BARCODE
 	//
-	$('.ui-autocomplete ul').css('height','100px'); // fix height
+	//$('.ui-autocomplete ul').css('height','100px'); // fix height
 
 	$( "#barcode" ).autocomplete({ delay: 300, minLength: 3, source: 
 		function(request, response)
@@ -180,7 +180,7 @@ $(document).ready(function() {
 				
 				let name = ''
 
-				for(i = 0; i < cdata.length; i++)
+				for(let i = 0; i < cdata.length; i++)
 				{
 					tmpobj = new Object();
 
@@ -340,12 +340,9 @@ $(document).ready(function() {
 		
 	});
 
-	$('#shutdown_dialog').dialog({ title : 'POS Shutdown', autoOpen: false, modal : true, resizable : false, draggable : false, width: 330, height: 400, open : function() {
-	$('.ui-button').css({'font-size' : '80%', 'padding' : '3px'});
-	$('.ui-dialog-titlebar').css('font-size', '80%');
-	//$('#closing_cash').focus();
-
-	}
+	$('#shutdown_dialog').dialog({ title : 'POS Shutdown', 
+		autoOpen: false, modal : true, resizable : false, 
+		draggable : false, width: 330, height: 400
 	});
 
 

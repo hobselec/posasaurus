@@ -370,8 +370,7 @@ function cancel_payment(clear_special)
 	$('#pay_cash').show();
 	
 	$pos.pay_job_id.hide().html('');
-	$pos.customer_ticket_search.val('Customer Name').css('color', '#999999');
-	
+
 	$dialogs.cart_item_description_dialog.hide();
 
 	// clear inputs

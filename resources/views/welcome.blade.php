@@ -101,7 +101,7 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">
-		  <img src="img/payment.png" style="height: 42px; width: 42px; cursor: pointer" id="recv_payment_button" title="Receive Payment" onclick="recv_payment_screen()" alt="Receive Payments" /> &nbsp; 
+		  <img src="img/payment.png" style="height: 42px; width: 42px; cursor: pointer" id="recv_payment_button" title="Receive Payment" onclick="$('#recv_payment_screen').dialog('open')" alt="Receive Payments" /> &nbsp; 
    
 			</a>
         </li>
@@ -429,18 +429,15 @@
 	</table>
 </div>
 
-<div id="recv_payment_screen" style="z-index: 80; width: 400px" class="posdlg">
-	<div style="position: absolute; top: 0"><h3>Payment</h3></div>
-	<div style="text-align: right; margin-bottom: 15px">
-		<img src="img/close.png" onclick="close_recv_payments()" style="cursor: pointer" alt="Close" />
-	</div>
+<div id="recv_payment_screen">
+
 	<input type="hidden" id="payment_recv_customer_id" />
 	Customer Name<br />
-	<input type="text" value="" style="padding: 4px" size="20" maxlength="100" id="payment_recv_search_name" /><br />
+	<input type="search" class="form-control" maxlength="100" id="payment_recv_search_name" /><br />
 	<h3 style="color: brown" id="payment_recv_display_name"></h3>
 	<div id="payment_recv_display_balance" style="color: brown; font-size: 14pt; padding-bottom: 15px"></div>
 	
-	<select style="display: none" id="payment_recv_job_id"></select>
+	<select style="display: none" class="form-select" id="payment_recv_job_id"></select>
 	<p>Date <br />
 	<input type="date" id="payment_recv_date" style="padding: 5px" value="{{ date("Y-m-d") }}" /> <select id="payment_recv_hour"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select> :
 
@@ -448,17 +445,18 @@
 
 	<select id="payment_recv_ampm"><option value="am">AM</option><option value="pm">PM</option></select>
 	
-	<p><select id="payment_recv_method">
-	<option value="">&ndash; Payment Type &ndash;</option>
-	<option value="cash">Cash</option>
-	<option value="check">Check</option>
-	<option value="cc">Credit Card</option>
-	</select>
+	<p>
+		<select id="payment_recv_method" class="form-select">
+		<option value="">&ndash; Payment Type &ndash;</option>
+		<option value="cash">Cash</option>
+		<option value="check">Check</option>
+		<option value="cc">Credit Card</option>
+		</select>
 	</p>
 	<p>Amount: &nbsp; <input type="text" id="payment_recv_amt" size="11" maxlength="11" onkeyup="add_decimals(this, event, 'save_payment_recv')" /></p>
 	<p>Check or Trans # &nbsp; <input type="text" id="payment_recv_extra_info" size="11" maxlength="11" /></p>
 
-	<p><button type="button" onclick="save_payment_recv()">Save Payment</button></p>
+	<p><button type="button" class="btn btn-primary" onclick="save_payment_recv()">Save Payment</button></p>
 </div>
 
 <!-- Catalog Dialog -->

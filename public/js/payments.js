@@ -18,78 +18,70 @@ This file is part of Primitive Point of Sale.
 
 */
 
-function recv_payment_screen()
-{
-	$('.posdlg').hide();
 
-	$('#recv_payment_screen').show();
-	//$pos.open_transactions.prop('disabled',true);
-	$pos.pause_button.prop('disabled',true);
-	$pos.pay_button.prop('disabled',true);
-
-	$payments.payment_recv_hour.val($clock.currentHours);
-	$payments.payment_recv_minute.val($clock.currentMinutes);
-	$payments.payment_recv_ampm.val($clock.ampm);
-
-	$pos.barcode.prop('disabled',true);
-	$payments.payment_recv_search_name.focus();
-
-}
-
-function close_recv_payments()
-{
-	$('#recv_payment_screen').hide();
-	$payments.payment_recv_search_name.show().val('');
-	$payments.payment_recv_display_name.html('');
-	$payments.payment_recv_display_balance.html('');
-	$payments.payment_recv_customer_id.val('');
-	$pos.open_transactions.prop('disabled', false);
-	$pos.pause_button.prop('disabled', false);
-	$pos.pay_button.prop('disabled', false);	
-	$payments.payment_recv_method.val('');
-	$payments.payment_recv_extra_info.val('');
-	$payments.payment_recv_amt.val('');
-	$pos.barcode.prop('disabled', false);
-
-
-}
-
-
-$(document).ready(function(){
+$(function() {
 
 	$payments.payment_recv_customer_id.val('')
 
-	$( "#payment_recv_search_name" ).autocomplete({ minLength: 3, delay : 1200, source: 
-		function(request, response)
+	$('#recv_payment_screen').dialog({ title : 'Payment', 
+		autoOpen: false, modal : true, resizable : false, 
+		draggable : false, width: 520, height: 600, open: function() {
+
+			$payments.payment_recv_hour.val($clock.currentHours);
+			$payments.payment_recv_minute.val($clock.currentMinutes);
+			$payments.payment_recv_ampm.val($clock.ampm);
+		
+			$pos.barcode.prop('disabled',true);
+			$payments.payment_recv_search_name.focus();
+		}, close: function() {
+			$payments.payment_recv_customer_id.val('');
+			$payments.payment_recv_search_name.val('');
+
+			$payments.payment_recv_search_name.show();
+
+			$payments.payment_recv_display_name.html('');
+			$payments.payment_recv_display_balance.html('')
+			$payments.payment_recv_job_id.html('');
+			$payments.payment_recv_job_id.hide()
+		}
+	});
+
+	$( "#payment_recv_search_name" ).autocomplete({ minLength: 3, delay : 500, source: 
+		function(request, acResponse)
 		{
 		
-			$.get('ac_search.php', { 'q' : request.term, 'type' : 'customer' }, 
-			function(cdata)
+			//$.get('ac_search.php', { 'q' : request.term, 'type' : 'customer' }, 
+			axios.get('/pos/customer/search?q=' + request.term + '&showBalances=1').then((response) =>
 			{
+				let cdata = response.data
 
-				myarr = new Array(cdata.items.length);
+				let myarr = new Array(cdata.length);
 				
-				for(i = 0; i < cdata.items.length; i++)
+				for(let i = 0; i < cdata.length; i++)
 				{
 					tmpobj = new Object();
-			
-					tmpobj.label = cdata.items[i].name;
-					tmpobj.value = cdata.items[i].customer_id;
+
+					tmpobj.label = cdata[i].display_name;
+
+					tmpobj.value = cdata[i].id;
+
+					tmpobj.customer = cdata[i]
 				
 					myarr[i] = tmpobj;
 				}
 	
-				response(myarr);
+				acResponse(myarr);
 
-			}, 'json');
+			})
 			
 
 		}, 	open: function() {
-				$('.ui-autocomplete li').css('font-size','60%');
+				//$('.ui-autocomplete li').css('font-size','60%');
 				//$('.ui-autocomplete ul').css('height','100px');
 				
 		}, select: function( event, ui ) {
 
+				$payments.customerSelection = ui.item
 
 				$payments.payment_recv_customer_id.val(ui.item.value);
 				$payments.payment_recv_search_name.val(ui.item.label);
@@ -100,21 +92,19 @@ $(document).ready(function(){
 
 				//ui.item.value = ''; // replace ID var with label so it goes in the box instead
 
-				$.get('modify_customer.php', { 'get_customer_jobs' : '1', 'show_balance' : 1, 'job_cust_id' : ui.item.value }, function(response) 
-				{
-					var payment_job_html = "<option value=\"0\">- Choose Job -</option>";
+				var payment_job_html = "<option value=\"0\">- Choose Job -</option>";
 
-				
-					for(i = 0; i < response.jobs.length; i++)
-					{
-						payment_job_html += "<option value=\"" + response.jobs[i].id + "\">" + response.jobs[i].name + "</option>";
-					}
+				for(let i = 0; i < ui.item.customer.jobs.length; i++)
+				{
+					let job = ui.item.customer.jobs[i]
+					payment_job_html += `<option value="${job.id}">${job.name}</option>`
+				}
 					
-					$payments.payment_recv_display_balance.html("<i>Balance:</i> &nbsp; $ " + response.cur_balance + "");
+				$payments.payment_recv_display_balance.html(`<i>Balance:</i> &nbsp; $ ${ui.item.customer.balance}`)
 					
-					$payments.payment_recv_job_id.html(payment_job_html);					
-					$payments.payment_recv_job_id.show();
-				}, 'json');
+				$payments.payment_recv_job_id.html(payment_job_html);					
+				$payments.payment_recv_job_id.show();
+
 				
 		
 			//alert($payments.payment_recv_search_name.val());

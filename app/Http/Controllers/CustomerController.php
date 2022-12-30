@@ -8,6 +8,8 @@ use DB;
 use App\Models\Customer;
 use App\Models\CustomerJob;
 
+use Carbon\Carbon;
+
 class CustomerController extends Controller
 {
     public function getCustomers(Request $request) {
@@ -39,14 +41,53 @@ class CustomerController extends Controller
 
         $q = $request->q;
 
+        $showBalance = $request->showBalances ?? false;
+
        // $results = DB::select("SELECT first_name, last_name, company, CONCAT(last_name, ' ', first_name, ' ' , mi) AS customer_reverse, CONCAT(first_name, ' ', mi, ' ', last_name) as customer, CONCAT(first_Name, ' ', last_name) AS customer_short, id, tax_exempt, use_company FROM customers HAVING first_name like '$q%' OR last_name like '%$q%' OR customer_short LIKE '$q%' OR customer like '$q%' OR customer_reverse like '$q%' OR company LIKE '%$q%'");
+        $relations = ['jobs'=>function($q) {
+            $q->where('active', true);
+        }];
+
+        $endDate = Carbon::now();
+
+        if($showBalance)
+            $relations = array_merge($relations, ['debts'=>function($q) use($endDate) {
+            $q->where('date', '<=', $endDate);
+            },'payments'=>function($q) use($endDate) {
+                $q->where('date', '<=', $endDate);
+            },'returns'=>function($q) use($endDate) {
+                $q->where('date', '<=', $endDate);
+            }]);
+
         $results = Customer::where('first_name', 'like', $q)
                             ->orWhere('last_name', 'like', $q)
                             ->orWhere('company', 'like', $q)
-                            ->with(['jobs'=>function($q) {
-                                $q->where('active', true);
-                            }])
+                            ->with($relations)
                             ->get();
+
+        $results = $results->map(function($c) use($showBalance) {
+                
+                if($showBalance)
+                    {
+                    $debts = $c->debts->count() > 0 ? $c->debts[0]->sum_total : 0;
+                    $payments = $c->payments->count() > 0 ? $c->payments[0]->sum_total : 0;
+                    $returns = $c->returns->count() > 0 ? $c->returns[0]->sum_total : 0;
+
+                    $balance = number_format($debts - $payments - $returns, 2);
+                } else
+                    $balance = null;
+
+                $obj = ['display_name' => $c->display_name, 
+                        'id' => $c->id,
+                        'balance' => $balance,
+                        'jobs' => $c->jobs];
+
+                return $obj;
+        });
+                
+
+
+              //              ->get();
        
        // first_name like '$q%' OR last_name like '%$q%' OR customer_short LIKE '$q%' OR customer like '$q%' OR customer_reverse like '$q%' OR company LIKE '%$q%'
 
