@@ -73,7 +73,7 @@ class Customer extends Model
 
     public function jobs() {
 
-        return $this->hasMany(CustomerJob::class, 'customer_id', 'id');
+        return $this->hasMany(CustomerJob::class, 'customer_id', 'id')->orderBy('name');
     }
 
     public function getDisplayNameAttribute() {
