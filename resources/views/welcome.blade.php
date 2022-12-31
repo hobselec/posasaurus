@@ -429,7 +429,7 @@
 	</table>
 </div>
 
-<div id="recv_payment_screen">
+<div id="recv_payment_screen" style="display: none">
 
 	<input type="hidden" id="payment_recv_customer_id" />
 	Customer Name<br />
@@ -439,12 +439,8 @@
 	
 	<select style="display: none" class="form-select" id="payment_recv_job_id"></select>
 	<p>Date <br />
-	<input type="date" id="payment_recv_date" style="padding: 5px" value="{{ date("Y-m-d") }}" /> <select id="payment_recv_hour"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select> :
+	<input type="datetime-local" id="payment_recv_date" class="form-control" />
 
-	<input id="payment_recv_minute" type="text" maxlength="2" size="2" style="padding: 5px" />
-
-	<select id="payment_recv_ampm"><option value="am">AM</option><option value="pm">PM</option></select>
-	
 	<p>
 		<select id="payment_recv_method" class="form-select">
 		<option value="">&ndash; Payment Type &ndash;</option>
@@ -453,8 +449,8 @@
 		<option value="cc">Credit Card</option>
 		</select>
 	</p>
-	<p>Amount: &nbsp; <input type="text" id="payment_recv_amt" size="11" maxlength="11" onkeyup="add_decimals(this, event, 'save_payment_recv')" /></p>
-	<p>Check or Trans # &nbsp; <input type="text" id="payment_recv_extra_info" size="11" maxlength="11" /></p>
+	<p>Amount: &nbsp; <input type="text" class="form-control" id="payment_recv_amt" size="11" maxlength="11" onkeyup="add_decimals(this, event, 'save_payment_recv')" /></p>
+	<p>Check or Trans # &nbsp; <input type="text" class="form-control" id="payment_recv_extra_info" size="11" maxlength="11" /></p>
 
 	<p><button type="button" class="btn btn-primary" onclick="save_payment_recv()">Save Payment</button></p>
 </div>

@@ -317,4 +317,40 @@ class BillingController extends Controller
 
         return response()->json(['report' => $report]);
     }
+
+    /**
+     * save payment from payment dialog
+     * 
+     * @param Request $request ['customer_id' : integer, 'date' => date, 'pay_type' : string , 'amount' : float, 'extra_info' :  string, 'job_id' : integer ]
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function savePayment(Request $request)
+    {
+
+        $amount = $request->amount;
+        $extra_info = $request->extra_info;
+
+        $ticket = new Ticket();
+
+        $ticket->save() or abort(500);
+
+        $ticket->display_id = $ticket->id + Config::get('pos.display_id_offset');
+        $ticket->customer_id = $request->customerId;
+        $ticket->payment_type = "payment_" . $request->payType;
+        $ticket->total = $request->amount;
+
+        if($request->payType == 'cc')
+            $ticket->cc_trans_no = $request->extraInfo;
+        else if($request->payTYpe == 'check')
+            $icket->check_no = $request->extraInfo;
+
+        $ticket->date = Carbon::parse($request->date);
+        $ticket->job_id = $request->jobId;
+
+
+        $ticket->save() or abort(500);
+
+
+        return response()->json(['status' => true]);
+    }
 }

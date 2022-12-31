@@ -167,9 +167,6 @@ $(document).ready(function(){
 	payment_recv_job_id : $('#payment_recv_job_id'),
 	payment_recv_button : $('#recv_payment_button'),
 	payment_recv_display_balance : $('#payment_recv_display_balance'),
-	payment_recv_hour : $('#payment_recv_hour'),
-	payment_recv_minute : $('#payment_recv_minute'),
-	payment_recv_ampm : $('#payment_recv_ampm'),
 
 	customerSelection : {}
   };
