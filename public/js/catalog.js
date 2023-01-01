@@ -19,13 +19,13 @@ This file is part of Primitive Point of Sale.
 */
 
 
-
 function show_catalog()
 {
-	$('.posdlg').hide();
 
 	$pos.barcode.prop('disabled', true);
 	$catalog.dialog.show();
+	$pos.mainContainer.hide()
+	$billing.dialog.hide()
 	$catalog.search_name.select().focus();
 
 }
@@ -70,13 +70,13 @@ function search_catalog(v)
 			
 			rows += `<tr id="ct_${dataRow.barcode}">
 					<td>
-						<button type="button" onclick="edit_cat_row($(this), $dataRow.barcode)">Edit</button>
+						<button type="button" onclick="edit_cat_row($(this), ${dataRow.id})">Edit</button>
 					</td>
 					<td>${dataRow.barcode}</td>
 					<td>${dataRow.name}</td>
-					<td>${dataRow.vendor}</td>
-					<td>${dataRow.sku}</td>
-					<td>${dataRow.mft_id}</td>
+					<td>${dataRow.vendor_name}</td>
+					<td>${dataRow.product_id}</td>
+					<td>${dataRow.manufacturer_id}</td>
 					<td>${dataRow.price}</td>
 					<td>${dataRow.qty}</td>
 					</tr>`
@@ -140,29 +140,28 @@ function save_new_item()
 	
 	}
 	
-	$.post('catalog.php', { 'item_name' : item_name, 'item_price' : item_price, 'item_skn' : item_skn }, function(response) {
+	axios.post('/pos/catalog/item', 
+	{ 'item_name' : item_name, 'item_price' : item_price, 'item_skn' : item_skn }).then((response) => {
 	
-		if(response.new_id > 0)
-		{
-			show_note("Item Added");
+
+		show_note("Item Added");
 		
-			if(add_to_cart == 1)
-			{
+		if(add_to_cart == 1)
+		{
 				$pos.barcode.val(response.new_id);
 				lookup_item();
-			}
+		}
 			
-			$catalog.add_item_dialog.hide();
-			$catalog.new_item_price.val('');
-			$catalog.new_item_name.val('');
+		$catalog.add_item_dialog.hide();
+		$catalog.new_item_price.val('');
+		$catalog.new_item_name.val('');
 		
-		} else
-			show_note("Could not add the item");
-	
+		
+
 		if(response.product_id_conflict)
 			alert("A duplicate item exists under this UPC");
 	
-	});
+	})
 	
 
 }
@@ -173,16 +172,6 @@ function edit_cat_row(button_obj, barcode)
 	// 
 	var save = 0;
 	
-	if($('#admin_passwd').val() == '' && $catalog.open_record != 1)
-	{
-		$catalog.pre_barcode = barcode;
-		$catalog.pre_auth_button_obj = button_obj;
-	
-		authenticate('edit_catalog');
-
-		return false;
-	}
-
 
 	if(button_obj.html() == 'Save')
 	{
@@ -218,22 +207,16 @@ function edit_cat_row(button_obj, barcode)
 		
 		}
 		
-		$.post('catalog.php', data, function(response) {
+		axios.put('/pos/catalog/item', data).then((response) => {
 		
-			if(response.status == 0)
-				show_note("Could not save item!");
-			else
-			{	// update values that are formated on the server
 
-				//$('#cat_sku').val(response.skn);
-				//$('#cat_price').val(response.price);
-			
-			}
+			//	show_note("Could not save item!");
+
 		
 			if(response.product_id_conflict)
 				alert("A duplicate item exists under this UPC");
 		
-		}, 'json');
+		})
 	
 		save = 1;
 	

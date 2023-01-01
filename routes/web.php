@@ -71,6 +71,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/payment', [BillingController::class, 'savePayment']);
 
     Route::get('/catalog/search/{term}', [CatalogController::class, 'search']);
+    Route::put('/catalog/item', [CatalogController::class, 'editItem']);
+    Route::post('/catalog/item', [CatalogController::class, 'addItem']);
+
 });
 
 Route::middleware('auth')->get('home', function() {

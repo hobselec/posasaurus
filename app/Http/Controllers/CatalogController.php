@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use DB;
 use Config;
 
+use App\Models\CatalogItem;
+
 class CatalogController extends Controller
 {
     public function search(Request $request)
@@ -14,33 +16,50 @@ class CatalogController extends Controller
         $term = $request->term;
         $use_ws_only = $request->use_ws;
 
+		$results = null;
+
         if(!is_numeric($term))
 	    {
 	
 		// enable this to divide up the database, since no categories have been implemented or 
 		// ways to group search data
-		if(Config::get('pos.use_catalog_filter'))
-			($use_ws_only) ? $ws_switch = ' AND barcode > 100000' : $ws_switch = ' AND barcode < 100000';
-		 else
-			$ws_switch = '';
+		if($request->use_ws) //Config::get('pos.use_catalog_filter'))
+			$results = CatalogItem::whereNotNull('barcode');
+
+		//	($use_ws_only) ? $ws_switch = ' AND barcode > 100000' : $ws_switch = ' AND barcode < 100000';
+		// else
+		//	$ws_switch = '';
 	
 			//	echo "SELECT * FROM catalog WHERE name LIKE '%$skn%'$ws_switch limit $catalog_limit";
-		
+
 		$fraction_regex = "/^[1-9][1-9]?\/[1-8][1-9]?.*$/";
 		$dimension_regex = "/^[1-9][1-9]?x[1-9][1-9]?.*$/";
 		//$cmpd_fraction_regex = "/^
 
-		$query = "SELECT * FROM catalog WHERE name";
+
+		//if(!$resul)
 
 		if(preg_match($fraction_regex, $term) || preg_match($dimension_regex, $term))
-			$query .= " LIKE '$term%' ";
+			$likeQuery = "{$term}%";
+			//$results = $results->where('name', 'like', "{$term}%");
+			//$query .= " LIKE '$term%' ";
 		else
-			$query .= " LIKE '%$term%' ";
+			$likeQuery = "%{$term}%";
+			//$results = $results->where('name', 'like', "%{$term}%");
+			//$query .= " LIKE '%$term%' ";
+		
+		if($results)
+			$results = $results->where('name', 'like', $likeQuery);
+		else
+			$results = CatalogItem::where('name', 'like', $likeQuery);
+		
 
-		$query .= "$ws_switch ORDER BY name DESC LIMIT " . Config::get('pos.catalog_limit');
+		//$query .= "$ws_switch ORDER BY name DESC LIMIT " . Config::get('pos.catalog_limit');
+
+
 // manufacturer_id='$skn'
 
-		$result = DB::select($query);
+		//$result = DB::select($query);
 		
 	}
 	else
@@ -54,11 +73,31 @@ class CatalogController extends Controller
 		}
 
 		
-		$result = $DB::select("SELECT * FROM catalog WHERE barcode='$skn' OR product_id = '$skn'");
+		//$result = $DB::select("SELECT * FROM catalog WHERE barcode='$skn' OR product_id = '$skn'");
+		$results = CatalogItem::where('barcode', $skn)->orWhere('product_id', '$skn');
+
 // OR manufacturer_id='$skn'
 
 	}
 
-        return response()->json($result);
+		$results = $results->orderBy('name', 'desc');
+
+		$limit = Config::get('pos.catalog_limit');
+		if($limit != '')
+			$results = $results->take($limit);
+
+			return response()->json($results->get());
     }
+
+	public function editItem(Request $request)
+	{
+
+		return response()->json();
+	}
+
+	public function addItem(Request $request)
+	{
+
+		return response()->json();
+	}
 }

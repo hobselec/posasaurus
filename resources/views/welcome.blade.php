@@ -455,74 +455,7 @@
 	<p><button type="button" class="btn btn-primary" onclick="save_payment_recv()">Save Payment</button></p>
 </div>
 
-<!-- Catalog Dialog -->
-<div id="catalog_dialog" style="margin: 0; z-index: 195" class="posdlg">
-
-	<div style="position: absolute; top: 0"><span style="font-size: 130%; font-weight: bold; background: #ffffff; -moz-border-radius: 3px; border-radius: 3px">Catalog</span><span style="padding-left: 50px"></span>
-	</div>
-
-	<div style="text-align: right; margin: 0; padding: 0">
-	<img src="img/close.png" onclick="close_catalog()" style="cursor: pointer" alt="Close" />
-	</div>
-
-	<div style="margin-left: 150px; font-size: 130%">Search &nbsp; <input type="text" id="catalog_search_name" size="25" maxlength="30" onkeyup="search_catalog()" /> &nbsp;<img src="img/search.gif" onclick="search_catalog('go')" style="cursor: pointer; vertical-align: bottom" alt="Search Catalog" /> &nbsp; &nbsp; <img title="Add new item" src="img/addnew.gif" style="width: 18px; height: 18px; vertical-align: bottom; cursor: pointer" onclick="add_catalog_item()" alt="Add new item" />
-	<br />
-
-
-	@if(Config::get('pos.use_catalog_filter')) 
-
-	<input type="checkbox" id="catalog_use_wholesaler" /> &nbsp; <label for="catalog_use_wholesaler" class="nice-label"> <small>Search Principal Wholesaler Only   &nbsp;</small></label>
-
-	@else
-	<input type="hidden" id="catalog_use_wholesaler" />
-	@endif
-
-	</div>
-
-	<div id="catalog_headings" style="padding-left: 20px; padding-right: 20px; padding-top: 20px; font-size: 100%; font-weight: bold;">
-		<div style="width: 60px; padding-left: 50px; float: left">SKU</div>
-		<div style="width: 170px; float: left; padding-left: 53px ">Name</div>
-		<div style="width: 150px; float: left; padding-left: 50px ">Vendor</div>
-		<div style="width: 105px; padding-left: 20px; float: left">Barcode</div>
-		<div style="width: 147px; padding-left: 25px; float: left ">Product ID</div>
-		<div style="width: 65px; padding-left: 15px; float: left">Price</div>
-		<div style="width: 50px;  float: left; padding-left: 10px">Qty</div>
-	</div>
-	<br />
-	<div style="margin-top: 2px; height: 375px; overflow-x: hidden; overflow-y: scroll; border-top: 1px solid #000000">
-		<table id="catalog_table" class="table table-striped">
-			<tbody></tbody>
-		</table>
-	</div>
-
-</div>
-
-<!-- Add Catalog Item Dialog -->
-
-<div class="posdlg" id="add_item_dialog" style="-moz-border-radius: 5px; border: 1px solid #000000; z-index: 196; display: none; width: 300px; height:240px; position: absolute; top: 15%; left: 20%; background: #cccccc; padding-left: 5px;" >
-	<div style="text-align: right"><img src="img/close.png" onclick="$catalog.add_item_dialog.hide()" style="cursor: pointer" alt="Close" /></div>
-
-	<div style="top: 5px; position: absolute">
-	Item Name<br />
-	<input type="text" id="new_item_name" size="30" maxlength="30" /><br />
-	Price<br />
-	<input type="text" id="new_item_price" size="10" maxlength="7" onkeyup="add_decimals(this, event, false)" /><br />
-
-	<!--
-	<select id="new_item_category">
-	<option value="">&ndash; Choose Category &ndash;</option>
-	</select>
-	-->
-	Barcode<br />
-	<input type="text" id="new_item_skn" size="14" maxlength="14" />
-	&nbsp; &nbsp; &nbsp; <button type="button" onclick="save_new_item()">Save Item</button><br />
-		<div style="margin-top: 5px; font-size: 80%">
-		<input type="checkbox" id="new_item_to_cart" checked="checked" /> 
-		<label for="new_item_to_cart" class="nice-label">Add to cart &nbsp; </label>
-		</div>
-	</div>
-
-</div>
+@include("layouts.catalog")
 
 
 @include("layouts.dialogs")

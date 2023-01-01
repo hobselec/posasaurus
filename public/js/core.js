@@ -314,7 +314,9 @@ $(document).ready(function(){
 		}
  	});
 
-    $('.ui-dialog-titlebar').css('font-size', '10pt')
+	$catalog.add_item_dialog.dialog({ title : 'New Item', autoOpen: false, modal : true, resizable : false, draggable : true, width: 450, height: 500 });
+
+
 
     //$reports.start_date.datepicker({duration:0});
     //$reports.end_date.datepicker({duration:0});

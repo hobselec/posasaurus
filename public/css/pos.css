@@ -50,23 +50,6 @@ tr.highlight { background-color: #0099ff; color: #ffffff }
 }
 
 
-#catalog_dialog {
-	top: 10%;
-	/*left: 25%;*/
-	width: 90%;
-	position: absolute;
-	display: none;
-	border-radius: 6px;
-	-moz-border-radius: 6px;
-	border: 1px solid #000000;
-	background: #cccccc;
-	font-size: 90%;
-	padding-left: 10px;
-
-	padding-bottom: 10px;
-
-}
-
 
 #billing_container td { padding: 4px }
 #billing_container th { font-weight: normal; text-align: right; padding-right: 100px }

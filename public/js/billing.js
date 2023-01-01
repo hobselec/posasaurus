@@ -24,6 +24,7 @@ function show_billing_dialog()
 
 	$billing.dialog.show() //dialog('open')
 	$pos.mainContainer.hide()
+	$catalog.dialog.hide();
 
 //	$pos.open_transactions.prop('disabled', true);
 	$pos.barcode.prop('disabled', true);
