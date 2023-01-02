@@ -91,13 +91,26 @@ class CatalogController extends Controller
 
 	public function editItem(Request $request)
 	{
+		$item = CatalogItem::where('id', $request->item['id'])->first();
+
+		$item->fill($request->item);
+		$item->save();
 
 		return response()->json();
 	}
 
 	public function addItem(Request $request)
 	{
+		$item = new CatalogItem();
+		$item->name = $request->name;
+		$item->price = $request->price;
+		$item->qty = $request->qty ?? 0;
 
-		return response()->json();
+		if(!is_numeric($request->barcode))
+			$item->barcode = $request->barcode;
+		
+		$item->save();
+
+		return response()->json($item);
 	}
 }

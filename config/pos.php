@@ -6,7 +6,7 @@ return [
 	
 	'tax_state' => 'IL',
 
-	'catalog_limit' => 500, // limit the catalog search to defined number
+	'catalog_limit' => 50, // limit the catalog search to defined number
 
 	// this is the 'noname' account that gets created initially by the install sql file
 	// this value should be fine

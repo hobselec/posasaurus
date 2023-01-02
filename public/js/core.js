@@ -26,6 +26,23 @@ $(document).ready(function(){
 //	$(this).css('border', '1px solid #000000');
 
 //});
+	window.axios.interceptors.response.use(function (response) {
+    // Do something with response data
+
+		return response;
+	}, function (error) {
+	
+	// console.log(error);
+			if(error.response.status == 401 || error.response.status == 405 || error.response.status == 419) // might change this, 405 returns on put method, 302 on post I think
+			{
+
+				Swal.fire('', 'Your session has expired.  You will be sent to the login page', 'error')
+					.then(function() { location.href='/pos/start' });
+					
+				// stop the response
+			}
+	})
+
 
   window.$edit_customer =
   {
@@ -145,6 +162,7 @@ $(document).ready(function(){
   	new_item_name : $('#new_item_name'),
 	new_item_price : $('#new_item_price'),
 	new_item_skn : $('#new_item_skn'),
+	new_item_qty : $('#new_item_qty'),
 	icon : $('#catalog_icon'),
 	dialog : $('#catalog_dialog'),
 	search_name : $('#catalog_search_name'),

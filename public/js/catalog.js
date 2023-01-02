@@ -19,6 +19,7 @@ This file is part of Primitive Point of Sale.
 */
 
 
+
 function show_catalog()
 {
 
@@ -77,7 +78,7 @@ function search_catalog(v)
 					<td>${dataRow.vendor_name}</td>
 					<td>${dataRow.product_id}</td>
 					<td>${dataRow.manufacturer_id}</td>
-					<td>${dataRow.price}</td>
+					<td>${dataRow.price.toFixed(2)}</td>
 					<td>${dataRow.qty}</td>
 					</tr>`
 		
@@ -128,10 +129,12 @@ function save_new_item()
 	var item_name = $catalog.new_item_name.val();
 	var item_price = $catalog.new_item_price.val();
 	var item_skn = $catalog.new_item_skn.val();
-	var add_to_cart = 0;
+	var item_qty = $catalog.new_item_qty.val()
+	var addToCart = false
 
 	//var category = ;
-	($('#new_item_to_cart').prop('checked') == true) ? add_to_cart=1 : add_to_cart=0;
+	if($('#new_item_to_cart').is(':checked'))
+		addToCart = true
 
 	if(item_name == '' || isNaN(item_price))
 	{
@@ -141,32 +144,32 @@ function save_new_item()
 	}
 	
 	axios.post('/pos/catalog/item', 
-	{ 'item_name' : item_name, 'item_price' : item_price, 'item_skn' : item_skn }).then((response) => {
+	{ 'name' : item_name, 'price' : item_price, 'skn' : item_skn, 'qty' : item_qty }).then((response) => {
 	
 
 		show_note("Item Added");
 		
-		if(add_to_cart == 1)
+		if(addToCart)
 		{
-				$pos.barcode.val(response.new_id);
+				$pos.barcode.val(response.id);
 				lookup_item();
 		}
 			
-		$catalog.add_item_dialog.hide();
+		$catalog.add_item_dialog.dialog('close')
+
 		$catalog.new_item_price.val('');
 		$catalog.new_item_name.val('');
-		
+		$catalog.new_item_qty.val('');
 		
 
-		if(response.product_id_conflict)
-			alert("A duplicate item exists under this UPC");
-	
+	}).catch((error) => {
+		show_note("An error occurred")
 	})
 	
 
 }
 
-function edit_cat_row(button_obj, barcode)
+function edit_cat_row(button_obj, id)
 {
 	// save an opened row or open a row for editing
 	// 
@@ -180,12 +183,13 @@ function edit_cat_row(button_obj, barcode)
 	
 		data.barcode = $('#cat_barcode').val();
 		data.name = $('#cat_name').val();
-		data.vendor = $('#cat_vendor').val();
-		data.sku = $('#cat_sku').val();
+		data.vendor_name = $('#cat_vendor').val();
+		data.product_id = $('#cat_sku').val();
 		data.manufacturer_id = $('#cat_manufacturer_id').val();
 		data.price = $('#cat_price').val();
 		data.qty = $('#cat_qty').val();
-		data.edit_item = 1;
+		data.id = id
+
 		
 		if(data.price != '')
 		{
@@ -207,7 +211,7 @@ function edit_cat_row(button_obj, barcode)
 		
 		}
 		
-		axios.put('/pos/catalog/item', data).then((response) => {
+		axios.put('/pos/catalog/item', {item : data }).then((response) => {
 		
 
 			//	show_note("Could not save item!");
