@@ -15,7 +15,7 @@
         <a  href="#">
         <img src="img/jobs.png" title="Customer Jobs" onclick="customer_jobs_dialog()" style="cursor: pointer; width: 42px; height: 42px" alt="Customer Jobs" /> &nbsp;&nbsp;</a>
         <br />
-        
+
         <input type="search" class="customer_search" maxlength="20" size="20" value="Search Customer" style="color: #cccccc"/><br />
 		
         <select size="12" onchange="edit_customer_info(this.value)" id="customer_listing" style="width: 180px">
@@ -46,6 +46,9 @@
 	Phone <span style="padding-left: 120px">Ext</span><br />
 	<input type="text" size="20" maxlength="42" id="phone" /> &nbsp; &nbsp;<input type="text" size="4" maxlength="4" id="phone_ext" /><br />
 	</p>
+    <p>
+        E-mail<br /> <input type="email" maxlength="128" id="edit_email" />
+    </p>
 	List by: 
 	<input type="radio" id="edit_listby_company" name="use_company" /> <label for="edit_listby_company" class="nice-label-radio"> Company</label> 
 	<input type="radio" id="edit_listby_lastname" name="use_company" /> <label for="edit_listby_lastname" class="nice-label-radio">Last name</label><br />

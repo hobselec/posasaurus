@@ -154,7 +154,7 @@ function edit_customer_info(id)
 		$edit_customer.edit_zip.val(response.zip);
 		$edit_customer.phone.val(response.phone);
 		$edit_customer.phone_ext.val(response.phone_ext);	
-	
+		$edit_customer.email.val(response.email)
 	
 	
 		$edit_customer.editing_customer_id.val(id);
