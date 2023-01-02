@@ -18,7 +18,7 @@ This file is part of Primitive Point of Sale.
 
 */
 
-$(document).ready(function() {
+$(function() {
 
 	//$('#ticket_display_id').html($('#ticket_id').val());
 

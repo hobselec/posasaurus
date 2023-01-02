@@ -20,11 +20,7 @@ This file is part of Primitive Point of Sale.
 
 function show_billing_dialog()
 {
-	$('.posdlg').hide();
 
-	$billing.dialog.show() //dialog('open')
-	$pos.mainContainer.hide()
-	$catalog.dialog.hide();
 
 //	$pos.open_transactions.prop('disabled', true);
 	$pos.barcode.prop('disabled', true);

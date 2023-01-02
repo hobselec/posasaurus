@@ -18,11 +18,11 @@ This file is part of Primitive Point of Sale.
 
 */
 
-$(window).ready(function(){
+$(function() {
 
-	var height = screen.height - 240 + 'px';
+//	var height = screen.height - 240 + 'px';
 
-	$('#main_container').css('height',height);
+//	$('#main_container').css('height',height);
 
 	// finalize transaction with amount given
 	$('#cash_given').keyup(function(evt) {
@@ -297,7 +297,7 @@ function save_customer_info()
 
 }
 
-function customerdialog(options)
+function customerDialog(options)
 {
 	if(options == 'reload')
 	{
@@ -334,9 +334,6 @@ function customerdialog(options)
 
 function customer_jobs_dialog()
 {
-	$('.posdlg').hide();
-
-	document.getElementById('customer_dialog').style.display = 'block';
 
 	var cur_cust_id = $edit_customer.customer_sel.val();
 

@@ -19,7 +19,7 @@ This file is part of Primitive Point of Sale.
 */
 
 
-$(document).ready(function(){
+$(function() {
 
 //$('#catalog_headings DIV').each(function() {
 
@@ -557,4 +557,13 @@ function update_clock()
 	
 	window.setTimeout("update_clock()", 60000);
 	
+}
+
+function chgView(activeDiv)
+{
+	let views = [$pos.customer_dialog, $billing.dialog, $catalog.dialog, $pos.mainContainer]
+	views.forEach(v => v.hide())
+	
+	activeDiv.show()
+
 }
