@@ -5,18 +5,20 @@ function contextmenu_add_cart_item_description()
 
     // add the label of the item to confirm we right clicked the right line
     item_line = $cmenu.obj.find('td').eq(3).html();
-	console.log($cmenu.obj)
+
     var itemId = $cmenu.id;
     var description = '';
 
     $pos.cart_item_description_barcode.val(itemId);
     $pos.cart_item_description_label.html(item_line);
-console.log($item_descriptions)
-    for(let i = 0; i < $item_descriptions.length; i++)
+
+    for(let i = 0; i < $pos.cartItems.length; i++)
     {
-		if($item_descriptions[i].id == itemId)
+		let item = $pos.cartItems[i]
+
+		if(item.id == itemId)
 		{
-			description = $item_descriptions[i].description;
+			description = item.notes;
 			break;
 		}
     }

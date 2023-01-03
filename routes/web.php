@@ -42,6 +42,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/ticket/add-item', [TicketController::class, 'addItemToTicket']);
     Route::put('/ticket/set-customer', [TicketController::class, 'setTicketCustomer']);
     Route::put('/ticket/set-options', [TicketController::class, 'setTicketOptions']);
+    Route::put('/ticket/item-description', [TicketController::class, 'addItemDescription']);
+    
     Route::post('/ticket/submit', [TicketController::class, 'submitTicket']);
     Route::delete('/ticket/void/{id}', [TicketController::class, 'voidTicket']);
     Route::put('/ticket/item', [TicketController::class, 'modifyItem']);

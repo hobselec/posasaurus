@@ -149,6 +149,7 @@ $(function() {
 	save_cart_item_description_button : $('#save_cart_item_description_button'),
 
 	jobs : [],
+	cartItems : [],
 	paymentMethodDisplay : $('#payment_method'),
 	paymentMethod : '',
 	postPaymentButton : $('#postpayment_button')
@@ -342,7 +343,7 @@ $(function() {
 	open : function() {
 		let customerId = $cmenu.id
 
-		console.log(customerId)
+		
 	},
 	autoOpen: false, modal : true, resizable : false, draggable : true, width: 450, height: 500 });
 

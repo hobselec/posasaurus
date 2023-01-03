@@ -230,4 +230,17 @@ class TicketController extends Controller
         return response()->json(['ticket' => $ticket]);
     }
 
+    /**
+     * add description to item
+     */
+    public function addItemDescription(Request $request)
+    {
+        $item = TransactionItem::where('id', $request->itemId)->first();
+
+        $item->notes = $request->description;
+        $item->save() or abort(500);
+
+        return response()->json();
+    }
+
 }

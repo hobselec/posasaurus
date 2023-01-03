@@ -59,12 +59,11 @@
 							let ticketId = $(this).data('ticketid')
 							let itemId = $(this).data('itemid')
 
-	
-							if(customerId != '')
+							if(customerId != undefined)
 								$cmenu.id = customerId
-							else if(ticketId != '')
+							else if(ticketId != undefined)
 								$cmenu.id = ticketId
-							else if(itemId != '')
+							else if(itemId != undefined)
 								$cmenu.id = itemId
 
 

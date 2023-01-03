@@ -14,11 +14,12 @@ class TransactionItem extends Model
     protected $table = 'transaction_items';
 
     protected $fillable = [
-        'ticket_id', 'qty', 'price' , 'amount','name', 'product_id', 'catalog_id'
+        'ticket_id', 'qty', 'price' , 'amount','name', 'product_id', 'catalog_id', 'notes'
     ];
 
     public function catalog()
     {
         return $this->belongsTo(CatalogItem::class, 'catalog_id', 'id');
     }
+
 }

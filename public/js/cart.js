@@ -134,6 +134,8 @@ function add_to_cart(cart)
 
 	$pos.cart.html('');
 
+	$pos.cartItems = cart
+
 	let tmpcart = '';
 	let zeroItemWarning = 0; // warn if an item cost is zero
 
@@ -290,40 +292,37 @@ function save_cart_item_description()
 {
 	$pos.save_cart_item_description_button.prop('disabled', true);
 
-    var barcode = $pos.cart_item_description_barcode.val();
+    var itemId = $pos.cart_item_description_barcode.val();
     var description = $pos.cart_item_description_name.val();
 
-    $.post('update_ticket.php', { item_description : 1, ticket_id : $pos.ticket_id.val(), barcode : barcode, description : description }, function(response) {
+    axios.put('/pos/ticket/item-description', { ticket_id : $pos.ticket_id.val(), itemId : itemId, description : description }).then((response) => {
 
 
+		$('#item_description_dialog').modal('toggle')
 
-	if(response.status)
-	{
 	    show_note("Description saved");
 	    $dialogs.cart_item_description_dialog.hide();
 	  //  $dialogs.cart_item_description_name.hide();
 
-	    var found = 0; // see if we need to store this description entry or if it already exists
 
-	    for(i = 0; i < $item_descriptions.length; i++)
+	    for(i = 0; i < $pos.cartItems.length; i++)
  	    {
-		if($item_descriptions[i].barcode == barcode)
-		{
-		    $item_descriptions[i].description = description;
-		    found = 1;
-		    break;
-		}
-    	     }
+			let item = $pos.cartItems[i]
 
-	    if(!found)
-		$item_descriptions.push({'barcode' : barcode, 'description' : description});
+			if(item.id == itemId)
+			{
+				item.notes = description
+				break;
+			}
+    	}
 
-	} else
-	    alert("Could not save the description");
+		$pos.cart_item_description_name.val('');
+		$pos.save_cart_item_description_button.prop('disabled', false);
 
-	$pos.cart_item_description_name.val('');
-	$pos.save_cart_item_description_button.prop('disabled', false);
+		$('#item_description_dialog').modal('hide')
 
-    });
+    }).catch(() => {
+		$('#item_description_dialog').modal('hide')
+	})
 
 }
