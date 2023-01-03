@@ -155,9 +155,7 @@ $(function() {
 	postPaymentButton : $('#postpayment_button')
   };
 
-  // holds a potential description for each item in the cart
-  window.$item_descriptions = { };
-  
+
   window.$catalog =
   {
   	add_item_dialog : $('#add_item_dialog'),
@@ -262,12 +260,21 @@ $(function() {
 
 	reports_dialog : $('#reports_dialog'),
 
+	adjustment : {
+		dialog : $('#billing_adjustment_dialog'),
+		displayName : $('#billing_adjustment_display_name'),
+		refundFormat : $('#billing_adjustment_refund_format'),
+		jobs : $('#service_charge_job_container'),
+		customerId : ''
+	},
+	/*
 	cash_refund_dialog : $('#cash_refund_dialog'),
 	cash_refund_display_name : $('#cash_refund_display_name'),
 	cash_refund_amount : $('#cash_refund_amount'),
 	cash_refund_payment_cash : $('#cash_refund_payment_cash'),
 	cash_refund_payment_check : $('#cash_refund_payment_check'),
 	cash_refund_customer_id : $('#cash_refund_customer_id')
+	*/
   };
 
   window.$cmenu =
@@ -342,8 +349,27 @@ $(function() {
 	$('#billing_adjustment_dialog').dialog({ title : 'Billing Adjustment', 
 	open : function() {
 		let customerId = $cmenu.id
-
 		
+		for(let i = 0; i < $billing.dataRows.length; i++)
+		{
+			if($billing.dataRows[i].id == customerId)
+			{
+
+				$billing.adjustment.displayName.html($billing.dataRows[i].name)
+				break
+			}
+		}
+
+		// todo: add jobs
+
+		$('#billing_adjustment_refund').prop('checked', true)
+		$billing.adjustment.customerId = customerId
+		
+	},
+	close : function() {
+		$billing.adjustment.displayName.html('')
+		$billing.adjustment.refundFormat.show()
+		$billing.adjustment.customerId = ''
 	},
 	autoOpen: false, modal : true, resizable : false, draggable : true, width: 450, height: 500 });
 
