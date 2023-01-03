@@ -61,7 +61,7 @@ function contextmenu_void_transaction()
 
 	// the id of the row is the same as the real id, however, we 
 	// need to reference it by the display id
-	$('#customer_tickets_list tr').each(function() {
+	$('#ticket_tbody tr').each(function() {
 		
 		if($(this).attr('id') == 'printTicket_' + ticketId)
 			{
@@ -69,6 +69,8 @@ function contextmenu_void_transaction()
 			return;
 			}
 	})
+	
+	// todo: change confirm() to sweetalert prompt
 	
 	if(confirm("Void ticket " + display_ticket_id + "?"))
 	{
