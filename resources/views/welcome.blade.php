@@ -401,17 +401,19 @@
 
     <div class="vs-context-menu" style="border-radius: 4px">
 
-		<input type="hidden" id="context_menu_type" />
-		<input type="hidden" id="context_menu_id" />
         <ul>
             <li class="balances_cmenu_action"><a href="javascript:printCustomerStatement()">Print Statement</a></li>
   	    <li class="balances_cmenu_action"><a href="javascript:printCustomerStatement(1)">Print Statement & Tickets</a></li>
             <!--<li class="balances_cmenu_action"><a href="javascript:customerdialog();edit_customer_info(1127);" >Edit Contact</a></li>-->
 	    <li class="balances_cmenu_action"><a href="javascript:alert('not implemented');" >Edit Contact</a></li>
+
+		<!--
 	    <li class="balances_cmenu_action"><a href="javascript:show_service_charge_dialog('svc_charge')" >Add Service Charge...</a></li>
 	    <li class="balances_cmenu_action"><a href="javascript:show_service_charge_dialog('discount')" >Add Discount...</a></li>
 	    <li class="balances_cmenu_action"><a href="javascript:issue_cash_refund('discount')" >Issue Cash Refund...</a></li>
-		    
+		-->    
+		<li class="balances_cmenu_action"><a href="javascript:$('#billing_adjustment_dialog').dialog('open')" >Add Adjustment...</a></li>
+
 	    <li class="ticket_cmenu_action"><a href="javascript:contextmenu_email_invoice()">E-mail Invoice</a></li>
             <li class="ticket_cmenu_action"><a href="javascript:contextmenu_print_invoice()">Print Invoice</a></li>
             <li class="ticket_cmenu_action"><a href="javascript:contextmenu_void_transaction()">Void Transaction</a></li>
@@ -452,9 +454,7 @@ $result = DB::select("SELECT * FROM log WHERE date >= '$date' AND action='open'"
 		}}, open: function(event, ui) {
 				$(".ui-dialog-titlebar-close").hide();
 				$(".ui-button ").css('margin-left' , 'auto').css('margin-right','auto').css('text-align','center');
-				$('.ui-dialog-titlebar').css('font-size', '80%');
-				$('.ui-button').css({'font-size' : '60%', 'padding' : '1px'});
-				
+
 			}
 		});
 		

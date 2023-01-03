@@ -53,8 +53,21 @@
 							$cmenu.row = $(this); // store for changing later
 						*/
 
-							$('#context_menu_id').val($(this).attr('id'));
+							//$('#context_menu_id').val($(this).attr('id'));
 							//$cmenu.id = $(this).attr('id');
+							let customerId = $(this).data('customerid')
+							let ticketId = $(this).data('ticketid')
+							let itemId = $(this).data('itemid')
+
+	
+							if(customerId != '')
+								$cmenu.id = customerId
+							else if(ticketId != '')
+								$cmenu.id = ticketId
+							else if(itemId != '')
+								$cmenu.id = itemId
+
+
 							$cmenu.obj = $(this);
 							//$('#context_menu_action').val(options.actionMethod);
 

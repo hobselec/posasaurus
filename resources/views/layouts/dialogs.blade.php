@@ -2,18 +2,7 @@
 
 -->
 
-<!-- service charge dialog -->
-<div id="service_charge_dialog" style="display: none; font-size: 12pt; z-index: 1000; width: 300px; left: 20%; top: 25%; height: 200px" class="posdlg">
-    <div style="text-align: right">
-    <img src="img/close.png" onclick="close_service_charge_dialog()" style="height: 24px; width: 24px; cursor: pointer" alt="Close" />
-    </div>
-    <b id="special_charge_type">Service Charge:</b><br />
-    <p>Name: &nbsp; <span id="service_charge_name"></span></p>
-    <p style="display: none" id="service_charge_job_container">Job: &nbsp; <select id="service_charge_job_id"></select></p>
-    <p>Amount: &nbsp; <br /><input type="text" class="currency" onkeyup="add_decimals(this, event, 'save_service_charge')" size="8" maxlength="8" id="service_charge_amount" /> <button type="button" onclick="save_service_charge()">Save</button>
-    </p>
-    <input type="hidden" id="service_charge_customer_id" />
-</div>
+
 
 <!-- Reports dialog -->
 <div id="reports_dialog">
@@ -43,31 +32,82 @@ Closing checks: &nbsp; <input type="text" size="8" maxlength="8" id="closing_che
 
 
 <!-- Cart item add description dialog -->
+<!--
 <div id="cart_item_description_dialog" style="display: none; font-size: 12pt; z-index: 1000; width: 330px; left: 20%; top: 25%; height: 200px" class="posdlg">
 <div style="text-align: right">
 <img src="img/close.png" onclick="$dialogs.cart_item_description_dialog.hide()" style="height: 24px; width: 24px; cursor: pointer" alt="Close" />
 </div>
-<b>Add Description:</b><br />
-<span id="cart_item_description_label"></span>
-<p>
-<input type="text" id="cart_item_description_name" size="40" maxlength="128" />
-<br/>
+
 <button type="button" onclick="save_cart_item_description()" id="save_cart_item_description_button">Save</button>
 </p>
-<input type="hidden" id="cart_item_description_barcode" />
+
+</div>
+-->
+
+<div class="modal" tabindex="-1" id="item_description_dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Item Edit</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body ui-front">
+        <b>Add Description:</b><br />
+        <span id="cart_item_description_label"></span>
+        <p>
+        <input type="text" id="cart_item_description_name" class="form-control" maxlength="128" />
+
+        <input type="hidden" id="cart_item_description_barcode" />
+      </div>
+      <div class="modal-footer">
+
+		<button type="button" id="save_item_description_button" class="btn btn-primary" onclick="save_cart_item_description()">Save</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 
 
 <!-- add cash refund dialog -->
-<div id="cash_refund_dialog" style="display: none; font-size: 12pt; z-index: 1000; width: 300px; left: 20%; top: 25%; height: 200px" class="posdlg">
-<div style="text-align: right">
-<img src="img/close.png" onclick="close_cash_refund_dialog()" style="height: 24px; width: 24px; cursor: pointer" alt="Close" /></div>
-<b>Cash Refund:</b><br />
+<div id="billing_adjustment_dialog" style="display: none">
+
+<!-- cash_refund_dialog, close_cash_refund_dialog() -->
 <p>Name: &nbsp; <span id="cash_refund_display_name"></span></p>
-<p>Type: <label for="cash_refund_payment_cash">Cash: <input type="radio" name="cash_refund_type" id="cash_refund_payment_cash" /> </label>&nbsp; <label for="cash_refund_payment_check">Check: <input type="radio" name="cash_refund_type" id="cash_refund_payment_check" /></label>
-<p>Amount: &nbsp; <br /><input type="text" class="currency" onkeyup="add_decimals(this, event, 'save_service_charge')" size="8" maxlength="8" id="cash_refund_amount" /> <button type="button" onclick="save_cash_refund()">Save</button>
+
+<b>Type:</b><br />
+<input type="radio" id="billing_adjustment_refund" name="billing_adjustment_type" /> 
+<label for="billing_adjustment_refund" class="nice-label-radio"> Cash Refund</label> <br>
+<input type="radio" id="billing_adjustment_discount" name="billing_adjustment_type" />
+ <label for="billing_adjustment_discount" class="nice-label-radio">Discount</label><br>
+ <input type="radio" id="billing_adjustment_svccharge" name="billing_adjustment_type" />
+ <label for="billing_adjustment_svccharge" class="nice-label-radio">Service Charge</label>
+
+
+<p>Type (cash refund only): <label for="cash_refund_payment_cash">Cash: <input type="radio" name="cash_refund_type" id="cash_refund_payment_cash" /> </label>&nbsp; <label for="cash_refund_payment_check">Check: <input type="radio" name="cash_refund_type" id="cash_refund_payment_check" /></label>
+<p>Amount: &nbsp; <br />
+<input type="text" class="currency" onkeyup="add_decimals(this, event, 'save_service_charge')" size="8" maxlength="8" id="cash_refund_amount" />
+
+<button type="button" class="btn btn-primary" onclick="saveBillingAdjustment()">Save</button>
+</p>
+
+<p style="display: none" id="service_charge_job_container">
+Job: &nbsp; <select id="service_charge_job_id"></select>
 </p>
 <input type="hidden" id="cash_refund_customer_id" />
 </div>
 
+<!-- service charge dialog -->
+<!--
+<div id="service_charge_dialog" style="display: none; font-size: 12pt; z-index: 1000; width: 300px; left: 20%; top: 25%; height: 200px" class="posdlg">
+    <div style="text-align: right">
+    <img src="img/close.png" onclick="close_service_charge_dialog()" style="height: 24px; width: 24px; cursor: pointer" alt="Close" />
+    </div>
+    <b id="special_charge_type">Service Charge:</b><br />
+    <p>Name: &nbsp; <span id="service_charge_name"></span></p>
+    <p style="display: none" id="service_charge_job_container">Job: &nbsp; <select id="service_charge_job_id"></select></p>
+    <p>Amount: &nbsp; <br /><input type="text" class="currency" onkeyup="add_decimals(this, event, 'save_service_charge')" size="8" maxlength="8" id="service_charge_amount" /> <button type="button" onclick="save_service_charge()">Save</button>
+    </p>
+    <input type="hidden" id="service_charge_customer_id" />
+</div>
+-->

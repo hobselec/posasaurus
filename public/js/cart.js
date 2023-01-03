@@ -140,7 +140,7 @@ function add_to_cart(cart)
 	for(let i = 0; i < cart.length; i++)
 	{
 
-		tmpcart += `<tr id="${cart[i].id}">
+		tmpcart += `<tr id="${cart[i].id}" data-itemid="${cart[i].id}">
 		<td><img onclick="modify_item(${cart[i].id}, 'del', $(this))" style="cursor: pointer; width: 12px; height: 12px" src="img/del.png" /></td>
 		 <td class="qty" onclick="edit_qty($(this), ${cart[i].id})">${cart[i].qty}</td>
 		 <td>

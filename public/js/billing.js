@@ -33,11 +33,13 @@ function show_billing_dialog()
 		let billingTableRows = ''
 		let checked
 
+		$billing.dataRows = rows
+
 		for(let i = 0; i < rows.length; i++)
 		{
 			rows[i].print_statement ? checked = 'checked' : checked = ''
 
-			billingTableRows += `<tr id="printAcct_${rows[i].id}" onclick="view_customer_bills(${rows[i].id}, '', event)">
+			billingTableRows += `<tr id="printAcct_${rows[i].id}" data-customerid="${rows[i].id}" onclick="view_customer_bills(${rows[i].id}, '', event)">
 								<td>
 								<input id="billing${i}" type="checkbox" ${checked} />
 								<label for="billing${i}" class="nice-label"></label>
@@ -62,11 +64,12 @@ function show_billing_dialog()
 		});	
 
 		
-	}, 'json');
+	})
 
 }
 
 // dialog for service charge or discount
+/*
 function show_service_charge_dialog(type)
 {
 	$billing.service_charge_dialog.show();
@@ -146,7 +149,7 @@ function close_service_charge_dialog()
 	$billing.service_charge_job_container.hide();
 	$billing.service_charge_job_id.html('');
 
-}
+}*/
 
 function close_billing_dialog()
 {
@@ -397,15 +400,8 @@ function view_customer_statement()
 	if($billing.customer_bill_customer_id.val() > 0)
 		id = $billing.customer_bill_customer_id.val();
 	else
-	{
-		var customer_ident = $cmenu.id.val();
+		id = $cmenu.id
 		
-		var tmp = customer_ident.split("_");
-		
-		id = tmp[1];
-		
-	}
-
 	// check that dates are not out of sequence
 
 	
@@ -447,6 +443,7 @@ function print_aging_report()
     $.get('aging.php', { print : 1 });
 }
 
+/*
 function issue_cash_refund()
 {
 	var customer_ident = $cmenu.id.val();
@@ -506,7 +503,7 @@ function save_cash_refund()
 
     }, 'json');
 
-}
+}*/
 
 function close_cash_refund_dialog()
 {
@@ -577,10 +574,7 @@ function printCustomerStatement(print_tickets = 0)
 		id = $billing.customer_bill_customer_id.val();
 	else
 	{ // context menu action
-		var customer_ident = $cmenu.id.val();
-		var tmp = customer_ident.split("_");
-
-		id = tmp[1];
+		id = $cmenu.id
 		
 	}
 
@@ -604,7 +598,7 @@ function formatTicketRow(ticket)
 		typeIndicator = 'R ';
 
 
-	return `<tr onclick="load_ticket_transactions(${ticket.id}, $(this))" id="printTicket_${ticket.id}">
+	return `<tr onclick="load_ticket_transactions(${ticket.id}, $(this))" data-ticketid="${ticket.id}" id="printTicket_${ticket.id}">
 	<td style="width: 120px">${ticket.display_id}</td>
 	<td style="width: 200px">${ticket.customer.display_name}</td>
 	<td style="width: 120px">${ticketJob}</td>
@@ -612,4 +606,11 @@ function formatTicketRow(ticket)
 	<td style="width: 100px; text-align: right">${typeIndicator}$ ${ticketTotal}</td>
 	<td style="padding-left: 70px; width: 124px">${ticket.display_type}</td>
 	</tr>`
+}
+
+// for service charge, discount, or cash refunds
+function saveBillingAdjustment()
+{
+
+
 }

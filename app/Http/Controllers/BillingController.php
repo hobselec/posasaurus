@@ -25,7 +25,7 @@ class BillingController extends Controller
         $endDate = Carbon::parse($request->endDate)->endOfDay();
 
         $customer = Customer::
-            with(['debts'=>function($q) use($endDate) {
+            with(['jobs', 'debts'=>function($q) use($endDate) {
             $q->where('date', '<=', $endDate);
             }])
             ->with(['payments'=>function($q) use($endDate) {
@@ -44,7 +44,7 @@ class BillingController extends Controller
 
             $obj = ['name' => $c->display_name, 'id' => $c->id,
                 'balance' => number_format($debts - $payments - $returns, 2),
-                'print_statement' => $c->print_statement];
+                'print_statement' => $c->print_statement, 'jobs' => $c->jobs];
 
             //$c->use_company ? $obj['name'] = $c->company : $obj['name'] = $c->last_name . ', ' . $c->first_name;
 

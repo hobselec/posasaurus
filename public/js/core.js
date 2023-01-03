@@ -239,12 +239,15 @@ $(function() {
 	billing_list_end_date : $('#billing_list_end_date'),
 	print_statement_button : $('#print_statement_button'),
 	viewStatementCtrl : $('#viewStatementCtrl'),
-	service_charge_dialog : $('#service_charge_dialog'),
-	service_charge_amount : $('#service_charge_amount'),
-	service_charge_name : $('#service_charge_name'),
-	service_charge_customer_id : $('#service_charge_customer_id'),
-	service_charge_job_id : $('#service_charge_job_id'),
-	service_charge_job_container : $('#service_charge_job_container'),
+	dataRows : [],
+	
+	//service_charge_dialog : $('#service_charge_dialog'),
+	//service_charge_amount : $('#service_charge_amount'),
+	//service_charge_name : $('#service_charge_name'),
+	//service_charge_customer_id : $('#service_charge_customer_id'),
+	//service_charge_job_id : $('#service_charge_job_id'),
+	//service_charge_job_container : $('#service_charge_job_container'),
+
 	ticket_items_container : $('#billing_ticket_items_container'),
 
 	tickets : [],
@@ -268,8 +271,8 @@ $(function() {
 
   window.$cmenu =
   {
-	id : $('#context_menu_id'),
-	type : $('#context_menu_type'),
+	id : '',
+	type : '',
 	void_ticket_id : 0,
 	row : false, // hold the row for changing the background of the open line
 	row_shade : false, // to tell the striping pattern
@@ -335,6 +338,13 @@ $(function() {
 
 	$catalog.add_item_dialog.dialog({ title : 'New Item', autoOpen: false, modal : true, resizable : false, draggable : true, width: 450, height: 500 });
 
+	$('#billing_adjustment_dialog').dialog({ title : 'Billing Adjustment', 
+	open : function() {
+		let customerId = $cmenu.id
+
+		console.log(customerId)
+	},
+	autoOpen: false, modal : true, resizable : false, draggable : true, width: 450, height: 500 });
 
 
     //$reports.start_date.datepicker({duration:0});
