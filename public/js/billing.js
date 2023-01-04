@@ -18,6 +18,7 @@ This file is part of Primitive Point of Sale.
 
 */
 
+
 function show_billing_dialog()
 {
 
@@ -34,10 +35,21 @@ function show_billing_dialog()
 		let checked
 
 		$billing.dataRows = rows
+		let isCredit = '', displayClass = ''
 
 		for(let i = 0; i < rows.length; i++)
 		{
 			rows[i].print_statement ? checked = 'checked' : checked = ''
+
+			if(rows[i].rawBalance < 0)
+			{
+				isCredit = `CR `
+				displayClass = 'text-success'
+			} else
+			{
+				isCredit = ''
+				displayClass = 'text-danger'
+			}
 
 			billingTableRows += `<tr id="printAcct_${rows[i].id}" data-customerid="${rows[i].id}" onclick="view_customer_bills(${rows[i].id}, '', event)">
 								<td>
@@ -45,8 +57,8 @@ function show_billing_dialog()
 								<label for="billing${i}" class="nice-label"></label>
 								&nbsp; ${rows[i].name}
 								</td>
-								<td style="text-align: right; padding-right: 10px">
-									<div style="display: inline">$ </div>
+								<td style="text-align: right; padding-right: 10px" class="${displayClass}">
+									<div style="display: inline">${isCredit}$ </div>
 									<div style="display: inline; text-align: right">${rows[i].balance}</div>
 								</td>
 								</tr>`
@@ -138,18 +150,7 @@ function save_service_charge()
 	});
 
 }
-
-function close_service_charge_dialog()
-{
-
-	$billing.service_charge_customer_id.val('');
-	$billing.service_charge_amount.val('');
-	$billing.service_charge_dialog.hide();
-	$billing.service_charge_name.html('');
-	$billing.service_charge_job_container.hide();
-	$billing.service_charge_job_id.html('');
-
-}*/
+*/
 
 function close_billing_dialog()
 {
@@ -229,7 +230,7 @@ function view_customer_bills(customer_id = '', sort_type = '', evt)
 	if(sort_type == undefined || sort_type == '')
 		sort_type = 'date_sortimg';
 
-	
+	$billing.customer_bill_name.html('')
 	// blank indicates 'no change' to viewing customer
 	if(customer_id != '-1') 
 	{// || customer_id == 0)
@@ -279,19 +280,28 @@ function view_customer_bills(customer_id = '', sort_type = '', evt)
 				tickets += formatTicketRow(ticket)
 			}
 
-			$billing.customer_bill_name.html(response.data.customer.display_name);
+
 			//$billing.customer_tickets_list.html(tickets);
 			$billing.ticket_tbody.html(tickets)
 			$billing.ticket_items_list.html('');
 
 			let jobs = response.data.jobs
 			let jobsHtml = ''
-			for(let i = 0; i < jobs.length; i++)
+
+			if(customerId == '')
 			{
-				jobsHtml += `<option value="${jobs[i].id}">${jobs[i].name}</option>`
-			}
-			$billing.customer_bill_job_id.html(`<option value="">&ndash; Choose Job &ndash;</option>` + jobsHtml)
+				$billing.customer_bill_job_id.hide()
+				$billing.customer_bill_name.html('')
+			} else
+			{
+				for(let i = 0; i < jobs.length; i++)
+					jobsHtml += `<option value="${jobs[i].id}">${jobs[i].name}</option>`
 			
+				$billing.customer_bill_job_id.html(`<option value="">&ndash; Choose Job &ndash;</option>` + jobsHtml).show()
+console.log(jobsHtml)
+				$billing.customer_bill_name.html(response.data.customer.display_name).show()
+			}
+
 			// changed to image, this doesn't work now, but it won't print anyway
 //			if($billing.customer_bill_customer_id.val() == 0) // no printing except for single customers
 //				$billing.print_statement_button.prop('disabled', true);
@@ -505,15 +515,7 @@ function save_cash_refund()
 
 }*/
 
-function close_cash_refund_dialog()
-{
-    $billing.cash_refund_dialog.hide();
-    $billing.cash_refund_display_name.html('');
-    $billing.cash_refund_payment_cash.prop('checked', true);
-    $billing.cash_refund_customer_id.val('');
-    $billing.cash_refund_amount.val('');
 
-}
 
 //
 // update the billing listing totals next to the provided customer_id
@@ -611,6 +613,9 @@ function formatTicketRow(ticket)
 // for service charge, discount, or cash refunds
 function saveBillingAdjustment()
 {
+	axios.post('/pos/billing/adjustment', data).then((response) => {
 
+		
+	})
 
 }
