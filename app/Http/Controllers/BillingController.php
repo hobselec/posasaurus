@@ -42,8 +42,8 @@ class BillingController extends Controller
             $payments = $c->payments->count() > 0 ? $c->payments[0]->sum_total : 0;
             $returns = $c->returns->count() > 0 ? $c->returns[0]->sum_total : 0;
 
-            $obj = ['name' => $c->display_name, 'id' => $c->id,
-                'balance' => number_format($debts - $payments - $returns, 2),
+            $obj = ['name' => $c->display_name, 'id' => $c->id, 'rawBalance' => ($debts - $payments - $returns),
+                'balance' => number_format(abs($debts - $payments - $returns), 2),
                 'print_statement' => $c->print_statement, 'jobs' => $c->jobs];
 
             //$c->use_company ? $obj['name'] = $c->company : $obj['name'] = $c->last_name . ', ' . $c->first_name;
@@ -118,14 +118,15 @@ class BillingController extends Controller
                             ->get();
 
         if($tickets->count() == 0)
-        $customer = Customer::where('id', $request->id)->first();
+            $customer = Customer::where('id', $request->id)->first();
         else
         {
             $customer = $tickets[0]->customer;
             $jobs = $tickets->map(function($item) {
                     return $item->job;
             });
-            $jobs = $jobs->filter(fn($item) => $item);
+            // remove null jobless tickets and get unique
+            $jobs = $jobs->unique('name')->filter(fn($item) => $item)->values();
         }
 
         return response()->json(['tickets' => $tickets, 'customer' => $customer, 'jobs' => $jobs ?? []]);
@@ -353,4 +354,22 @@ class BillingController extends Controller
 
         return response()->json(['status' => true]);
     }
+
+     /**
+     * add adjustment
+     * 
+     * cash refund, discount, or service charge
+     * 
+     * @param Request $request ['type' => string refund|discount|svc_chg, 'customerId' => int, 'format' => cash|check (only for refund), 'jobId' => int (discount only), 'amount' => float ]
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function addAdjustment(Request $request)
+    {
+        $ticket = new Ticket();
+      
+
+
+        return response()->json(['status' => true]);
+    }
+
 }
