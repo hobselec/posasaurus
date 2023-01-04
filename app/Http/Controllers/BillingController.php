@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Validation\Rule;
 
 use App\Models\Customer;
 use App\Models\Ticket;
@@ -360,16 +361,40 @@ class BillingController extends Controller
      * 
      * cash refund, discount, or service charge
      * 
-     * @param Request $request ['type' => string refund|discount|svc_chg, 'customerId' => int, 'format' => cash|check (only for refund), 'jobId' => int (discount only), 'amount' => float ]
+     * @param Request $request ['type' => string refund|discount|svc_charge, 'customerId' => int, 'format' => cash|check (only for refund), 'jobId' => int (discount only), 'amount' => float ]
      * @return \Illuminate\Http\JsonResponse
      */
     public function addAdjustment(Request $request)
     {
+        $validated = $request->validate([
+            'type' => Rule::in(['discount','svc_charge','refund']),
+            'format' => [Rule::requiredIf($request->type == 'refund'), Rule::in(['cash', 'check'])],
+            'amount' => 'required|numeric',
+            'customerId' => 'required'
+        ]);
+
         $ticket = new Ticket();
       
+        if($request->jobId != '')
+            $ticket->job_id = $request->jobId;
 
+        if($request->type == 'discount' || $request->type == 'svc_charge')
+            $ticket->payment_type == $request->type;
+        else if($request->type == 'refund')
+            $ticket->payment_type = 'acct_' . $request->format;
+        
+        $ticket->date = Carbon::now();
+        $ticket->subtotal = $request->amount;
+        $ticket->total = $request->amount;
+        $ticket->customer_id = $request->customerId;
 
-        return response()->json(['status' => true]);
+        $ticket->save();
+
+        $ticket->display_id = $ticket->id + Config::get('pos.display_id_offset');
+
+        $ticket->save();
+
+        return response()->json($ticket);
     }
 
 }

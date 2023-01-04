@@ -249,7 +249,10 @@ $(function() {
 	adjustment : {
 		dialog : $('#billing_adjustment_dialog'),
 		displayName : $('#billing_adjustment_display_name'),
-		refundFormat : $('#billing_adjustment_refund_format'),
+		//refundFormat : $('#billing_adjustment_refund_format'),
+
+		//type : $("input[name='billing_adjustment_type']")
+
 		jobs : $('#billing_adjustment_job_container'),
 		jobId : $('#billing_adjustment_job_id'),
 		customerId : '',

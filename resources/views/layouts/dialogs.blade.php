@@ -81,19 +81,19 @@ Closing checks: &nbsp; <input type="text" size="8" maxlength="8" id="closing_che
     </p>
 
     <b>Type:</b><br />
-    <input type="radio" id="billing_adjustment_refund" name="billing_adjustment_type"  onclick="$billing.adjustment.refundFormat.show(); $billing.adjustment.jobs.hide()" /> 
+    <input type="radio" id="billing_adjustment_refund" value="refund" name="billing_adjustment_type"  onclick="$billing.adjustment.refundFormat.show(); $billing.adjustment.jobs.hide()" /> 
     <label for="billing_adjustment_refund" class="nice-label-radio"> Cash Refund</label> <br>
-    <input type="radio" id="billing_adjustment_discount" name="billing_adjustment_type"  onclick="$billing.adjustment.refundFormat.hide(); $billing.adjustment.jobs.show()" />
+    <input type="radio" id="billing_adjustment_discount" value="discount" name="billing_adjustment_type"  onclick="$billing.adjustment.refundFormat.hide(); $billing.adjustment.jobs.show()" />
     <label for="billing_adjustment_discount" class="nice-label-radio"> Discount</label><br>
-    <input type="radio" id="billing_adjustment_svccharge" name="billing_adjustment_type" onclick="$billing.adjustment.refundFormat.hide(); $billing.adjustment.jobs.hide()" />
+    <input type="radio" id="billing_adjustment_svccharge" value="svc_charge" name="billing_adjustment_type" onclick="$billing.adjustment.refundFormat.hide(); $billing.adjustment.jobs.hide()" />
     <label for="billing_adjustment_svccharge" class="nice-label-radio"> Service Charge</label>
 
 
     <p class="mt-2" id="billing_adjustment_refund_format">Refund Format: 
         <label for="cash_refund_payment_cash">
-            <input type="radio" name="cash_refund_type" id="cash_refund_payment_cash" /> 
+            <input type="radio" name="billing_adjustment_refund_format" id="cash_refund_payment_cash" value="cash" /> 
             &nbsp; <label for="cash_refund_payment_cash" class="nice-label-radio">Cash </label>
-            <input type="radio" name="cash_refund_type" id="cash_refund_payment_check" />
+            <input type="radio" name="billing_adjustment_refund_format" id="cash_refund_payment_check" value="check" />
             &nbsp; <label for="cash_refund_payment_check" class="nice-label-radio">Check </label>
     </p>
 
