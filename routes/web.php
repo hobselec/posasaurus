@@ -48,6 +48,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/ticket/void/{id}', [TicketController::class, 'voidTicket']);
     Route::put('/ticket/item', [TicketController::class, 'modifyItem']);
     Route::delete('/ticket/item', [TicketController::class, 'deleteItem']);
+    Route::delete('/ticket/{id}', [TicketController::class, 'void']);
 
     Route::post('/journal/open', [JournalController::class, 'open']);
 
@@ -71,6 +72,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/billing/print-statements', [BillingController::class, 'printStatements']);
     Route::get('/billing/aging-report', [BillingController::class, 'agingReport']);
     Route::post('/payment', [BillingController::class, 'savePayment']);
+    Route::post('/billing/adjustment', [BillingController::class, 'addAdjustment']);
 
     Route::get('/catalog/search/{term}', [CatalogController::class, 'search']);
     Route::put('/catalog/item', [CatalogController::class, 'editItem']);

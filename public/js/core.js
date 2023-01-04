@@ -21,11 +21,7 @@ This file is part of Primitive Point of Sale.
 
 $(function() {
 
-//$('#catalog_headings DIV').each(function() {
 
-//	$(this).css('border', '1px solid #000000');
-
-//});
 	window.axios.interceptors.response.use(function (response) {
     // Do something with response data
 
@@ -57,7 +53,7 @@ $(function() {
 	edit_state : $('#edit_state'),
 	edit_zip : $('#edit_zip'),
 	edit_phone : $('#edit_phone'),
-	editing_customer_id : $('#editing_customer_id'),
+	id : '',
 	edit_email : $('#edit_email'),
 	edit_tax_exempt : $('#edit_tax_exempt'),
 	edit_allow_credit: $('#edit_allow_credit'),
@@ -65,6 +61,7 @@ $(function() {
 	edit_listby_company : $('#edit_listby_company'),
 	edit_listby_lastname : $('#edit_listby_lastname'),
 	save_customer_button : $('#save_customer_button'),
+	email : $('#edit_email'),
 	customer_sel : $('#customer_listing'),
 	customer_job_listing : $('#customer_job_listing'),
 	customer_edit_cell : $('#customer_edit_cell'),
@@ -91,7 +88,6 @@ $(function() {
 	discount_icon : $('#discount_icon'),
 	freight_icon : $('#freight_icon'),
 	labor_icon : $('#labor_icon'),
-	//notify : $("#notify_container"),
 	barcode : $("#barcode"),
 	curItemId : '',
 	ticket_id : $("#ticket_id"),
@@ -131,8 +127,6 @@ $(function() {
 	previous_decimal : 0, // binary if last value had the decimal
 	closing_cash : $('#closing_cash'),
 	closing_checks : $('#closing_checks'),
-	authenticate_action : '',
-	progress_bar_interval : 0,
 	useLabelPrinter : 0,
 	useAutoDecimal : 0,
 	printReceiptChkbox : $('#printReceiptChkbox'),
@@ -239,13 +233,6 @@ $(function() {
 	print_statement_button : $('#print_statement_button'),
 	viewStatementCtrl : $('#viewStatementCtrl'),
 	dataRows : [],
-	
-	//service_charge_dialog : $('#service_charge_dialog'),
-	//service_charge_amount : $('#service_charge_amount'),
-	//service_charge_name : $('#service_charge_name'),
-	//service_charge_customer_id : $('#service_charge_customer_id'),
-	//service_charge_job_id : $('#service_charge_job_id'),
-	//service_charge_job_container : $('#service_charge_job_container'),
 
 	ticket_items_container : $('#billing_ticket_items_container'),
 
@@ -254,7 +241,6 @@ $(function() {
 	printAllStatementsCtrl : $('#printAllStatementsCtrl'),
 	printAllStatementsIndicator : $('#printAllStatementsIndicator'),
 
-	special_charge_type : $('#special_charge_type'),
 	//statement : $('#statement_view_dialog'),
 	statement_contents : $('#statement_contents'),
 
@@ -264,17 +250,12 @@ $(function() {
 		dialog : $('#billing_adjustment_dialog'),
 		displayName : $('#billing_adjustment_display_name'),
 		refundFormat : $('#billing_adjustment_refund_format'),
-		jobs : $('#service_charge_job_container'),
-		customerId : ''
+		jobs : $('#billing_adjustment_job_container'),
+		jobId : $('#billing_adjustment_job_id'),
+		customerId : '',
+		amount : $('#billing_adjustment_amount')
 	},
-	/*
-	cash_refund_dialog : $('#cash_refund_dialog'),
-	cash_refund_display_name : $('#cash_refund_display_name'),
-	cash_refund_amount : $('#cash_refund_amount'),
-	cash_refund_payment_cash : $('#cash_refund_payment_cash'),
-	cash_refund_payment_check : $('#cash_refund_payment_check'),
-	cash_refund_customer_id : $('#cash_refund_customer_id')
-	*/
+
   };
 
   window.$cmenu =
@@ -356,6 +337,13 @@ $(function() {
 			{
 
 				$billing.adjustment.displayName.html($billing.dataRows[i].name)
+
+				let jobs = `<option value="">&ndash;</option>`
+				$billing.dataRows[i].jobs.forEach(item => {
+					jobs += `<option value="${item.id}">${item.name}</option>`
+				})
+
+				$billing.adjustment.jobId.html(jobs)
 				break
 			}
 		}
@@ -364,12 +352,15 @@ $(function() {
 
 		$('#billing_adjustment_refund').prop('checked', true)
 		$billing.adjustment.customerId = customerId
-		
+		$billing.adjustment.jobs.hide
+		$billing.adjustment.amount.val('')
+
 	},
 	close : function() {
 		$billing.adjustment.displayName.html('')
 		$billing.adjustment.refundFormat.show()
 		$billing.adjustment.customerId = ''
+		$billing.adjustment.jobId.html('')
 	},
 	autoOpen: false, modal : true, resizable : false, draggable : true, width: 450, height: 500 });
 

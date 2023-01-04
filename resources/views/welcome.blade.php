@@ -235,7 +235,7 @@
 	<td style="padding-top: 20px; padding-left: 200px">
 	# <input type="text" id="barcode" onkeyup="check_enter(this.value, event)" size="60" /> 
 	&nbsp; 
-	<img title="Add new item" src="img/addnew.gif" style="width: 18px; height: 18px; cursor: pointer" onclick="add_catalog_item()" alt="Add item to Catalog" />
+	<img title="Add new item" src="img/addnew.gif" style="width: 18px; height: 18px; cursor: pointer" onclick="$catalog.add_item_dialog.dialog('open')" alt="Add item to Catalog" />
 	</td>
 	<td style="padding-top: 20px; "></td><!--<button type="button" id="lookup_button">Lookup Item</button></td>-->
 	</tr>

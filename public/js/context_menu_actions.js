@@ -1,4 +1,3 @@
-//const { default: axios } = require("axios");
 
 function contextmenu_add_cart_item_description()
 {
@@ -59,29 +58,23 @@ function contextmenu_void_transaction()
 	// warn with ticket id
 	let ticketId = $cmenu.id
 
-	// the id of the row is the same as the real id, however, we 
-	// need to reference it by the display id
-	$('#ticket_tbody tr').each(function() {
-		
-		if($(this).attr('id') == 'printTicket_' + ticketId)
-			{
-			display_ticket_id = $(this).find('td').eq(0).html();
-			return;
-			}
+	let displayTicketId = $cmenu.obj.find('td').eq(0).html()
+	let displayName = $cmenu.obj.find('td').eq(1).html()	
+
+	Swal.fire({
+		title: 'Please Confirm',
+		text: `Void ticket #${displayTicketId} for ${displayName}?`,
+		icon: 'warning',
+		showCancelButton: true
+	}).then((result) => {
+	
+		if(result.isConfirmed) {
+
+			axios.delete('/pos/ticket/' + $cmenu.id).then((response) => {
+
+			})
+		}
 	})
-	
-	// todo: change confirm() to sweetalert prompt
-	
-	if(confirm("Void ticket " + display_ticket_id + "?"))
-	{
-	
-		var ticket_ident = $cmenu.id.val();
-	
-		var tmp = ticket_ident.split("_");
-	
-		// store this for later because auth_return() will need it
-		$cmenu.void_ticket_id = tmp[1];
-	}
 
 }
 

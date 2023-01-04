@@ -83,8 +83,8 @@ function add_customer_form()
 	
 	// unhighlight the select box so to not confuse editing the customer selected
 	// changed from removeProp on 2020-10-26
-	$('#customer_listing option:selected').removeAttr('selected');
-	
+	$('#customer_listing').val('')
+
 	$('#customer_edit_cell').show();
 	$('#customer_jobs_cell').hide();
 
@@ -99,7 +99,7 @@ function add_customer_form()
 	});
 	
 	$edit_customer.edit_active.prop('checked', true);
-	$edit_customer.editing_customer_id.val('0');
+	$edit_customer.id = '0'
 	$edit_customer.edit_last_name.focus();
 
 
@@ -110,7 +110,7 @@ function add_customer_form()
 //
 function edit_customer_info(id)
 {
-	if(id == '' || id == $edit_customer.default_customer_id) // no noname
+	if(id == '' || id == $edit_customer.id) // no noname
 		return false;
 
 	// this loads the job list if the job list is loaded in the right pane
@@ -157,7 +157,7 @@ function edit_customer_info(id)
 		$edit_customer.email.val(response.email)
 	
 	
-		$edit_customer.editing_customer_id.val(id);
+		$edit_customer.id = id
 
 
 		if(response.credit)
@@ -195,17 +195,17 @@ function save_customer_info()
 	var data = new Object();
 	var tmp_label = '';
 
-	($edit_customer.edit_active.prop('checked') == true) ? data.active=1 : data.active=0;
-	($edit_customer.edit_tax_exempt.prop('checked') == true) ? data.tax_exempt=1 : data.tax_exempt=0;
-	($edit_customer.edit_allow_credit.prop('checked') == true) ? data.credit=true : data.credit=false;
+	$edit_customer.edit_active.is(':checked') ? data.active=1 : data.active=0;
+	$edit_customer.edit_tax_exempt.is(':checked') ? data.tax_exempt=1 : data.tax_exempt=0;
+	$edit_customer.edit_allow_credit.is(':checked') ? data.credit=true : data.credit=false;
 	
 
-	if($edit_customer.edit_listby_company.prop('checked'))
+	if($edit_customer.edit_listby_company.is(':checked'))
 		data.use_company = 1;
 	else
 		data.use_company = 0;
 	
-	data.id = $edit_customer.editing_customer_id.val();
+	data.id = $edit_customer.id
 	data.last_name = $edit_customer.edit_last_name.val();
 	data.first_name = $edit_customer.edit_first_name.val();
 	data.mi = $edit_customer.edit_mi.val();
@@ -236,30 +236,25 @@ function save_customer_info()
 
 	axios.post('/pos/customer', { customer: data }).then((response) => {
 	
-		if(response.data.status)
-		{
-			show_note("Information Saved");
+
+		show_note("Information Saved");
 		
-			// if the current customer has an open ticket, reload the ticket
-			if($pos.customer_id.val() == data.customer_id)
-			{
-				var tmpticket = $pos.ticket_id.val();
+		// if the current customer has an open ticket, reload the ticket
+		if($pos.customer_id.val() == data.customer_id)
+		{
+			var tmpticket = $pos.ticket_id.val();
 			
-				clear_pos(tmpticket);
-				chg_ticket(tmpticket);
+			clear_pos(tmpticket);
+			chg_ticket(tmpticket);
 				//$pos.allow_credit = data.allow_credit;
 				
 				//$pos.tax_exempt = data.tax_exempt
 			
 			
-			}
-			
-			if(response.reorder)
-				load_customer_list();
-			
 		}
-		else
-			show_note("Error!");
+			
+		if(response.reorder)
+			load_customer_list();
 			
 		// set editing id in the case of a new customer
 		// and add to select box and set selected
@@ -279,18 +274,14 @@ function save_customer_info()
 			
 			listing_obj.selectedIndex = listing_obj.length - 1;
 		
+			$edit_customer.id = response.id
 		}
-		
-		$edit_customer.editing_customer_id.val(response.customer_id);
+
 	
-	});
+	}).catch(() => {
+		show_note("There was an error.")
+	})
 	
-	
-	$('#customer_edit_cell input').each(function() {
-	
-		$(this).css('background','#ffffff');
-	
-	});
 	
 	//alert(response.active);
 
@@ -314,11 +305,11 @@ function customerDialog(options)
 
 		$('.posdlg').hide();
 		
-		$edit_customer.editing_customer_id.val('');
+		$edit_customer.id = ''
 
 		document.getElementById('customer_dialog').style.display = 'block';
 
-		if($edit_customer.editing_customer_id.val() == '')
+		if($edit_customer.id == '')
 			$edit_customer.save_customer_button.prop('disabled',true);
 	
 
@@ -436,11 +427,11 @@ function close_customerdialog()
 //	$pos.open_transactions.prop('disabled', false);
 	$pos.barcode.prop('disabled', false);
 	
-	$edit_customer.editing_customer_id.val('');
+	$edit_customer.id = ''
 
 	// clear the value give for a new entry, but other IDs can stay when we close the screen
-	if($edit_customer.editing_customer_id.val() == '0')
-		$edit_customer.editing_customer_id.val('');
+	if($edit_customer.id == '0')
+		$edit_customer.id = ''
 
 	// make inputs white if yellowed from clicking "add new customer"
 	$('#customer_edit_cell input').each(function() {
@@ -486,22 +477,22 @@ function load_customer_list(options)
 				$edit_customer.show_inactive = 0; 
 		
 			axios.get('/pos/customer/list?show_inactive=' + $edit_customer.show_inactive)
-				.then( response => 
+				.then( (response) => 
 			{
 				document.getElementById('customer_dialog').style.display = 'block';
 				
-				customer_html = '';
+				let customer_html = '';
 
 				let customerList = response.data.customers
-
+				console.log(typeof customerList)
+console.log(customerList.length)
 			//	customer_html = "<option value=\"\">&ndash; Choose Customer &ndash;</option>";
 			//	customer_html += "<option value=\"\" disabled=\"disabled\"></option>";
 				
-				for(i = 0; i < customerList.length; i++)
+				for(let i = 0; i < customerList.length; i++)
 				{
-
-						customer_html += "<option value=\"" + customerList[i].id + "\">" + customerList[i].company + "</option>";
-						
+					console.log('here')
+					customer_html += `<option value="${customerList[i].id}">${customerList[i].display_name}</option>`
 
 				}
 					
@@ -511,6 +502,6 @@ function load_customer_list(options)
 				//$edit_customer.customer_sel.val($edit_customer.editing_customer_id.val());
 				$edit_customer.list_is_loaded = 1;
 	
-			});
+			})
 
 }
