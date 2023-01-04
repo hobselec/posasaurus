@@ -243,4 +243,17 @@ class TicketController extends Controller
         return response()->json();
     }
 
+    /**
+     * void ticket
+     * 
+     * @param Request $request
+     * @return 
+     */
+    public function void(Request $request)
+    {
+        $ticket = Ticket::where('id', $request->id)->first();
+
+        return response()->json();
+
+    }
 }
