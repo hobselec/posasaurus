@@ -14,13 +14,16 @@ class CustomerController extends Controller
 {
     public function getCustomers(Request $request) {
 
-        $active = '';
-        if($request->show_inactive);
-            $active = "AND active=1";
 
-        $result = DB::select("(SELECT company, id, last_name, first_name FROM customers WHERE use_company=1 $active) UNION (SELECT CONCAT(last_name, ', ', first_name, ' ', mi), id, last_name, first_name FROM customers WHERE use_company=0 $active) ORDER BY company ASC");
 
-        return response()->json(['customers' => $result]);
+       // $result = DB::select("(SELECT company, id, last_name, first_name FROM customers WHERE use_company=1 $active) UNION (SELECT CONCAT(last_name, ', ', first_name, ' ', mi), id, last_name, first_name FROM customers WHERE use_company=0 $active) ORDER BY company ASC");
+       $results = Customer::where('active', true);
+       if($request->show_inactive)
+            $results = $results->orWhere('active', false);
+
+        $customers = $results->get()->sortBy('display_name')->values();
+
+        return response()->json(['customers' => $customers]);
     }
 
     public function getCustomer(Request $request) {
@@ -108,7 +111,7 @@ class CustomerController extends Controller
 
         $customer->save();
 
-        return response()->json(['status'=> true]);
+        return response()->json($customer);
     }
 
     public function saveJob(Request $request)
