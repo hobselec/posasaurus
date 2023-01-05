@@ -51,8 +51,7 @@ $(function() {
 	$( "#payment_recv_search_name" ).autocomplete({ minLength: 3, delay : 500, source: 
 		function(request, acResponse)
 		{
-		
-			//$.get('ac_search.php', { 'q' : request.term, 'type' : 'customer' }, 
+
 			axios.get('/pos/customer/search?q=' + request.term + '&showBalances=1').then((response) =>
 			{
 				let cdata = response.data

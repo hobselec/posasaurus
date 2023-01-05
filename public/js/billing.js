@@ -80,77 +80,6 @@ function show_billing_dialog()
 
 }
 
-// dialog for service charge or discount
-/*
-function show_service_charge_dialog(type)
-{
-	$billing.service_charge_dialog.show();
-
-	var customer_ident = $cmenu.id.val();
-	var tmp = customer_ident.split("_");
-	var customer_id = tmp[1];
-	var display_name = '';
-	var type_indicator = '';
-
-	(type == 'svc_charge') ? type_indicator = 'Service Charge' : type_indicator = 'Discount';
-
-	$.get('modify_customer.php', { customer_id : customer_id, customer_details : 1, show_jobs : 1 }, function(response) {
-
-		if(response.use_company == 1)
-			display_name = response.company;
-		else
-			display_name = response.last_name + ", " + response.first_name + ' ' + response.mi;
-
-		if(type == 'discount') // show jobs
-		{
-		    jobs = response.jobs.jobs;
-		    job_options = "<option value=\"\">-</option>";
-
-		    for(i = 0; i < jobs.length; i++)
-			job_options += "<option value=\"" + jobs[i].id + "\">" + jobs[i].name + "</option>";
-
-
-		    $billing.service_charge_job_id.html(job_options);
-		    $billing.service_charge_job_container.show();
-		   
-		}
-
-		$billing.service_charge_name.html(display_name);
-		$billing.service_charge_customer_id.val(customer_id);
-		$billing.special_charge_type.html(type_indicator);
-		$billing.service_charge_amount.focus();
-		
-	
-	});
-
-}
-
-function save_service_charge()
-{
-
-	var amount = $billing.service_charge_amount.val();
-
-	if(amount.indexOf('.') == '-1' && $pos.useAutoDecimal)
-		amount /= 100;
-
-	var chg_type = $billing.special_charge_type.html();
-	var customer_id = $billing.service_charge_customer_id.val();
-
-	$.post('billing.php', { special_charge : 1, special_charge_type : chg_type, customer_id : customer_id, amount : amount, job_id : $billing.service_charge_job_id.val() }, function(response) {
-	
-		if(response.status)
-		{
-		    show_note(chg_type + " Saved");
-	            refresh_listing_total(customer_id, response.new_balance);
-		    close_service_charge_dialog();
-
-		} else
-		    alert(chg_type + ' could not be saved');
-	
-	});
-
-}
-*/
 
 function close_billing_dialog()
 {
@@ -374,32 +303,7 @@ function load_ticket_transactions(ticketId, parent_row)
 
 }
 
-// update the customer's record on whether to print a statement in the bulk printing routine
-function set_customer_printing_status(customer_id, chkbox)
-{
-	// not sure if needed
-	return
 
-    let x  = chkbox.prop('checked');
-
-    if(x == true)
-    	p_status = 1;
-    else
-    	p_status = 0;
-
-    
-    $.post('modify_customer.php', { set_printing_status : 1, chk_status : p_status, customer_id : customer_id }, function(response) {
-
-	if(!response.status)
-	{
-	    alert("Printing settings could not be saved");
-	    // unset checkbox
-	    status ? chkbox.prop('checked', false) : chkbox.prop('checked', true);
-	}
-
-    }, 'json');
-
-}
 
 // show the bill html on the screen
 function view_customer_statement()
@@ -452,69 +356,6 @@ function print_aging_report()
 {
     $.get('aging.php', { print : 1 });
 }
-
-/*
-function issue_cash_refund()
-{
-	var customer_ident = $cmenu.id.val();
-	var tmp = customer_ident.split("_");
-	var customer_id = tmp[1];
-	var display_name = '';
-
-	$.get('modify_customer.php', { customer_id : customer_id, customer_details : 1, show_jobs : 1 }, function(response) {
-
-		if(response.use_company == 1)
-			display_name = response.company;
-		else
-			display_name = response.last_name + ", " + response.first_name + ' ' + response.mi;
-
-
-		$billing.cash_refund_display_name.html(display_name);
-		$billing.cash_refund_customer_id.val(customer_id);
-		$billing.cash_refund_dialog.show();
-		$billing.cash_refund_amount.focus();
-		
-
-	});
-
-
-}
-
-function save_cash_refund()
-{
-    if(!($billing.cash_refund_payment_cash.prop('checked') || $billing.cash_refund_payment_check.prop('checked')))
-    {
-	show_note("No payment type given!");
-	return false;
-    }
-
-    if(isNaN($billing.cash_refund_amount.val()) || !($billing.cash_refund_amount.val() > 0))
-    {
-	show_note("No payment amount was given!");
-	return false;
-    }
-
-    var customer_id = $billing.cash_refund_customer_id.val();
-    var refund_type = '';
-    $billing.cash_refund_payment_cash.prop('checked') ? refund_type = 'cash' : refund_type = 'check';
-
-    $.post('billing.php', { issue_cash_refund : 1, refund_type : refund_type, amount : $billing.cash_refund_amount.val(), customer_id : customer_id }, function(response) {
-
-	if(response.status)
-	{
-	    show_note("Refund processed");
-	    refresh_listing_total(customer_id, response.new_balance);
-
-	    close_cash_refund_dialog();
-	}
-	else
-	    alert("Could not process refund!");
-
-
-    }, 'json');
-
-}*/
-
 
 
 //

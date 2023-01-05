@@ -188,10 +188,10 @@ function apply_payment_specialoptions()
 
 
 			
-	})//.catch((error) => {
-	//	$('#loading_recv_by').hide();
-	//		show_note("Problem setting special options")
-	//})
+	}).catch((error) => {
+		$('#loading_recv_by').hide();
+			show_note("Problem setting special options")
+	})
 
 
 }
@@ -515,13 +515,10 @@ function post_transaction()
 		if(refund)
 			check_no = 0;
 	
-		//payment_type = 'check';
-	
+
 	}
-	
 
 
-	
 	axios.post('/pos/ticket/submit',
 	 { id : $pos.ticket_id.val(), 
 	 amount_given : amt_given, 
@@ -531,8 +528,6 @@ function post_transaction()
 	  subtotal : $pos.subtotal.html(), 
 	  tax : $pos.tax.html(),
 	   total : total_sale, 
-	 //  refund : refund,
-	 //  recv_by : recv_by 
 	}).then((response) => {
 	
 
@@ -560,28 +555,8 @@ function post_transaction()
 			// todo: disable the save button and hide the dialog when done
 
 	})
-	//.catch((error) {
-//		show_note("Could not finalize the transaction");
-//	})
+	.catch((error) => {
+		show_note("Could not finalize the transaction");
+	})
 
 }
-
-function print_receipt(id, amt_given, cash_back)
-{
-	if(!$pos.useLabelPrinter)
-		return false;
-	
-	//var printers = dymo.label.framework.getPrinters();
-	//printer_index = find_dymo_printer();
-
-	$.get('print_receipt.php', { 'ticket_id' : id, 'payment_amount' : amt_given, 'change_returned' : cash_back }, function(data) {
-	
-/*
-			label = dymo.label.framework.openLabelXml(data);
-
-			label.print(printers[printer_index].name);
-	*/
-	});
-
-}
-
