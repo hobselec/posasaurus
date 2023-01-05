@@ -622,10 +622,10 @@ function saveBillingAdjustment()
 	}
 
 	axios.post('/pos/billing/adjustment', data).then((response) => {
+console.log('here')
+		$billing.adjustment.dialog.dialog('close')
 
-		$billing.adjustment.dialog.modal('hide')
-
-		// todo: update customer balance:
+		// todo: update customer balance, dialog not hiding
 
 	}).catch(() => {
 		show_note("Error adding adjustment")
