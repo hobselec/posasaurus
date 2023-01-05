@@ -484,14 +484,13 @@ function load_customer_list(options)
 				let customer_html = '';
 
 				let customerList = response.data.customers
-				console.log(typeof customerList)
-console.log(customerList.length)
+
 			//	customer_html = "<option value=\"\">&ndash; Choose Customer &ndash;</option>";
 			//	customer_html += "<option value=\"\" disabled=\"disabled\"></option>";
 				
 				for(let i = 0; i < customerList.length; i++)
 				{
-					console.log('here')
+
 					customer_html += `<option value="${customerList[i].id}">${customerList[i].display_name}</option>`
 
 				}
@@ -502,6 +501,8 @@ console.log(customerList.length)
 				//$edit_customer.customer_sel.val($edit_customer.editing_customer_id.val());
 				$edit_customer.list_is_loaded = 1;
 	
+			}).catch(() => {
+				show_note("An error occurred loading the list")
 			})
 
 }

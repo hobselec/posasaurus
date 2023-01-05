@@ -48,6 +48,8 @@ function contextmenu_email_invoice()
 
 	axios.get(`/pos/billing/email-invoice/${ticketId}`).then(() => {
 		show_note('email sent')
+	}).catch((error) => {
+		show_note("An error occurred")
 	})
 
 }
@@ -71,7 +73,9 @@ function contextmenu_void_transaction()
 		if(result.isConfirmed) {
 
 			axios.delete('/pos/ticket/' + $cmenu.id).then((response) => {
-
+				show_note("Ticket voided")
+			}).catch((error) => {
+				show_note("An error occurred")
 			})
 		}
 	})

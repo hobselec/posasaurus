@@ -107,6 +107,8 @@ function search_catalog(v)
 		//$('#catalog_table td').each(function() { $(this).css('border', '1px solid #000000'); });
 		//$('#catalog_headings span').each(function() { $(this).css('border', '1px solid #000000'); });
 	
+	}).catch(() => {
+		show_note("Error searching the catalog")
 	})
 	
 
@@ -220,6 +222,8 @@ function edit_cat_row(button_obj, id)
 			if(response.product_id_conflict)
 				alert("A duplicate item exists under this UPC");
 		
+		}).catch((error) => {
+			show_note("An error occurred saving the item")
 		})
 	
 		save = 1;

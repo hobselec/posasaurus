@@ -474,9 +474,9 @@ function chg_ticket(ticket_id)
 			
 
 			$pos.barcode.focus();
-		})//.catch(() => {  
-		//	show_note("Cannot load ticket")
-	//	});	
+		}).catch(() => {  
+			show_note("Cannot load ticket")
+		});	
 	
 	//add_to_cart(subtotal, cart);
 	

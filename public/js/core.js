@@ -450,8 +450,6 @@ function save_opening_balance()
 
 	axios.post('/pos/journal/open', { amount : amt }).then((response) => {
 		
-			if(response.data.status)
-			{
 				/*
 				$.get('print_opening_journal.php', { amount : amt, printLabel : $pos.useLabelPrinter }, function(data_xml) {
 				
@@ -469,22 +467,13 @@ function save_opening_balance()
 				});
 				*/
 				
-				$('#startup_dialog').dialog('close');
-				$(".ui-dialog-titlebar-close").show(); // add back the close button
-			}
-			else
-			{
-				// blur so add_decimals() doesn't fire again if enter key is pressed after the error message
-				$('#open_cash').blur();
-				alert("could not save the opening balance");
-				
-				window.setTimeout(function() {
-					$('#open_cash').focus();
-				}, 100);
+			$('#startup_dialog').dialog('close');
+			$(".ui-dialog-titlebar-close").show(); // add back the close button
+		
 			
-			}
-			
-		});
+		}).catch(() => {
+			show_note("An error occurred")
+		})
 
 }
 
@@ -534,6 +523,8 @@ function printAllStatementsStart()
 
 
 		
+	}).catch(() => {
+		show_note("An error occurred")
 	})
 
 	//console.log(print_ids);

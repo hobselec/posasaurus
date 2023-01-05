@@ -305,7 +305,7 @@ function save_cart_item_description()
 	  //  $dialogs.cart_item_description_name.hide();
 
 
-	    for(i = 0; i < $pos.cartItems.length; i++)
+	    for(let i = 0; i < $pos.cartItems.length; i++)
  	    {
 			let item = $pos.cartItems[i]
 

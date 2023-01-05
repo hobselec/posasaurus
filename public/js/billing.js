@@ -454,19 +454,24 @@ function formatTicketRow(ticket)
 // for service charge, discount, or cash refunds
 function saveBillingAdjustment()
 {
+	let customerId = $billing.adjustment.customerId
+
 	let data = {
-		customerId : $billing.adjustment.customerId,
+		customerId : customerId,
 		jobId : $billing.adjustment.jobId.val(),
 		format : $("input[name='billing_adjustment_refund_format']:checked").val(),
 		type : $("input[name='billing_adjustment_type']:checked").val(),
 		amount : $billing.adjustment.amount.val()
 	}
 
+
 	axios.post('/pos/billing/adjustment', data).then((response) => {
-console.log('here')
+
+		// todo: update customer balance
+		// refresh_listing_total(customerId, response.newBalance)
+
 		$billing.adjustment.dialog.dialog('close')
 
-		// todo: update customer balance, dialog not hiding
 
 	}).catch(() => {
 		show_note("Error adding adjustment")

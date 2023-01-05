@@ -190,7 +190,7 @@ function apply_payment_specialoptions()
 			
 	}).catch((error) => {
 		$('#loading_recv_by').hide();
-			show_note("Problem setting special options")
+		show_note("Problem setting special options")
 	})
 
 
