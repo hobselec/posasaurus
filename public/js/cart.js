@@ -292,7 +292,7 @@ function save_cart_item_description()
 {
 	$pos.save_cart_item_description_button.prop('disabled', true);
 
-    var itemId = $pos.cart_item_description_barcode.val();
+    var itemId = $pos.cart_item_description_barcode;
     var description = $pos.cart_item_description_name.val();
 
     axios.put('/pos/ticket/item-description', { ticket_id : $pos.ticket_id.val(), itemId : itemId, description : description }).then((response) => {

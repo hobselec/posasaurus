@@ -8,7 +8,7 @@ function contextmenu_add_cart_item_description()
     var itemId = $cmenu.id;
     var description = '';
 
-    $pos.cart_item_description_barcode.val(itemId);
+    $pos.cart_item_description_barcode = itemId;
     $pos.cart_item_description_label.html(item_line);
 
     for(let i = 0; i < $pos.cartItems.length; i++)

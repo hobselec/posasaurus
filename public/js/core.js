@@ -139,7 +139,7 @@ $(function() {
 
 	cart_item_description_name : $('#cart_item_description_name'),
 	cart_item_description_label : $('#cart_item_description_label'),
-	cart_item_description_barcode : $('#cart_item_description_barcode'),
+	cart_item_description_barcode : '',
 	save_cart_item_description_button : $('#save_cart_item_description_button'),
 
 	jobs : [],
@@ -249,7 +249,7 @@ $(function() {
 	adjustment : {
 		dialog : $('#billing_adjustment_dialog'),
 		displayName : $('#billing_adjustment_display_name'),
-		//refundFormat : $('#billing_adjustment_refund_format'),
+		refundFormat : $('#billing_adjustment_refund_format'),
 
 		//type : $("input[name='billing_adjustment_type']")
 

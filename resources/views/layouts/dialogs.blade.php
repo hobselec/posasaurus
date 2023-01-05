@@ -61,7 +61,6 @@ Closing checks: &nbsp; <input type="text" size="8" maxlength="8" id="closing_che
         <p>
         <input type="text" id="cart_item_description_name" class="form-control" maxlength="128" />
 
-        <input type="hidden" id="cart_item_description_barcode" />
       </div>
       <div class="modal-footer">
 
