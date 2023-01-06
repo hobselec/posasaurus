@@ -88,10 +88,7 @@ function close_billing_dialog()
 	$pos.open_transactions.prop('disabled', false);
 	$pos.barcode.prop('disabled', false);
 	$payments.payment_recv_button.prop('disabled', false);
-	$billing.service_charge_dialog.hide();
-	$billing.service_charge_name.html('');
-	$billing.service_charge_customer_id.val('');
-	$billing.service_charge_amount.val('');
+
 }
 
 function close_customer_bill_dialog()
