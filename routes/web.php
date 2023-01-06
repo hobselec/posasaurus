@@ -51,6 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/ticket/{id}', [TicketController::class, 'void']);
 
     Route::post('/journal/open', [JournalController::class, 'open']);
+    Route::post('/journal/close', [JournalController::class, 'close']);
 
     Route::get('/customer/list', [CustomerController::class, 'getCustomers']);
     Route::get('/customer/search', [CustomerController::class, 'searchCustomer']);
