@@ -24,7 +24,7 @@
 
 	<div style="margin-top: 2px; height: 600px; overflow-x: hidden; overflow-y: scroll; border-top: 1px solid #000000">
 		<table id="catalog_table" class="table table-striped">
-            <thead class="bg-light sticky-top">
+            <thead class="bg-light sticky-top" style="z-index: 1">
                 <tr>
                     <th></th>
                     <th>SKU</th>
