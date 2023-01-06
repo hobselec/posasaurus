@@ -18,6 +18,7 @@ This file is part of Primitive Point of Sale.
 
 */
 
+
 $(function() {
 
 	//$('#ticket_display_id').html($('#ticket_id').val());
@@ -602,20 +603,19 @@ function print_end_report()
 
 	if((isNaN(counted_cash) || isNaN(counted_checks)) || counted_cash == '' || counted_checks == '')
 	{
-		alert("Please give the amount of checks and cash");
+		alert("Please provide the amount of checks and cash");
 		return false;
 	}
 
-	$.get('print_journal.php', { 'cash' : counted_cash, 'checks' : counted_checks, 'printLabel' : 1 }, function(data_xml) {
+	axios.post('/pos/journal/close', { 'cash' : counted_cash, 'checks' : counted_checks, 'printLabel' : 1 }).then((response) => {
 	
 			$pos.closing_checks.blur();
 	
-			alert(data_xml);
+			//alert(data_xml);
 			
-			$('#create_backup_button').attr('disabled', false);
-
-	
-	});
+	}).catch(() => {
+		show_note("Error")
+	})
 
 }
 
