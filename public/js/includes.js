@@ -199,7 +199,7 @@ $(function() {
 
 		}, 	open: function() {
 				
-				$('.ui-autocomplete li').css('font-size','60%');
+				//$('.ui-autocomplete li').css('font-size','60%');
 				//$('.ui-autocomplete ul').css('height','100px');
 				
 		}, select: function( event, ui ) {
@@ -208,12 +208,12 @@ $(function() {
 			{
 				$edit_customer.customer_sel.val(ui.item.value);
 				edit_customer_info(ui.item.value);
-				$(this).css('color', '#cccccc').val('Search Customer');
+
 
 			} else if($billing.dialog.css('display') == 'block')
 			{
 				view_customer_bills(ui.item.value);
-				$(this).css('color', '#cccccc').val('Search Customer');
+
 			}
 		}
 	})
