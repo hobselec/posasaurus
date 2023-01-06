@@ -35,6 +35,7 @@ class BillingController extends Controller
             ->with(['returns'=>function($q) use($endDate) {
                 $q->where('date', '<=', $endDate);
             }])
+            ->where('active', true)
             ->get();
 
         $results = $customer->map(function($c) {
