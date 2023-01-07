@@ -29,12 +29,15 @@ class JournalController extends Controller
         $counted_cash = $request->cash;
 
         $startOfDay = Carbon::now()->startOfDay();
+
+        $startOfDay = Carbon::now()->subDays(30)->startOfDay();
+
         $endOfDay = $startOfDay->copy()->endOfDay();
 
         $tickets = Ticket::where('date', '>=', $startOfDay)
                         ->where([['payment_type', '!=', 'VOID'], ['payment_type', '!=', 'discount']])
                         ->whereNotNull('payment_type')
-                        ->with(['customers','job'])
+                        ->with(['customer','job'])
                         ->get();
 
         $total_checks = 0;
@@ -42,11 +45,14 @@ class JournalController extends Controller
         $total_cash = 0;
         $total_sales = 0;
 
+        $output = '';
+
         foreach($tickets as $ticket)
         {
-            $ticketDate = $ticket->date->format('n/d/Y g:i a');
+            $ticketDate = $ticket->date->format('g:i a');
+            $line = $ticket->display_id;
 
-            $ticket->refund ? $refundDeterminator = -1 : $refund_Determinator = 1;
+            $ticket->refund ? $refund_determinator = -1 : $refund_determinator = 1;
 
             $pparts = explode("_", $ticket->payment_type); // check for payment_
 
@@ -130,8 +136,10 @@ class JournalController extends Controller
         }
 
         // COMPARE to opening balance
+        $over_shortcash_prefix = '';
+        $over_shortchecks_prefix = '';
 
-        $result = $DB::select("SELECT * FROM log WHERE date >= $startOfDay AND date <= $endOfDay");
+        $result = DB::select("SELECT * FROM log WHERE date >= '$startOfDay' AND date <= '$endOfDay'");
 
         if(!$result || count($result) == 0)
             $over_short = 'ERR';
@@ -168,8 +176,7 @@ class JournalController extends Controller
                  'os_checks' => $over_shortchecks_prefix . $over_short_checks
             ];
 
-dd(Auth::user());
-        $report = Blade::render("@include('layouts.closing_journal')", ['tickets' => $tickets, 'totals' => $totals]);
+        $report = Blade::render("@include('layouts.closing_journal')", ['date' => $startOfDay->format('m/d/Y g:i a'), 'tickets' => $tickets, 'totals' => $totals]);
         Mail::to(Auth::user()->email)->send(new ReceiptEmail($report));
 
         return response()->json(['status' => true]);
