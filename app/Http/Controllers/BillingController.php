@@ -314,7 +314,12 @@ class BillingController extends Controller
         $customerTotals = $report['customers'];
         $totals = $report['totals'];
 
+        //$customerTotals = usort($customerTotals, fn($a, $b) => $b->name > $a->name);
+        $keys = array_column($customerTotals, 'name');
+        array_multisort($keys, SORT_ASC, $customerTotals);
+
         $results = array_filter($customerTotals, fn($item) => $item->periods[5]->balance > 0);
+
 
         $report = Blade::render("@include('layouts.aging')", ['results' => $results, 'totals' => $totals]);
 
