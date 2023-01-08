@@ -12,8 +12,9 @@
 </style>
 
 <div style="font-size: 14pt; font-weight: bold; margin-left: auto; margin-right: auto; text-align: center">
-Aging Summary as of $todays_date 
-$print_icon &nbsp; <label><input type="checkbox" id="only_show_balances" onclick="show_reports_dialog()" $checked> <label for="only_show_balances" class="nice-label">Balances only</label>
+Aging Summary as of {{ Carbon\Carbon::now()->format('m/d/Y') }}
+&nbsp; <label><input type="checkbox" id="only_show_balances" onclick="show_reports_dialog()">
+ <label for="only_show_balances" class="nice-label" checked> Balances only</label>
 </p>
 </div>
 
