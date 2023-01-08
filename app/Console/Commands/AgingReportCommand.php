@@ -35,7 +35,7 @@ class AgingReportCommand extends Command
        //$customer = Customer::where('active', true)->get();
        ini_set('max_execution_time', 60);
 
-       $endDate = Carbon::now()->endOfDay();
+       $endDate = Carbon::now()->startOfDay();
       //$showOnlylBalance = $request->showOnlyBalances;
 
        $days_ago_30 = $endDate->copy()->subDays(30);
@@ -97,7 +97,7 @@ class AgingReportCommand extends Command
 
                    if(substr($ticket->payment_type, 0, 8) == 'payment_' || $ticket->refund || $ticket->payment_type == 'discount')
                        $periodData->credits += $ticket->total;
-                   else if(($ticket->payment_type == 'acct' && $ticket->refund == 0) || $ticket->payment_type == 'svc_charge' || $ticket->payment_type == 'acct_cash' || $ticket->payment_type == 'acct_check')
+                   else if(($ticket->payment_type == 'acct' && !$ticket->refund) || $ticket->payment_type == 'svc_charge' || $ticket->payment_type == 'acct_cash' || $ticket->payment_type == 'acct_check')
                        $periodData->debts += $ticket->total;
 
                }
