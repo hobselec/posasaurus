@@ -12,6 +12,8 @@ use Illuminate\Queue\SerializesModels;
 
 use Illuminate\Support\Facades\Mail;
 
+use Config;
+
 class ReceiptEmail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
@@ -36,8 +38,8 @@ class ReceiptEmail extends Mailable implements ShouldQueue
     public function envelope()
     {
         return new Envelope(
-            from: new Address(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')),
-            subject: env("APP_NAME") . ' Invoice',
+            from: new Address(Config::get('mail.from.address'), Config::get('mail.from.name')),
+            subject: Config::get('app.name') . ' Invoice',
         );
     }
 
