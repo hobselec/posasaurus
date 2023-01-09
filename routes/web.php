@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth')->get('/start', function () {
+Route::middleware('auth')->get('/', function () {
     return view('welcome');
 });
 
