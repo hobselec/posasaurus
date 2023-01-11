@@ -487,6 +487,9 @@ $(function() {
 
 		response.data.tickets.forEach(item => {
 
+			if(!item.customer)
+				item.customer = { display_name : 'NONAME' }
+
 			ticketRows += `<option value="${item.id}" style="padding: 5px">#${item.display_id} - ${item.customer.display_name}</option>`
 
 		})
