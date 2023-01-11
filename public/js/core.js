@@ -146,7 +146,8 @@ $(function() {
 	cartItems : [],
 	paymentMethodDisplay : $('#payment_method'),
 	paymentMethod : '',
-	postPaymentButton : $('#postpayment_button')
+	postPaymentButton : $('#postpayment_button'),
+	paymentDialogTotal : $('#payment_dialog_total')
   };
 
 
@@ -386,6 +387,7 @@ function clear_pos() {
 		$pos.customer_display_name.html('');
 		$pos.customer_id.val('');
 		$pos.display_total.html('');
+		$pos.paymentDialogTotal.html('')
 		$pos.cash_given.val('');
 		$pos.check_no.val('');
 		$pos.cc_trans_no.val('');

@@ -184,7 +184,8 @@ function apply_payment_specialoptions()
 
 
 			$pos.tax.html(response.data.ticket.tax);
-			$pos.display_total.html(response.data.ticket.total);		
+			$pos.display_total.html(response.data.ticket.total);
+			$pos.paymentDialogTotal.html($pos.display_total.html())	
 
 
 			

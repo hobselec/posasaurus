@@ -342,13 +342,22 @@
 				<span id="take_check" style="display: none">Check #: &nbsp;<input type="text" class="trans_info" id="check_no" size="10" maxlength="11" style="padding: 5px" /></span><br />
 				<span id="take_cc" style="display: none">Trans. #: &nbsp;<input type="text" class="trans_info" id="cc_trans_no" size="10" maxlength="11" style="padding: 5px" />
 				</span>
-				<p></p>
-				<br />
-				<span id="take_cash" style="display: none">Amount Received: &nbsp;<input type="text" id="cash_given" size="5" maxlength="9" style="padding: 5px" /></span><br />
 
+
+				<div class="mt-2" id="take_cash" style="display: none">Amount Received: &nbsp;
+					<input type="text" id="cash_given" size="5" maxlength="9" style="padding: 5px" />
+				</div>
+
+				<!-- not being used -->
+				<span style="display: none">
 				<input type="checkbox" id="printReceiptChkbox" checked="checked" />
 				<label for="printReceiptChkbox" class="nice-label"> Print Receipt: </label>
-			
+				</span>
+
+				<p>
+					<h5>Total: $<span id="payment_dialog_total"></span></h5>
+				</p>
+
 			</div>
 
       </div>

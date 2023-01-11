@@ -23,6 +23,7 @@ $(function() {
 
 	//$('#ticket_display_id').html($('#ticket_id').val());
 
+
 	$("#show_inactive").prop('checked', false); // don't want this in clear_pos() i don't think since
 
 	clear_pos();
@@ -378,6 +379,7 @@ function chg_ticket(ticket_id)
 				$pos.subtotal.html(response.subtotal.toLocaleString('en-US', { minimumFractionDigits: 2}));
 				$pos.tax.html(response.tax.toLocaleString('en-US', { minimumFractionDigits: 2}));
 				$pos.display_total.html(response.total.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				$pos.paymentDialogTotal.html($pos.display_total.html())
 				
 				//var tmp_subtotal = response.subtotal.replace(',', '');
 				
@@ -500,6 +502,7 @@ function lookup_item() {
 				$pos.subtotal.html(response.data.ticket.subtotal.toLocaleString('en-US', { minimumFractionDigits: 2}));
 				$pos.tax.html(response.data.ticket.tax.toLocaleString('en-US', { minimumFractionDigits: 2}));
 				$pos.display_total.html(response.data.ticket.total.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				$pos.paymentDialogTotal.html($pos.display_total.html())
 			
 				if($pos.ticket_id.val() == '')
 				{
