@@ -104,10 +104,9 @@ class CustomerController extends Controller
         if($customerData['id'] > 0)
             $customer = Customer::find($customerData['id']);
         else
-        {
             $customer = new Customer();
-            $customer->fill($customerData);
-        }
+
+        $customer->fill($customerData);
 
         $customer->save();
 

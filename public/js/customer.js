@@ -219,6 +219,7 @@ function save_customer_info()
 	
 	data.phone = $edit_customer.phone.val();
 	data.phone_ext = $edit_customer.phone_ext.val();
+	data.email = $edit_customer.email.val()
 
 	// regex the names, basically to avoid spaces
 	var name_regex = /^[A-Za-z]+/;

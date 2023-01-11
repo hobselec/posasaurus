@@ -54,7 +54,6 @@ $(function() {
 	edit_zip : $('#edit_zip'),
 	edit_phone : $('#edit_phone'),
 	id : '',
-	edit_email : $('#edit_email'),
 	edit_tax_exempt : $('#edit_tax_exempt'),
 	edit_allow_credit: $('#edit_allow_credit'),
 	edit_active : $('#edit_active'),
