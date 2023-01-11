@@ -512,10 +512,11 @@ function lookup_item() {
 					let optionRow = `<option value="${response.data.ticket.id}">#${response.data.ticket.display_id} - NONAME</option>`
 						
 					$pos.open_transactions.append(optionRow);
-						
-				}// else if($pos.ticket_id.val() != response.ticket_id)
 
-				add_to_cart(response.data.ticket.items);
+					chg_ticket(response.data.ticket.id)
+						
+				} else // else if($pos.ticket_id.val() != response.ticket_id)
+					add_to_cart(response.data.ticket.items);
 				//chg_ticket($pos.ticket_id.val());
 				
 				$pos.barcode.val('');
