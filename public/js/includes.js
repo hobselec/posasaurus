@@ -260,15 +260,12 @@ $(function() {
 					'id' : $('#ticket_id').val(), 
 					'customer_id' : ui.item.value.id }).then((response) =>
 				{
-// todo: figure out how to set job
-
-
 
 						$pos.customer_display_name.html(ui.item.label);
 						$pos.customer_job_display_name.html('').hide(); // hide job in case changed customer
 						$pos.customer_id.val(ui.item.value.id);
 						$pos.tax_exempt.val(response.data.ticket.customer.tax_exempt);
-						$pos.allow_credit.val(response.data.ticket.customer.allow_credit);
+						$pos.allow_credit.val(response.data.ticket.customer.credit);
 						$pos.customer_ticket_search.val('');
 						$pos.customer_ticket_search.hide();
 						
@@ -369,6 +366,7 @@ function show_note(msg, type='info')
 
 function chg_ticket(ticket_id)
 {
+	clear_pos()
 	
 	axios.get('/pos/ticket/' + ticket_id).then((responsePayload) => {
 

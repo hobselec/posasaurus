@@ -413,6 +413,7 @@ function clear_pos() {
 
 		$pos.recv_by_name.html('')
 		$pos.recv_by_container.hide()
+		$pos.recv_by_input.val('')
 
 		$pos.pause_button.prop('disabled', false);
 
