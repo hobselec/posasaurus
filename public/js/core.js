@@ -33,7 +33,7 @@ $(function() {
 			{
 
 				Swal.fire('', 'Your session has expired.  You will be sent to the login page', 'error')
-					.then(function() { location.href='/pos/start' });
+					.then(function() { location.href='/pos/' });
 					
 				// stop the response
 			}
