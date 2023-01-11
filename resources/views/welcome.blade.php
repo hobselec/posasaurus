@@ -328,7 +328,7 @@
 				</div>
 
 				<div style="margin-top: 5px" id="accts">
-					<input type="text" placeholder="Customer Name" class="class_customer_search form-control" id="customer_ticket_search" size="20" />
+					<input type="text" placeholder="Customer Name" class="class_customer_search form-control" id="customer_ticket_search" size="20" autocomplete="off" />
 					
 					<select id="pay_job_id" class="form-select" onchange="choose_pay_job_id()">
 					</select>
