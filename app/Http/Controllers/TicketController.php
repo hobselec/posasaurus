@@ -89,7 +89,8 @@ class TicketController extends Controller
             $request->job_id == '' ? $jobId = null : $jobId = $request->job_id;
 
             $ticket->job_id = $jobId;
-        }
+        } else
+            $ticket->job_id = null;
         
         // recompute tax if tax exempt
         TicketHelper::computeTotals($ticket);
