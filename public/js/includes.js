@@ -89,7 +89,7 @@ $(function() {
 
 	
 	//
-	//	AUTOCOMPLETE -- BARCODE
+	//	Item to cart add
 	//
 	//$('.ui-autocomplete ul').css('height','100px'); // fix height
 
@@ -509,7 +509,7 @@ function lookup_item() {
 					$pos.ticket_id.val(response.data.ticket.id);
 					//$pos.ticket_display_id.html(response.data.ticket[0].display_id);
 
-					let optionRow = `<option value="${response.data.ticket.id}">#${response.data.ticket[0].display_id} - NONAME</option>`
+					let optionRow = `<option value="${response.data.ticket.id}">#${response.data.ticket.display_id} - NONAME</option>`
 						
 					$pos.open_transactions.append(optionRow);
 						
