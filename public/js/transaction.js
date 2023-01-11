@@ -318,12 +318,19 @@ function show_payment(type)
 
 	$('#payment_take').show();
 	
+	if(type == 'acct')
+	{
+		$pos.take_cc.hide()
+		$pos.take_check.hide()
+		$pos.take_cash.hide()
+	}
+
 	if(type == 'cash' || type == 'check')
 	{
 		if($pos.refund_switch.prop('checked')) // no check # for return
 			$pos.cash_given.val($pos.display_total.html().replace(',', ''));
 	
-		$('#take_cash').show();
+		$pos.take_cash.show()
 		$('#cash_given').focus();
 		$pos.take_cc.hide();
 		$pos.take_check.hide()
@@ -331,12 +338,12 @@ function show_payment(type)
 	
 	if(type == 'check')
 	{
-		$('#take_check').show()
+		$pos.take_check.show()
 		
 		if($pos.refund_switch.prop('checked')) // no check # for return
 			$pos.check_no.prop('disabled', true);
 
-		$('#take_cash').show();
+		$pos.take_cash.show()
 		$pos.check_no.focus();
 		$pos.take_cc.hide();
 	}
@@ -346,8 +353,8 @@ function show_payment(type)
 		$pos.cc_trans_no.val('');
 		$pos.cc_trans_no.focus();
 		$pos.take_check.hide()
-		$('#take_cc').show();
-		$('#take_cash').show();
+		$pos.take_cc.show();
+		$pos.take_cash.show()
 	}
 		
 	$pos.postPaymentButton.attr('disabled', false)
@@ -516,6 +523,12 @@ function post_transaction()
 			check_no = 0;
 	
 
+	}
+	// check again since they can select customer after choosing payment method
+	if($pos.paymentMethod == 'acct' && !$pos.allow_credit.val())
+	{
+		show_note("The customer is not setup for credit");
+		return false;
 	}
 
 
