@@ -18,6 +18,9 @@ use Config;
 use Dompdf\Dompdf;
 use App\Jobs\PrintStatements;
 
+use App\Mail\ReceiptEmail;
+use Illuminate\Support\Facades\Mail;
+
 
 class BillingController extends Controller
 {
@@ -275,16 +278,20 @@ class BillingController extends Controller
 
         $invoices = StatementHelper::getInvoice($ticket->customer->id, [$request->id]);
 
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml($invoices[0]);
+       // $dompdf = new Dompdf();
+       // $dompdf->loadHtml($invoices[0]);
 
-        $dompdf->render();
+       // $dompdf->render();
 
-        $pdf = $dompdf->output();
+       $status = true;
 
-        // todo:
-        // send e-mail to $ticket->customer->email
-        
+       // //$pdf = $dompdf->output();
+        if($ticket->customer->email != '')
+            Mail::to($ticket->customer->email)->send(new ReceiptEmail($invoices[0]));
+        else
+            $status = false;
+       
+        return response()->json(['status' => $status]);
     }
 
      /**
