@@ -46,8 +46,11 @@ function contextmenu_email_invoice()
 
 	let ticketId = $cmenu.id
 
-	axios.get(`/pos/billing/email-invoice/${ticketId}`).then(() => {
-		show_note('email sent')
+	axios.get(`/pos/billing/email-invoice/${ticketId}`).then((response) => {
+		if(response.data.status)
+			show_note('email sent')
+		else
+			Swal.fire('Error', 'Could not send e-mail.  Customer does not have an e-mail address.', 'error')
 	}).catch((error) => {
 		show_note("An error occurred")
 	})
