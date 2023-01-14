@@ -30,7 +30,7 @@
 	<td>{{ $ticket->job->name  ?? ''}}</td>
 	<td>{{ $ticket->display_id }}</td>
 	<td>{{ $ticket->recv_by }}</td>
-	<td>{{ $ticket->date->format('m/d/Y') }}</td>
+	<td>{{ $ticket->date->format('n/d/Y') }}</td>
 	<td>{{ $ticket->date->format('g:i a') }}</td>
 </tr>
 </table>
