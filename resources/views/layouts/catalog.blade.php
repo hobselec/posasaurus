@@ -7,7 +7,8 @@
 
 	<div style="margin-left: 150px; font-size: 130%"><label>Search &nbsp; 
     <input type="search" class="form-control" id="catalog_search_name" size="25" maxlength="30" onkeyup="search_catalog()" /> 
-    </label> &nbsp;<img src="img/search.gif" onclick="search_catalog('go')" style="cursor: pointer; vertical-align: bottom" alt="Search Catalog" /> &nbsp; &nbsp; 
+    </label>
+	&nbsp;
     <img title="Add new item" src="img/addnew.gif" style="width: 32px; height: 32px; vertical-align: bottom; cursor: pointer" onclick="$catalog.add_item_dialog.dialog('open')" alt="Add new item" />
 	<br />
 
