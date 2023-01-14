@@ -49,28 +49,27 @@
 
 <div id="add_item_dialog" style="display: none">
 
-	<div style="top: 5px; position: absolute">
-	Item Name<br />
-	<input type="text" class="form-control" id="new_item_name" size="30" maxlength="30" /><br />
-	Price<br />
-	<input type="text" class="form-control" id="new_item_price" size="10" maxlength="7" onkeyup="add_decimals(this, event, false)" /><br />
+	<div class="container">
+		Item Name<br />
+		<input type="text" class="form-control" id="new_item_name" size="30" maxlength="30" /><br />
+		Price<br />
+		<input type="text" class="form-control" id="new_item_price" size="10" maxlength="7" onkeyup="add_decimals(this, event, false)" /><br />
 
-	<!--
-	<select id="new_item_category">
-	<option value="">&ndash; Choose Category &ndash;</option>
-	</select>
-	-->
-	Barcode<br />
-	<input type="text" class="form-control" id="new_item_skn" size="14" maxlength="14" />
+		<!--
+		<select id="new_item_category">
+		<option value="">&ndash; Choose Category &ndash;</option>
+		</select>
+		-->
+		Barcode<br />
+		<input type="text" class="form-control" id="new_item_skn" size="14" maxlength="14" />
 
-    Quantity<br />
-	<input type="text" class="form-control" id="new_item_qty" size="14" maxlength="14" />
+		Quantity<br />
+		<input type="text" class="form-control" id="new_item_qty" size="14" maxlength="14" />
 
-    <button type="button" class="btn btn-primary" onclick="save_new_item()">Save Item</button><br />
-		<div style="margin-top: 5px; font-size: 80%">
-		<input type="checkbox" id="new_item_to_cart" checked="checked" /> 
-		<label for="new_item_to_cart" class="nice-label">Add to cart &nbsp; </label>
+		<div class="m-3">
+			<button type="button" id="new_item_save_button" class="btn btn-primary" onclick="save_new_item()">Save Item</button><br />
 		</div>
+
 	</div>
 
 </div>

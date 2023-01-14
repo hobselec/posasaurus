@@ -157,6 +157,7 @@ $(function() {
 	new_item_price : $('#new_item_price'),
 	new_item_skn : $('#new_item_skn'),
 	new_item_qty : $('#new_item_qty'),
+	newItemSaveButton : $('#new_item_save_button'),
 	icon : $('#catalog_icon'),
 	dialog : $('#catalog_dialog'),
 	search_name : $('#catalog_search_name'),
@@ -328,7 +329,14 @@ $(function() {
 		}
  	});
 
-	$catalog.add_item_dialog.dialog({ title : 'New Item', autoOpen: false, modal : true, resizable : false, draggable : true, width: 450, height: 500 });
+	$catalog.add_item_dialog.dialog({ title : 'New Item', autoOpen: false, modal : true, resizable : false, draggable : true, width: 450, height: 500,
+		open : function() {
+			if($pos.cart_container.is(':visible'))
+				$catalog.newItemSaveButton.html('Save and Add to Cart')
+			else
+				$catalog.newItemSaveButton.html('Save Item')
+		} 
+	});
 
 	$('#billing_adjustment_dialog').dialog({ title : 'Billing Adjustment', 
 	open : function() {

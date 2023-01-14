@@ -144,6 +144,10 @@ function save_new_item()
 		return false;
 	
 	}
+
+	let addToCart
+	$pos.cart_container.is(':visible') ? addToCart = true : addToCart = false
+
 	
 	axios.post('/pos/catalog/item', 
 	{ 'name' : item_name, 'price' : item_price, 'skn' : item_skn, 'qty' : item_qty }).then((response) => {
