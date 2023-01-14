@@ -40,15 +40,16 @@ function close_catalog()
 
 t= '';
 
-function search_catalog(v)
+function search_catalog(v = '')
 {
-
+console.log(v)
 	$catalog.open_record = 0; // unset the open records
 	var use_ws = 0; // use wholesaler, can switch data ranges in the database if desired
 	
 
 	if(v != 'go') // wait for additional input before quering server
 	{
+		console.log('wait')
 		clearTimeout(t);
 		t = setTimeout("search_catalog('go')", 500);
 		return false;
@@ -58,6 +59,12 @@ function search_catalog(v)
 		return false;
 
 	($catalog.use_ws.prop('checked') == true) ? use_ws = 1 : use_ws = 0;
+
+	if($catalog.search_name.val() == '')
+	{
+		$catalog.catalog_table.html('')
+		return
+	}
 
 
 	axios.get('/pos/catalog/search/' + $catalog.search_name.val() + '?use_ws=' + use_ws).then((response) => {
