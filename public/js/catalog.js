@@ -132,11 +132,9 @@ function save_new_item()
 	var item_price = $catalog.new_item_price.val();
 	var item_skn = $catalog.new_item_skn.val();
 	var item_qty = $catalog.new_item_qty.val()
-	var addToCart = false
+	var addToCart
 
-	//var category = ;
-	if($('#new_item_to_cart').is(':checked'))
-		addToCart = true
+
 
 	if(item_name == '' || isNaN(item_price))
 	{
@@ -145,7 +143,6 @@ function save_new_item()
 	
 	}
 
-	let addToCart
 	$pos.cart_container.is(':visible') ? addToCart = true : addToCart = false
 
 	
