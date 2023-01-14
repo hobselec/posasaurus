@@ -143,7 +143,8 @@ class TicketController extends Controller
         $validated = $request->validate([
             'total' => 'required|in:' . $ticket->total,
             'subtotal' => 'required|in:' . $ticket->subtotal,
-            'tax' => 'required|in:' . $ticket->tax
+            'tax' => 'required|in:' . $ticket->tax,
+            'payment_type' => 'required'
         ]);
 
         $ticket->payment_type = $request->payment_type;
