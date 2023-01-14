@@ -64,17 +64,19 @@ class CatalogController extends Controller
 	}
 	else
 	{
-
-		if(strlen($skn) == 12) // standard UPC length
+		$skn = $term;
+		if(strlen($skn) >= 12) // standard UPC length
 		{
+			$skuPadding = Config::get('pos.skuPadding');
+
 			// pad skn since catalog import of skn's have left zeros in front
-			while(strlen($skn) < $pos->config->skuPadding)
+			while(strlen($skn) < $skuPadding)
 				$skn = '0' . $skn;
 		}
 
 		
 		//$result = $DB::select("SELECT * FROM catalog WHERE barcode='$skn' OR product_id = '$skn'");
-		$results = CatalogItem::where('barcode', $skn)->orWhere('product_id', '$skn');
+		$results = CatalogItem::where('barcode', $skn)->orWhere('product_id', $skn);
 
 // OR manufacturer_id='$skn'
 
