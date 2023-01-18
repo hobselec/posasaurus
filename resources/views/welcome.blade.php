@@ -230,16 +230,16 @@
 	</tr>
 </table>
 
-<table>
-	<tr>
-	<td style="padding-top: 20px; padding-left: 200px">
-	# <input type="text" id="barcode" onkeyup="check_enter(this.value, event)" size="60" /> 
-	&nbsp; 
-	<img title="Add new item" src="img/addnew.gif" style="width: 18px; height: 18px; cursor: pointer" onclick="$catalog.add_item_dialog.dialog('open')" alt="Add item to Catalog" />
-	</td>
-	<td style="padding-top: 20px; "></td><!--<button type="button" id="lookup_button">Lookup Item</button></td>-->
-	</tr>
-</table>
+
+	<div class="row ml-2 mt-2 p-3 mb-5">
+		<div class="col col-auto">Item # or search </div>
+		<div class="col col-auto">
+			<input class="form-control " type="search" id="barcode" onkeyup="check_enter(this.value, event)" /> 
+		</div>
+		<div class="col col-auto">
+			<img title="Add new item" src="img/addnew.gif" style="width: 18px; height: 18px; cursor: pointer" onclick="$catalog.add_item_dialog.dialog('open')" alt="Add item to Catalog" />
+		</div>
+	</div>
 
 
 
