@@ -18,9 +18,11 @@
         <br />
 
         <input type="search" class="customer_search form-control" maxlength="20" size="20" placeholder="Search Customer" /><br />
-		
-        <select size="12" onchange="edit_customer_info(this.value)" id="customer_listing" class="form-select">
+		<label class="form-label">
+			Customer
+        <select onchange="edit_customer_info(this.value)" id="customer_listing" class="form-select">
         </select>
+		</label>
 		
 	</td>
 
