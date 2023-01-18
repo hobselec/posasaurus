@@ -82,7 +82,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->get('home', function() {
-    return view('home');
+    return view('home')->with(['users' => App\Models\User::all()]);
 });
 
 // these are for breeze I think, which was conflicting with Fortify's 2FA
