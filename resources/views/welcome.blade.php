@@ -127,11 +127,12 @@
 </span>
 
 <!-- Ticket ID and name/job -->
-<div style="margin-top: 20px">
-	<span style="padding-left: 30px; font-size: 180%"># </span>
+<div  class="container">
+	<span class="ps-3" style="font-size: 180%"># </span>
 	<span style="font-size: 200%" id="ticket_display_id"></span>
-	<span style="padding-left: 150px; font-size: 240%; font-weight: bold; color: brown" id="customer_display_name"></span> &nbsp; &nbsp; 
-	<span style="font-size: 110%; color: #996666" id="customer_job_display_name"></span>
+	<span class="ms-5" style="font-size: 240%; font-weight: bold; color: brown" id="customer_display_name"></span> &nbsp; &nbsp; 
+	<br>
+	<span class="ps-3" style="font-size: 110%; color: #996666" id="customer_job_display_name"></span>
 	<span style="font-size: 200%; color: blue" id="refund_indicator"></span>
 </div>
 
@@ -155,27 +156,27 @@
 
 <!--    Cart Headings       -->
 <div class="row">
-	<div class="col col-auto">
+	<div class="col col-lg-9">
 
-<table style="width: 680px; border-collapse: collapse">
-<tr>
-	<th style="width: 50px"></th>
-	<th style="width: 50px">Qty</th>
-	<th style="width: 420px">Item</th>
-	<th style="width: 100px">Price</th>
-	<th style="width: 100px">Amount</th>
-</tr>
-</table>
- 
-<div id="cart_container" style="font-size: 80%; overflow-x: hidden; overflow-y: scroll; margin-left: 10px; height: 300px; background: #ffffff; border: 1px solid #000000; width: 680px">
-  
-	<table id="cart" class="table table-striped">
-		<tbody></tbody>
-	</table>
-  
-</div>
-</div>
-<div class="col col-auto">
+		<div id="cart_container" style="font-size: 80%; overflow-x: hidden; overflow-y: scroll; margin-left: 10px; height: 300px; background: #ffffff; ">
+		
+			<table id="cart" class="table table-striped table-bordered table-sm" style="">
+				<thead class="sticky-top" style="z-index: 1">
+					<tr>
+						<th></th>
+
+						<th>Qty</th>
+						<th>Item</th>
+						<th>Price</th>
+						<th>Amount</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		
+		</div>
+	</div>
+	<div class="col col-auto">
 
 	<div style="float: right; height: 300px; text-align: right; margin-top: 10px; font-size: 120%; margin-right: 5px">
 
@@ -205,30 +206,27 @@
 
 </div> <!-- end row -->
   
-<table>
-	<tr>
-	<td>
+<div class="row mt-3">
 
+<div class="col col-auto">
 		<select id="open_transactions" onchange="chg_ticket(this.value)" class="form-select">
 		<option value="">&ndash; Open Transactions &ndash;</option>
 		<option value="-1" disabled="disabled" style="border-top: 1px dashed #999999"></option>
 		</select>
 
-	</td>
-	<td style="width: 200px; text-align: right">
+</div>
+<div class="col col-auto">
 		<button type="button" onclick="clear_pos()" id="pause_button">Pause Transaction</button>
-	</td>
-	<td style="width: 200px">
+</div>
+<div class="col col-auto">
 		<button type="button" id="clear_button" onclick="clear_ticket()">Void Transaction</button>
-	</td>
-	<td style=" text-align: right">
-
+</div>
+<div class="col col-auto">
 	<button type="button" id="special_options_button" class="btn btn-secondary disabled btn-lg" data-bs-toggle="modal" data-bs-target="#payment_specialoptions_dialog">Special</button> 
 	<button type="button" id="pay_button" class="btn btn-primary disabled btn-lg" data-bs-toggle="modal" data-bs-target="#payment_dialog">PAY</button>
+</div>
 
-	</td>
-	</tr>
-</table>
+</div>
 
 
 	<div class="row ml-2 mt-2 p-3 mb-5">
