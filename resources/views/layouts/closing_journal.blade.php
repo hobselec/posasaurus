@@ -19,16 +19,16 @@ Checks     {{ $totals->total_checks }}<br>
 <p>
 <table style="border: none">
     <tr>
-    <td>Opening </td><td>     {{  $totals->opening_drawer }}</td>
+    <td>Opening </td><td> $ {{  $totals->opening_drawer }}</td>
     </tr>
     <tr>
-    <td>Total Sales</td><td>   {{  $totals->total_sales }}</td>
+    <td>Total Sales</td><td>  $ {{  $totals->total_sales }}</td>
     </tr>
     <tr>
-    <td>O/S Cash</td><td>      {{  $totals->os_cash }}</td>
+    <td>O/S Cash</td><td> $ {{  $totals->os_cash }}</td>
     </tr>
     <tr>
-    <td>O/S Checks </td><td>   {{  $totals->os_checks }}</td>
+    <td>O/S Checks </td><td>$ {{  $totals->os_checks }}</td>
     </tr>
 </table>
 </p>
