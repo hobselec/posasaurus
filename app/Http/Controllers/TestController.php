@@ -14,7 +14,9 @@ class TestController extends Controller
         //$obj = (object) ['receipt' => 'stuff'];
         $str = 'this is the email';
 
-        Mail::to('jer.house@gmail.com')->send(new ReceiptEmail($str));
+        $obj = (object) ['message' => $str, 'subject' => 'Test'];
+
+        Mail::to('jer.house@gmail.com')->send(new ReceiptEmail($obj));
 
         echo 'ok';
     }

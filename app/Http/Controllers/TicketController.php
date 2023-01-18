@@ -166,8 +166,9 @@ class TicketController extends Controller
 
         if($ticket->customer->email != '')
         {
-            $invoice = StatementHelper::getInvoice($ticket->customer->id, [$ticket->id]);
-            Mail::to($ticket->customer->email)->send(new ReceiptEmail($invoice[0]));
+            $invoices = StatementHelper::getInvoice($ticket->customer->id, [$ticket->id]);
+            $obj = (object) ['message' => $invoices[0], 'subject' => 'Invoice'];
+            Mail::to($ticket->customer->email)->send(new ReceiptEmail($obj));
         }
 
         return response()->json(['status'=>true]);

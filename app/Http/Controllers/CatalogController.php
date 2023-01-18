@@ -14,7 +14,6 @@ class CatalogController extends Controller
     {
 
         $term = $request->term;
-        $use_ws_only = $request->use_ws;
 
 		$results = null;
 

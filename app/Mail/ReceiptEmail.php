@@ -18,16 +18,19 @@ class ReceiptEmail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public string $msgHtml;
+    private string $msgHtml;
+    private string $subject;
 
     /**
      * Create a new message instance.
      *
+     * @param object {subject : string, message : string}
      * @return void
      */
-    public function __construct($msgHtml)
+    public function __construct(object $params)
     {
-        $this->msgHtml = $msgHtml;
+        $this->msgHtml = $params->message;
+        $this->subject = $params->subject;
     }
 
     /**
@@ -39,7 +42,7 @@ class ReceiptEmail extends Mailable implements ShouldQueue
     {
         return new Envelope(
             from: new Address(Config::get('mail.from.address'), Config::get('mail.from.name')),
-            subject: Config::get('app.name') . ' Invoice',
+            subject: Config::get('app.name') . ' ' . $this->subject,
         );
     }
 

@@ -30,11 +30,13 @@ class JournalController extends Controller
 
         $startOfDay = Carbon::now()->startOfDay();
 
-        $startOfDay = Carbon::now()->subDays(30)->startOfDay();
+        // test value
+        if($counted_cash == '000')
+            $startOfDay = Carbon::parse('2022-11-26');
 
         $endOfDay = $startOfDay->copy()->endOfDay();
 
-        $tickets = Ticket::where('date', '>=', $startOfDay)
+        $tickets = Ticket::where('date', '>=', $startOfDay->format('n/d/Y'))
                         ->where([['payment_type', '!=', 'VOID'], ['payment_type', '!=', 'discount']])
                         ->whereNotNull('payment_type')
                         ->with(['customer','job'])
@@ -152,32 +154,31 @@ class JournalController extends Controller
             
             if($over_short > 0)
                 $over_shortcash_prefix = '+';
-            
-            $opening_drawer = $log->drawer_balance;
 
-            $over_short = number_format($over_short, 2);
+            $openingDrawer = number_format($log->drawer_balance, 2);
+
+            $overShort = number_format($over_short, 2);
         }
 
-        $over_short_checks = number_format($request->counted_checks - $request->total_checks, 2);	
+        $overShortChecks = number_format($request->counted_checks - $request->total_checks, 2);	
 
-        if($over_short_checks > 0)
-            $over_shortchecks_prefix = '+';
+        if($overShortChecks > 0)
+            $overShortchecksPrefix = '+';
 
 
-
-        $total_sales = number_format($total_sales, 2);
-        $total_cash = number_format($total_cash, 2);
-
-        $totals = (object) ['total_cash' => $total_cash, 
-                 'total_checks' => $total_checks, 
-                 'opening_drawer' => $opening_drawer, 
-                'total_sales' => $total_sales, 
-                'os_cash' => $over_shortcash_prefix . $over_short,
-                 'os_checks' => $over_shortchecks_prefix . $over_short_checks
+        $totals = (object) ['total_cash' => number_format($total_cash, 2),
+                 'total_checks' => number_format($total_checks, 2), 
+                 'opening_drawer' => $openingDrawer, 
+                'total_sales' => number_format($total_sales, 2), 
+                'os_cash' => $overShortcashPrefix . $overShort,
+                 'os_checks' => $overShortchecksPrefix . $overShortChecks
             ];
 
         $report = Blade::render("@include('layouts.closing_journal')", ['date' => $startOfDay->format('m/d/Y g:i a'), 'tickets' => $tickets, 'totals' => $totals]);
-        Mail::to(Auth::user()->email)->send(new ReceiptEmail($report));
+        
+        $obj = (object) ['message' => $report, 'subject' => 'Closing Journal'];
+
+        Mail::to(Auth::user()->email)->send(new ReceiptEmail($obj));
 
         return response()->json(['status' => true]);
 

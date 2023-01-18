@@ -287,7 +287,10 @@ class BillingController extends Controller
 
        // //$pdf = $dompdf->output();
         if($ticket->customer->email != '')
-            Mail::to($ticket->customer->email)->send(new ReceiptEmail($invoices[0]));
+        {
+            $obj = (object) ['message' => $invoices[0], 'subject' => 'Invoice'];
+            Mail::to($ticket->customer->email)->send(new ReceiptEmail($obj));
+        }
         else
             $status = false;
        
