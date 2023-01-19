@@ -67,6 +67,8 @@ return [
 	// primary key, which would be too much trouble to change now
 	'display_id_offset' => 9,
 
-	'valid_users' => explode(',', env('ALLOWED_EMAIL_LOGINS'))
+	'valid_users' => explode(',', env('ALLOWED_EMAIL_LOGINS')),
+
+	'show_clock' => false
 
 ];

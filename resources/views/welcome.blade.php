@@ -67,7 +67,7 @@
 <!-- Begin POS window -->
 
 <header>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
   
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -119,12 +119,13 @@
 
 <div id="main_container">
 
-
+@if(Config::get('pos.showClock'))
 <span id="clock_container" style="color: #666666; position: absolute; top: 10px; right: 10px; width: 280px; font-size: 12pt">
 @php
  echo date("D M j, Y"). " &nbsp; &nbsp;" . date("g:i a");
 @endphp
 </span>
+@endif
 
 <!-- Ticket ID and name/job -->
 <div  class="container">

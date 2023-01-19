@@ -297,10 +297,6 @@ $(function() {
 
   }
 
- // $pos.notify.notify({
-//		speed: 0,
-//		expires: 1500
-  //});
   
   $('#toolbar img').css('border', '1px solid #dddddd');
   
@@ -315,7 +311,9 @@ $(function() {
   
   });
   
-   window.setTimeout("update_clock()", 1000);
+	if($clock.container.length)
+   		window.setTimeout("update_clock()", 1000);
+
 
     $billing.billing_display_types.val('balances');
 
