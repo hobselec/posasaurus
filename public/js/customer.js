@@ -124,12 +124,11 @@ function edit_customer_info(id)
 
 	$('#customer_edit_cell input').each(function() {
 	
-		$(this).css('background','#ffffff');
+		$(this).css('background','#ffffff').attr('disabled' , true);
 	
 	});
 
-
-
+	$edit_customer.customer_edit_cell.show()
 
 	$edit_customer.edit_active.prop('checked', false);
 	$edit_customer.edit_tax_exempt.prop('checked', false);
@@ -137,7 +136,8 @@ function edit_customer_info(id)
 
 	// READ the customer details
 	axios.get('/pos/customer/' + id).then((response) => {
-	
+
+
 		response = response.data
 
 		//$('#edit_last_name').val(response.last_name);
@@ -178,7 +178,7 @@ function edit_customer_info(id)
 		
 		$edit_customer.save_customer_button.prop('disabled', false);
 		
-		
+		$('#customer_edit_cell input').attr('disabled', false)
 		
 		$edit_customer.edit_first_name.focus();
 	
@@ -302,7 +302,7 @@ function customerDialog(options)
 		//$pos.open_transactions.prop('disabled',true);
 		$pos.barcode.prop('disabled',true);
 		$('#customer_jobs_cell').hide();
-		$('#customer_edit_cell').show();
+
 
 		$('.posdlg').hide();
 		
@@ -482,7 +482,7 @@ function load_customer_list(options)
 			{
 				document.getElementById('customer_dialog').style.display = 'block';
 				
-				let customer_html = '';
+				let customer_html = '<option value=""></option>';
 
 				let customerList = response.data.customers
 

@@ -1,39 +1,45 @@
 
 <div id="customer_dialog" style="display: none" class="container">
-	<h2>Customers</h2>        
+	<h2>Customers</h2>     
 
-	<table>
-	<tr>
-	<td style="height: 300px; vertical-align: top">
-		<span style="font-size: 80%">
-		<input type="checkbox" id="show_inactive" onclick="customerDialog('reload')" />
-		<label for="show_inactive" class="nice-label"> Show Inactive &nbsp; 
-		</label>
-		</span>
-		
-		<img src="img/addnew.gif" style="cursor: pointer" onclick="add_customer_form()" title="Add Customer" alt="Add Customer" /> 
-        <a href="#">
-        	<img src="img/jobs.png" title="Customer Jobs" onclick="customer_jobs_dialog()" style="cursor: pointer; width: 42px; height: 42px" alt="Customer Jobs" />
-		</a>
-        <br />
 
-        <input type="search" class="customer_search form-control" maxlength="20" size="20" placeholder="Search Customer" /><br />
-		<label class="form-label">
-			Customer
-        <select onchange="edit_customer_info(this.value)" id="customer_listing" class="form-select">
-        </select>
-		</label>
-		
-	</td>
+	<div class="row">
 
-	<td style="vertical-align: top; padding-left: 15px" id="customer_jobs_cell">
+		<div class="col col-auto">
+			<input type="checkbox" id="show_inactive" onclick="customerDialog('reload')" />
+			<label for="show_inactive" class="nice-label"> Show Inactive &nbsp; 
+			</label>
+		</div>
+
+		<div class="col col-auto">
+			<img src="img/addnew.gif" style="cursor: pointer" onclick="add_customer_form()" title="Add Customer" alt="Add Customer" /> 
+			<a href="#">
+				<img src="img/jobs.png" title="Customer Jobs" onclick="customer_jobs_dialog()" style="cursor: pointer; width: 42px; height: 42px" alt="Customer Jobs" />
+			</a>
+		</div>
+
+	</div>
+
+	<div class="row">
+
+	<div class="col col-auto">
+			<input type="search" class="customer_search form-control" maxlength="20" size="20" placeholder="Search Customer" /><br />
+			<label class="form-label">
+				Customer
+			<select onchange="edit_customer_info(this.value)" id="customer_listing" class="form-select">
+			</select>
+			</label>
+		</div>
+	</div>
+
+	<div style="vertical-align: top; padding-left: 15px" id="customer_jobs_cell">
 	
 		<select id="customer_job_listing" class="form-select" onchange="load_edit_job()"></select>
 		<p><input type="text" id="customer_job_edit" maxlength="64" /></p><br />
 		<p><button type="button" onclick="save_job_edit()">Save</button></p>
-	</td>
+	</div>
 
-	<td style="vertical-align: top; padding-left: 15px" id="customer_edit_cell">
+	<div style="vertical-align: top; display: none" id="customer_edit_cell">
 
 	Last name<div style="padding-left: 100px; display: inline"> First name</div>
 	<div style="display: inline; padding-left: 100px"> MI</div><br />
@@ -74,7 +80,6 @@
 	<p style="margin-left: auto; margin-right: auto; text-align: center">
 		<button type="button" class="btn btn-primary btn-lg" id="save_customer_button" onclick="save_customer_info()">Save Customer</button>
 	</p>
-	</td>
-	</tr>
-	</table>
+	</div>
+
 </div>
