@@ -110,8 +110,13 @@ function add_customer_form()
 //
 function edit_customer_info(id)
 {
+	clear_customer_inputs()
+
 	if(id == '' || id == $edit_customer.id) // no noname
-		return false;
+	{
+		$edit_customer.customer_edit_cell.hide()
+		return false
+	}
 
 	// this loads the job list if the job list is loaded in the right pane
 	if($edit_customer.customer_jobs_cell.css('display') != 'none')
@@ -119,8 +124,6 @@ function edit_customer_info(id)
 		load_customer_job_list(id);
 		return false;
 	}
-
-	clear_customer_inputs();
 
 	$('#customer_edit_cell input').each(function() {
 	
@@ -420,7 +423,7 @@ function save_job_edit()
 	})
 
 }
-
+/*
 function close_customerdialog()
 {
 	clear_customer_inputs();
@@ -443,7 +446,7 @@ function close_customerdialog()
 			$(this).css('background','#ffffff');
 	});
 
-}
+}*/
 
 function clear_customer_inputs() 
 {
@@ -458,18 +461,18 @@ function clear_customer_inputs()
 	$edit_customer.edit_city.val('');		
 	$edit_customer.edit_state.val('');
 	$edit_customer.edit_zip.val('');
+	$edit_customer.email.val('')
 
 	$edit_customer.edit_active.prop('checked', false);
 	$edit_customer.edit_tax_exempt.prop('checked', false);
 	$edit_customer.edit_allow_credit.prop('checked', false);
 	
-
-
+	$edit_customer.id = ''
 }
 
 function load_customer_list(options)
 {
-		$edit_customer.customer_sel.html("<option value=\"\">Loading . . .</option>");
+		$edit_customer.customer_sel.html(`<option value="">Loading . . .</option>`)
 
 			// toggle
 			if($edit_customer.show_inactive == 0 && options == 'reload')
