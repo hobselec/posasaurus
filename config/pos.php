@@ -2,27 +2,27 @@
 
 return [
 
-    'sales_tax' => .0725,
+    'sales_tax' => env('SALES_TAX_RATE', 0),
 	
-	'tax_state' => 'IL',
+	'tax_state' => env('COMPANY_STATE', null),
 
 	'catalog_limit' => 50, // limit the catalog search to defined number
 
 	// this is the 'noname' account that gets created initially by the install sql file
 	// this value should be fine
-	'default_customer_id' => 1126,
+	'default_customer_id' => env('DEFAULT_CUSTOMER_ID', 1),
 
 	// set your company's information
-	'company_name' => "House Lumber Company",
-	'company_address' => "106 N. Broadway",
-	'company_city' => "Newman",
-	'company_state' => "IL",
-	'company_zip' => "61874",
-	'company_phone' => "(217) 837-2435",
+	'company_name' => env('COMPANY_NAME', null),
+	'company_address' => env('COMPANY_ADDRESS', null),
+	'company_city' => env('COMPANY_CITY', null),
+	'company_state' => env('COMPANY_STATE', null),
+	'company_zip' => env('COMPANY_ZIP', null),
+	'company_phone' => env('COMPANY_PHONE', null),
 	
 	// this treats items with barcodes < 100000 differently
 	// set to 1 or 0
-	'use_catalog_filte' => 1,
+	'use_catalog_filter' => true,
 	
 	// Add 0's to the front of sku numbers to make all the same length
 	// set this to the maximum length SKU numbers you use (database max is 24)
