@@ -52,6 +52,8 @@ class TicketController extends Controller
         {
             $ticket = new Ticket();
             
+            $ticket->user_id = auth()->user()->id;
+            
             $ticket->save();
             $request->ticketId = $ticket->id;
 

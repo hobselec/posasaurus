@@ -17,6 +17,8 @@ return new class extends Migration
             $table->boolean('refund')->default(false)->change();
             $table->boolean('resale')->default(false)->change();
 
+            $table->unsignedBigInteger('user_id');
+
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
