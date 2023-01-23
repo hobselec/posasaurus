@@ -181,8 +181,16 @@ class TicketController extends Controller
         $ticket = Ticket::where('id',$request->id)->with(['items'])->first();
 
         $ticket->payment_type='VOID';
-        $ticket->date = Carbon::now();
-        $ticket->save();
+        $ticket->user_id = auth()->user()->id;
+        //$ticket->date = Carbon::now();
+
+        $ticket->save() or abort(500);
+
+        foreach($ticket->items as $item)
+        {
+            // todo update qty in catalog
+
+        }
 
         return response()->json(['status' => true]);
     }
@@ -248,17 +256,4 @@ class TicketController extends Controller
         return response()->json();
     }
 
-    /**
-     * void ticket
-     * 
-     * @param Request $request
-     * @return 
-     */
-    public function void(Request $request)
-    {
-        $ticket = Ticket::where('id', $request->id)->first();
-
-        return response()->json();
-
-    }
 }
