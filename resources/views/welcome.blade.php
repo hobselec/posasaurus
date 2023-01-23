@@ -138,8 +138,10 @@
 </div>
 
 <!-- Totals -->
-
-
+<!--
+<i className="icon bi-envelope"></i>
+<i class="bi-alarm" style="font-size: 2rem; color: cornflowerblue;"></i>
+-->
 
 <!-- Received by -->
 <div style="text-align: center; margin-left: auto; margin-right: auto; display: none" id="recv_by_container">
@@ -362,7 +364,7 @@
       </div>
       <div class="modal-footer">
 
-		<button type="button" id="postpayment_button" class="btn btn-primary" onclick="post_transaction()">Finalize Transaction</button>
+		<button type="button" id="postpayment_button" class="btn btn-primary" onclick="post_transaction()" data-bs-dismiss="modal">Finalize Transaction</button>
       </div>
     </div>
   </div>
