@@ -45,7 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/ticket/item-description', [TicketController::class, 'addItemDescription']);
     
     Route::post('/ticket/submit', [TicketController::class, 'submitTicket']);
-    Route::delete('/ticket/void/{id}', [TicketController::class, 'voidTicket']);
+    Route::delete('/ticket/{id}', [TicketController::class, 'voidTicket']);
     Route::put('/ticket/item', [TicketController::class, 'modifyItem']);
     Route::delete('/ticket/item', [TicketController::class, 'deleteItem']);
     Route::delete('/ticket/{id}', [TicketController::class, 'void']);
