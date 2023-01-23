@@ -49,6 +49,10 @@ class Ticket extends Model
     {
         return $value ?? 0;
     }
+    public function getRecvByAttribute($value)
+    {
+        return $value ?? '';
+    }
 
     public function getDisplayTypeAttribute() {
 
