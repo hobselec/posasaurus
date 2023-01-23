@@ -11,7 +11,7 @@ class TicketHelper {
     public static function computeTotals(Ticket &$ticket)
     {
         
-        $ticket->subtotal = $ticket->items->sum('amount') - $ticket->discount;
+        $ticket->subtotal = $ticket->items->sum('amount') - $ticket->discount + $ticket->labor + $ticket->freight;
 
         $taxExempt = false;
         if($ticket->customer)
