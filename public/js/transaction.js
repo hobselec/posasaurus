@@ -128,7 +128,7 @@ function apply_payment_specialoptions()
 		}).then((response) => {
 
 			$('#loading_recv_by').hide();
-			
+
 			// adjust discount
 			if(response.data.ticket.discount > 0)
 			{
@@ -544,30 +544,30 @@ function post_transaction()
 	  tax : $pos.tax.html(),
 	   total : total_sale, 
 	}).then((response) => {
-	
 
-			if(cash_back > 0)
-				show_note("Cash back: " + cash_back);
+		let extraMsg = ''
+		if(cash_back > 0)
+			extraMsg = " Cash back: $" + cash_back
 				
-			if(refund && payment_type != 'acct') // if refund to acct, say nothing
-				show_note("Customer Refund: " + total_sale);
+		if(refund && payment_type != 'acct') // if refund to acct, say nothing
+			extraMsg = " Customer Refund: $" + total_sale
 		
-			show_note("Transaction Complete!");
+		show_note("Transaction Complete!" + extraMsg)
 
-			// print receipt
-			//if($pos.printReceiptChkbox.attr('checked') && payment_type != 'acct')
-			//	print_receipt($pos.ticket_id.val(), amt_given, cash_back);
+		// print receipt
+		//if($pos.printReceiptChkbox.attr('checked') && payment_type != 'acct')
+		//	print_receipt($pos.ticket_id.val(), amt_given, cash_back);
 
-			// remove from open tickets
-			$('#open_transactions option').each(function() {
+		// remove from open tickets
+		$('#open_transactions option').each(function() {
 			
-				if($(this).val() == $('#ticket_id').val())
-					$(this).remove();
-			});
+			if($(this).val() == $('#ticket_id').val())
+				$(this).remove();
+		})
 			
-			clear_pos();
+		clear_pos()
 
-			// todo: disable the save button and hide the dialog when done
+		$pos.postPaymentButton.prop('disabled', true)
 
 	})
 	.catch((error) => {
