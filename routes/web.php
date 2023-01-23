@@ -48,7 +48,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/ticket/{id}', [TicketController::class, 'voidTicket']);
     Route::put('/ticket/item', [TicketController::class, 'modifyItem']);
     Route::delete('/ticket/item', [TicketController::class, 'deleteItem']);
-    Route::delete('/ticket/{id}', [TicketController::class, 'void']);
 
     Route::post('/journal/open', [JournalController::class, 'open']);
     Route::post('/journal/close', [JournalController::class, 'close']);
