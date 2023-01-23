@@ -128,12 +128,13 @@ function apply_payment_specialoptions()
 		}).then((response) => {
 
 			$('#loading_recv_by').hide();
+			
 			// adjust discount
-			if(response.data.discount > 0)
+			if(response.data.ticket.discount > 0)
 			{
 				// show discount
 				$pos.discount_icon.show();
-				$pos.discount_display_total.html("$ -" + response.data.discount.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				$pos.discount_display_total.html("$ -" + response.data.ticket.discount.toLocaleString('en-US', { minimumFractionDigits: 2}));
 			
 			} else
 			{
@@ -142,10 +143,10 @@ function apply_payment_specialoptions()
 			}
 			
 			// freight
-			if(response.data.freight > 0)
+			if(response.data.ticket.freight > 0)
 			{
 				$pos.freight_icon.show();
-				$pos.freight_display_total.html("$ " + response.data.freight.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				$pos.freight_display_total.html("$ " + response.data.ticket.freight.toLocaleString('en-US', { minimumFractionDigits: 2}));
 			} else
 			{
 				$pos.freight_icon.hide();
@@ -153,10 +154,10 @@ function apply_payment_specialoptions()
 			}
 			
 			// labor
-			if(response.data.labor > 0)
+			if(response.data.ticket.labor > 0)
 			{
 				$pos.labor_icon.show();
-				$pos.labor_display_total.html("$ " + response.data.labor.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				$pos.labor_display_total.html("$ " + response.data.ticket.labor.toLocaleString('en-US', { minimumFractionDigits: 2}));
 			} else
 			{
 				$pos.labor_icon.hide();
