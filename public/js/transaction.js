@@ -552,7 +552,7 @@ function post_transaction()
 		if(refund && payment_type != 'acct') // if refund to acct, say nothing
 			extraMsg = " Customer Refund: $" + total_sale
 		
-		show_note("Transaction Complete!" + extraMsg)
+		show_note("Transaction Complete!", extraMsg, 'success')
 
 		// print receipt
 		//if($pos.printReceiptChkbox.attr('checked') && payment_type != 'acct')
