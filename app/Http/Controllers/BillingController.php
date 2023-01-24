@@ -120,6 +120,7 @@ class BillingController extends Controller
         $tickets = Ticket::where($where)
                             ->whereNotNull('payment_type')
                             ->with(['customer','job','items'])
+                            ->orderByDesc('date')
                             ->get();
 
         if($tickets->count() == 0)
