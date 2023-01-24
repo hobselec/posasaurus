@@ -64,24 +64,9 @@ function contextmenu_void_transaction()
 	let ticketId = $cmenu.id
 
 	let displayTicketId = $cmenu.obj.find('td').eq(0).html()
-	let displayName = $cmenu.obj.find('td').eq(1).html()	
+	let customerName = $cmenu.obj.find('td').eq(1).html()	
 
-	Swal.fire({
-		title: 'Please Confirm',
-		text: `Void ticket #${displayTicketId} for ${displayName}?`,
-		icon: 'warning',
-		showCancelButton: true
-	}).then((result) => {
-	
-		if(result.isConfirmed) {
-
-			axios.delete('/pos/ticket/' + $cmenu.id).then((response) => {
-				show_note("Ticket voided")
-			}).catch((error) => {
-				show_note("An error occurred")
-			})
-		}
-	})
+	clear_ticket(ticketId, displayTicketId, customerName)
 
 }
 

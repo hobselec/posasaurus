@@ -18,6 +18,9 @@ This file is part of Primitive Point of Sale.
 
 */
 
+//const { reject } = require("lodash");
+//const { resolveBaseUrl } = require("vite");
+
 
 $(function() {
 
@@ -357,9 +360,9 @@ $(function() {
 
 
 
-function show_note(msg, type='info')
+function show_note(title='Alert', msg, type='info')
 {
-    Swal.fire('Alert', msg, type)
+    Swal.fire(title, msg, type)
 
 }
 
@@ -529,39 +532,71 @@ function lookup_item() {
 		
 }
 
-function clear_ticket(ticket_id)
+function clear_ticket(ticketId = '', displayTicketId = '', customerName = '')
 {
-	var clear_pos_vars = 0;
+	var clear_pos_vars = false;
+	let forNameString = ''
 
-	if(ticket_id == null && $pos.ticket_id.val() == '')
-		return false;
-	
-	// ticket_id is the currently open ticket, as opposed to voiding through the billing page
-	if(!(ticket_id > 0))
+	if(ticketId == '')
 	{
-		ticket_id = $pos.ticket_id.val();
-		clear_pos_vars = 1;
+		// ticket_id is the currently open ticket, as opposed to voiding through the billing page
+
+		ticketId = $pos.ticket_id.val()
+		displayTicketId = $pos.ticket_display_id.html()
+		clearPos = true
 	}
+	
+	if(customerName  != '')
+		forNameString = ` for ${customerName}`
+	
+	Swal.fire({
+		title: 'Please Confirm',
+		text: `Void ticket #${displayTicketId}${forNameString}?`,
+		icon: 'warning',
+		showCancelButton: true
+	}).then((result) => {
+	
+		if(result.isConfirmed) {
 
-	axios.delete('/pos/ticket/void/' + ticket_id).then((response) => {
-		
-		// clear display
-		show_note("Ticket Voided");
 			
-		// remove from select box
-		$('#open_transactions option').each(function() {
+			const getData = async() => {
+
+				try {
+					const response = await axios.delete('/pos/ticket/' + ticketId)
+
+					if(!response)
+						throw new Error()
+					
+					show_note("Ticket Voided");
+
+					// remove from select box
+					$('#open_transactions option').each(function() {
+						
+						if($(this).val() == $pos.ticket_id.val())
+							$(this).remove()
+					});
+
+					// clear display
+					if(clear_pos_vars)
+						clear_pos()
+
+					return response
 			
-			if($(this).val() == $pos.ticket_id.val())
-				$(this).remove();
-		});
+				} catch(e) {
+					show_note("Error", "Cannot void ticket!", "error")
+				
+				}
+			} 
+			getData()
 
-		if(clear_pos_vars == 1)
-			clear_pos();
-		
-	}).catch((e) => {
 
-		show_note("Cannot void ticket!");
+		}
+	}).catch(e => {
+
+
 	})
+
+
 
 	
 }
