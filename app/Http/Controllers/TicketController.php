@@ -187,10 +187,8 @@ class TicketController extends Controller
         $ticket->save() or abort(500);
 
         foreach($ticket->items as $item)
-        {
-            // todo update qty in catalog
+            $item->catalog->decrement('qty', $item->qty);
 
-        }
 
         return response()->json(['status' => true]);
     }
