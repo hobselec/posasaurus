@@ -428,7 +428,7 @@ function clear_pos() {
 
 		cancel_payment(1);
 
-		$pos.barcode.focus();
+		//$pos.barcode.focus();
 		$pos.paymentMethodDisplay.html('')
 		$pos.paymentMethod = ''
 		$pos.postPaymentButton.attr('disabled', true)

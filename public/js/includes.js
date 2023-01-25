@@ -31,7 +31,7 @@ $(function() {
 
 	clear_pos();
 
-	$pos.barcode.focus();
+	//$pos.barcode.focus();
 
 	// setup ticket heading sorting
 	$('#ticket_heading_sort_row img').each(function() { 
@@ -83,12 +83,13 @@ $(function() {
 		//{
 
 		//}
-
+/*
 		if(evt.target.type != 'select-one' && evt.target.type != 'text')
 		{
 			if(!(evt.target.value == '' || evt.target.value > 0))
 				$pos.barcode.focus();
 		}
+		*/
 	});
 
 	
@@ -477,7 +478,7 @@ function chg_ticket(ticket_id)
 				}
 			
 
-			$pos.barcode.focus();
+			//$pos.barcode.focus();
 		}).catch(() => {  
 			show_note("Cannot load ticket")
 		});	
