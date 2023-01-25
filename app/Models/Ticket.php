@@ -47,7 +47,15 @@ class Ticket extends Model
     }
     public function getDiscountAttribute($value)
     {
-        return $value ?? 0;
+        return (float) $value ?? 0;
+    }
+    public function getFreightAttribute($value)
+    {
+        return (float) $value ?? 0;
+    }
+    public function getLaborAttribute($value)
+    {
+        return (float) $value ?? 0;
     }
     public function getRecvByAttribute($value)
     {

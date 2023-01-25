@@ -134,7 +134,7 @@ function apply_payment_specialoptions()
 			{
 				// show discount
 				$pos.discount_icon.show();
-				$pos.discount_display_total.html("$ -" + response.data.ticket.discount.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				$pos.discount_display_total.html("$ -" + response.data.ticket.discount.toFixed(2).toLocaleString('en-US', { minimumFractionDigits: 2}));
 			
 			} else
 			{
@@ -146,7 +146,7 @@ function apply_payment_specialoptions()
 			if(response.data.ticket.freight > 0)
 			{
 				$pos.freight_icon.show();
-				$pos.freight_display_total.html("$ " + response.data.ticket.freight.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				$pos.freight_display_total.html("$ " + response.data.ticket.freight.toFixed(2).toLocaleString('en-US', { minimumFractionDigits: 2}));
 			} else
 			{
 				$pos.freight_icon.hide();
@@ -157,7 +157,7 @@ function apply_payment_specialoptions()
 			if(response.data.ticket.labor > 0)
 			{
 				$pos.labor_icon.show();
-				$pos.labor_display_total.html("$ " + response.data.ticket.labor.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				$pos.labor_display_total.html("$ " + response.data.ticket.labor.toFixed(2).toLocaleString('en-US', { minimumFractionDigits: 2}));
 			} else
 			{
 				$pos.labor_icon.hide();
