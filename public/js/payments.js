@@ -33,7 +33,7 @@ $(function() {
 		$pos.barcode.prop('disabled',true);
 		$payments.payment_recv_search_name.focus();
 	})
-	.addEventListener('hide.bs.modal', function(event) {
+	document.getElementById('recv_payment_screen').addEventListener('hide.bs.modal', function(event) {
 		$payments.payment_recv_customer_id.val('');
 		$payments.payment_recv_search_name.val('');
 
