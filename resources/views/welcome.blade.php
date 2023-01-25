@@ -98,7 +98,7 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">
-		  <img src="img/payment.png" style="height: 42px; width: 42px; cursor: pointer" id="recv_payment_button" title="Receive Payment" onclick="$('#recv_payment_screen').dialog('open')" alt="Receive Payments" /> &nbsp; 
+		  <img src="img/payment.png" style="height: 42px; width: 42px; cursor: pointer" id="recv_payment_button" title="Receive Payment" data-bs-toggle="modal" data-bs-target="#recv_payment_screen" alt="Receive Payments" /> &nbsp; 
    
 			</a>
         </li>
@@ -377,31 +377,49 @@
 <!-- CUSTOMER DIALOG -->
 @include('layouts.customers')
 
-<div id="recv_payment_screen" style="display: none">
 
-	<input type="hidden" id="payment_recv_customer_id" />
-	Customer Name<br />
-	<input type="search" class="form-control" maxlength="100" id="payment_recv_search_name" /><br />
-	<h3 style="color: brown" id="payment_recv_display_name"></h3>
-	<div id="payment_recv_display_balance" style="color: brown; font-size: 14pt; padding-bottom: 15px"></div>
-	
-	<select style="display: none" class="form-select" id="payment_recv_job_id"></select>
-	<p>Date <br />
-	<input type="datetime-local" id="payment_recv_date" class="form-control" />
+<div class="modal" tabindex="-1" id="recv_payment_screen">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Payment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body ui-front">
 
-	<p>
-		<select id="payment_recv_method" class="form-select">
-		<option value="">&ndash; Payment Type &ndash;</option>
-		<option value="cash">Cash</option>
-		<option value="check">Check</option>
-		<option value="cc">Credit Card</option>
-		</select>
-	</p>
-	<p>Amount: &nbsp; <input type="text" class="form-control" id="payment_recv_amt" size="11" maxlength="11" onkeyup="add_decimals(this, event, 'save_payment_recv')" /></p>
-	<p>Check or Trans # &nbsp; <input type="text" class="form-control" id="payment_recv_extra_info" size="11" maxlength="11" /></p>
+		<input type="hidden" id="payment_recv_customer_id" />
+		Customer Name<br />
+		<input type="search" class="form-control" maxlength="100" id="payment_recv_search_name" /><br />
+		<h3 style="color: brown" id="payment_recv_display_name"></h3>
+		<div id="payment_recv_display_balance" style="color: brown; font-size: 14pt; padding-bottom: 15px"></div>
+		
+		<select style="display: none" class="form-select" id="payment_recv_job_id"></select>
+		<p>Date <br />
+		<input type="datetime-local" id="payment_recv_date" class="form-control" />
 
-	<p><button type="button" class="btn btn-primary" onclick="save_payment_recv()">Save Payment</button></p>
+		<p>
+			<select id="payment_recv_method" class="form-select">
+			<option value="">&ndash; Payment Type &ndash;</option>
+			<option value="cash">Cash</option>
+			<option value="check">Check</option>
+			<option value="cc">Credit Card</option>
+			</select>
+		</p>
+		<p>Amount: &nbsp; <input type="text" class="form-control" id="payment_recv_amt" size="11" maxlength="11" onkeyup="add_decimals(this, event, 'save_payment_recv')" /></p>
+		<p>Check or Trans # &nbsp; <input type="text" class="form-control" id="payment_recv_extra_info" size="11" maxlength="11" /></p>
+
+
+	  </div>
+      <div class="modal-footer">
+
+	  <button type="button" class="btn btn-primary" onclick="save_payment_recv()" data-bs-dismiss="modal">Save Payment</button>
+      </div>
+    </div>
+  </div>
 </div>
+
+
+
 
 @include("layouts.catalog")
 

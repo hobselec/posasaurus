@@ -23,30 +23,28 @@ $(function() {
 
 	$payments.payment_recv_customer_id.val('')
 
-	$('#recv_payment_screen').dialog({ title : 'Payment', 
-		autoOpen: false, modal : true, resizable : false, 
-		draggable : false, width: 520, height: 630, open: function() {
+	document.getElementById('recv_payment_screen').addEventListener('show.bs.modal', function(event) {
+		// set to current time
+		let now = new Date()
+		let dateAdjusted = new Date(now.getTime() - now.getTimezoneOffset()*60000)
 
-			// set payment date to current time
-			let now = new Date()
-			let dateAdjusted = new Date(now.getTime() - now.getTimezoneOffset()*60000)
+		document.getElementById('payment_recv_date').value = dateAdjusted.toISOString().substring(0,16)
 
-			document.getElementById('payment_recv_date').value = dateAdjusted.toISOString().substring(0,16)
+		$pos.barcode.prop('disabled',true);
+		$payments.payment_recv_search_name.focus();
+	})
+	.addEventListener('hide.bs.modal', function(event) {
+		$payments.payment_recv_customer_id.val('');
+		$payments.payment_recv_search_name.val('');
 
-			$pos.barcode.prop('disabled',true);
-			$payments.payment_recv_search_name.focus();
-		}, close: function() {
-			$payments.payment_recv_customer_id.val('');
-			$payments.payment_recv_search_name.val('');
+		$payments.payment_recv_search_name.show();
 
-			$payments.payment_recv_search_name.show();
+		$payments.payment_recv_display_name.html('');
+		$payments.payment_recv_display_balance.html('')
+		$payments.payment_recv_job_id.html('');
+		$payments.payment_recv_job_id.hide()
+	})
 
-			$payments.payment_recv_display_name.html('');
-			$payments.payment_recv_display_balance.html('')
-			$payments.payment_recv_job_id.html('');
-			$payments.payment_recv_job_id.hide()
-		}
-	});
 
 	$( "#payment_recv_search_name" ).autocomplete({ minLength: 3, delay : 500, source: 
 		function(request, acResponse)
@@ -183,7 +181,7 @@ function save_payment_recv()
 			// e-mail?
 			//print_receipt(response.ticket_id, amount, '');
 			
-			$('#recv_payment_screen').dialog('close')
+			//$('#recv_payment_screen').dialog('close')
 			
 	}).catch(() => {
 		show_note("Could not save payment.  Verify the form was completed correctly.")
