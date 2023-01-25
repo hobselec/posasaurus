@@ -180,9 +180,11 @@ class TicketController extends Controller
     {
         $ticket = Ticket::where('id',$request->id)->with(['items'])->first();
 
+        if($ticket->payment_type == 'VOID')
+            return response()->json(['status' => false]);
+
         $ticket->payment_type='VOID';
         $ticket->user_id = auth()->user()->id;
-        //$ticket->date = Carbon::now();
 
         $ticket->save() or abort(500);
 

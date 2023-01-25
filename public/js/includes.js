@@ -567,18 +567,32 @@ function clear_ticket(ticketId = '', displayTicketId = '', customerName = '')
 					if(!response)
 						throw new Error()
 					
-					show_note("Ticket Voided");
+					if(response.data.status)
+					{
+						show_note("Ticket Voided");
 
-					// remove from select box
-					$('#open_transactions option').each(function() {
-						
-						if($(this).val() == $pos.ticket_id.val())
-							$(this).remove()
-					});
+						// remove from select box
+						$('#open_transactions option').each(function() {
+							
+							if($(this).val() == $pos.ticket_id.val())
+								$(this).remove()
+						});
 
-					// clear display
-					if(clear_pos_vars)
-						clear_pos()
+						$billing.ticket_tbody.find('tr').each(function() {
+
+							if($(this).data('ticketid') == ticketId)
+							{
+								let cell = $(this).find('td').eq(5)
+								cell.html('VOID')
+							}
+						})
+
+						// clear display
+						if(clear_pos_vars)
+							clear_pos()
+
+					} else
+						show_note("Problem", "Cannot void ticket!", "warning")
 
 					return response
 			
