@@ -11,6 +11,7 @@ use App\Models\Customer;
 use App\Models\Ticket;
 
 use App\Helpers\StatementHelper;
+use App\Helpers\BillingHelper;
 
 use Carbon\Carbon;
 use DB;
@@ -366,11 +367,12 @@ class BillingController extends Controller
         $ticket->date = Carbon::parse($request->date);
         $ticket->job_id = $request->jobId;
 
-
         $ticket->save() or abort(500);
 
+        $curBalance = BillingHelper::getCustomerBalance($ticket->customer_id);
 
-        return response()->json(['status' => true]);
+
+        return response()->json(['status' => true, 'balance' => $curBalance]);
     }
 
      /**

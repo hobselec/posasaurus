@@ -13,6 +13,7 @@ use App\Models\TransactionItem;
 
 use App\Helpers\TicketHelper;
 use App\Helpers\StatementHelper;
+use App\Helpers\BillingHelper;
 
 use App\Mail\ReceiptEmail;
 use Illuminate\Support\Facades\Mail;
@@ -191,8 +192,9 @@ class TicketController extends Controller
         foreach($ticket->items as $item)
             $item->catalog->decrement('qty', $item->qty);
 
+        $curBalance = BillingHelper::getCustomerBalance($ticket->customer_id);
 
-        return response()->json(['status' => true]);
+        return response()->json(['status' => true, 'balance' => $curBalance]);
     }
 
     /** 
