@@ -17,6 +17,7 @@ use App\Helpers\BillingHelper;
 
 use App\Mail\ReceiptEmail;
 use Illuminate\Support\Facades\Mail;
+use App\Jobs\UpdateAccount;
 
 class TicketController extends Controller
 {

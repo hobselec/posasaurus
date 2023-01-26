@@ -18,6 +18,7 @@ use DB;
 use Config;
 use Dompdf\Dompdf;
 use App\Jobs\PrintStatements;
+use App\Jobs\UpdateAccount;
 
 use App\Mail\ReceiptEmail;
 use Illuminate\Support\Facades\Mail;

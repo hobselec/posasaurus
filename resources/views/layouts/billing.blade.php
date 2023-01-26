@@ -111,7 +111,7 @@
         <div id="billing_ticket_items_container" style="display: none">
             <button type="button" class="btn btn-link" onclick="closeTicket()">Close Ticket</button>
 
-            <table class="table table-sm table-striped table-hover" id="billing_ticket_items_table">
+            <table class="table table-sm  table-hover" id="billing_ticket_items_table">
                 <thead>
                 <tr><th>Ticket ID</th><th>Item ID</th><th>Quantity</th><th>Item Description</th><th>Price</th><th>Total</th></tr>
                 </thead>
