@@ -47,6 +47,8 @@ class CacheCustomerBalancesCommand extends Command
             return $obj;
         });
 
+        $results = $results->sortBy('name')->values();
+
         Cache::put('balances', $results->toArray());
 
         return Command::SUCCESS;
