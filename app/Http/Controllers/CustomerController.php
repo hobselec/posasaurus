@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\CustomerJob;
 
 use Carbon\Carbon;
+use Cache;
 
 class CustomerController extends Controller
 {
@@ -54,13 +55,9 @@ class CustomerController extends Controller
         $endDate = Carbon::now();
 
         if($showBalance)
-            $relations = array_merge($relations, ['debts'=>function($q) use($endDate) {
-            $q->where('date', '<=', $endDate);
-            },'payments'=>function($q) use($endDate) {
-                $q->where('date', '<=', $endDate);
-            },'returns'=>function($q) use($endDate) {
-                $q->where('date', '<=', $endDate);
-            }]);
+            $balanceData = Cache::get('balances');
+        else
+            $balances = [];
 
         $results = Customer::where('first_name', 'like', $q)
                             ->orWhere('last_name', 'like', $q)
@@ -68,15 +65,15 @@ class CustomerController extends Controller
                             ->with($relations)
                             ->get();
 
-        $results = $results->map(function($c) use($showBalance) {
+
+
+        $results = $results->map(function($c) use($showBalance, $balanceData) {
                 
                 if($showBalance)
-                    {
-                    $debts = $c->debts->count() > 0 ? $c->debts[0]->sum_total : 0;
-                    $payments = $c->payments->count() > 0 ? $c->payments[0]->sum_total : 0;
-                    $returns = $c->returns->count() > 0 ? $c->returns[0]->sum_total : 0;
+                {
+                    $itemIndex = array_search($c->id, array_column($balanceData, 'id'));
 
-                    $balance = number_format($debts - $payments - $returns, 2);
+                    $itemIndex ? $balance = $balanceData[$itemIndex]['balance'] : $balance = null;
                 } else
                     $balance = null;
 

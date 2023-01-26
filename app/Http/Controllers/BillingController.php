@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Mail;
 class BillingController extends Controller
 {
     public function list(Request $request)
-    {
+    {/*
         $endDate = Carbon::parse($request->endDate)->endOfDay();
 
         $customer = Customer::
@@ -67,6 +67,17 @@ class BillingController extends Controller
         }
 
         $results = $results->sortBy('name')->values();
+        */
+        $results = collect(Cache::get('balances'));
+
+        
+        if($request->type == 'balances')
+        {
+            $results = $results->filter(function($item) {
+                if($item['balance'] != 0)
+                    return $item;
+            })->values();
+        }
 
         return response()->json($results);
     }
@@ -370,10 +381,11 @@ class BillingController extends Controller
 
         $ticket->save() or abort(500);
 
-        $curBalance = BillingHelper::getCustomerBalance($ticket->customer_id);
+        //$curBalance = BillingHelper::getCustomerBalance($ticket->customer_id);
 
+        UpdateAccount::dispatch(['customerId' => $ticket->customer_id]);
 
-        return response()->json(['status' => true, 'balance' => $curBalance]);
+        return response()->json(['status' => true]);
     }
 
      /**
@@ -412,7 +424,9 @@ class BillingController extends Controller
 
         $ticket->display_id = $ticket->id + Config::get('pos.display_id_offset');
 
-        $ticket->save();
+        $ticket->save() or abort(500);
+
+        UpdateAccount::dispatch(['customerId' => $ticket->customer_id]);
 
         return response()->json($ticket);
     }

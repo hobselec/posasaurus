@@ -175,6 +175,9 @@ class TicketController extends Controller
             Mail::to($ticket->customer->email)->send(new ReceiptEmail($obj));
         }
 
+        if($ticket->payment_type == 'acct')
+            UpdateAccount::dispatch(['customerId' => $ticket->customer_id]);
+
         return response()->json(['status'=>true]);
     }
 
