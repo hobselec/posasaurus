@@ -39,7 +39,7 @@ class UpdateAccount implements ShouldQueue
      */
     public function handle()
     {
-        $balance = BillingHelper::getCustomerBalanceData($this->params['customerId']);
+        $balanceData = BillingHelper::getCustomerBalanceData($this->params['customerId']);
 
         $cache = Cache::get('balances');
 
@@ -48,7 +48,7 @@ class UpdateAccount implements ShouldQueue
         if(!$itemIndex)
             throw new \Exception('Could not find customer in cache');
 
-        $cache[$itemIndex]['balance'] = $balance;
+        $cache[$itemIndex] = $balanceData;
 
         Cache::put('balances', $cache);
     }
