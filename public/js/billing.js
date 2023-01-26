@@ -224,7 +224,7 @@ function view_customer_bills(customer_id = '', sort_type = '', evt)
 					jobsHtml += `<option value="${jobs[i].id}">${jobs[i].name}</option>`
 			
 				$billing.customer_bill_job_id.html(`<option value="">&ndash; Choose Job &ndash;</option>` + jobsHtml).show()
-console.log(jobsHtml)
+
 				$billing.customer_bill_name.html(response.data.customer.display_name).show()
 			}
 
@@ -288,6 +288,32 @@ function load_ticket_transactions(ticketId, parent_row)
 				`
 
 			}
+
+			let itemized = [
+				{ amount: $billing.tickets[i].freight, label : 'FREIGHT'}, 
+				{ amount: $billing.tickets[i].labor, label : 'LABOR'},
+				{ amount: $billing.tickets[i].discount, label : 'DISCOUNT'}]
+
+			ticketItemsHtml += `<tr style="border-style: hidden;">
+			<td colspan="3"></td>
+			<td>SUBTOTAL</td><td></td>
+			<td>${$billing.tickets[i].subtotal}</td>
+			`
+
+			ticketItemsHtml += `<tr style="border-style: hidden;">
+			<td colspan="3"></td>
+			<td>TAX</td><td></td>
+			<td>${$billing.tickets[i].tax}</td>
+			`
+
+			itemized.forEach(item => {
+
+				if(item.amount > 0)
+					ticketItemsHtml += `<tr style="border-style: hidden;">
+					<td colspan="3"></td>
+					<td>${item.label}</td><td></td>
+					<td>${item.amount}</td>`
+			})
 
 			$billing.ticket_items_list.html(ticketItemsHtml)
 
