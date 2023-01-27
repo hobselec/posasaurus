@@ -244,7 +244,7 @@ function save_customer_info()
 		show_note("Information Saved");
 		
 		// if the current customer has an open ticket, reload the ticket
-		if($pos.customer_id.val() == data.customer_id)
+		if($pos.customer_id.val() == response.data.id)
 		{
 			var tmpticket = $pos.ticket_id.val();
 			
@@ -256,30 +256,12 @@ function save_customer_info()
 			
 			
 		}
+		// set for new customer
+		if($edit_customer.id == 0)
+			$edit_customer.id = response.data.id
 			
-		if(response.reorder)
-			load_customer_list();
-			
-		// set editing id in the case of a new customer
-		// and add to select box and set selected
-		if(response.customer_id == 0) // new customer
-		{
-			var listing_obj = document.getElementById('customer_listing');
-		
-			if(response.company == '')
-				tmp_label = data.last_name + ", " + data.first_name;
-			else
-				tmp_label = data.company;
-		
-			var new_option = "<option value=\"" + response.customer_id + "\">" + tmp_label + "</option>";
-		
-			$edit_customer.customer_sel.append(new_option);			
-
-			
-			listing_obj.selectedIndex = listing_obj.length - 1;
-		
-			$edit_customer.id = response.id
-		}
+		syncCustomerListChanges(response.data)
+		$edit_customer.customer_sel.val(response.data.id) // reset if select box reorders
 
 	
 	}).catch(() => {
@@ -415,12 +397,73 @@ function save_job_edit()
 			
 			// reload the list
 			load_customer_job_list(cust_id);
+	
 		
 			$edit_customer.customer_job_edit.val('').css('background','#ffffff');
 		}
 	
 	
 	})
+
+}
+
+// set the customer list or update if given data of a customer
+function syncCustomerListChanges(data = null)
+{
+	
+	let customer_html = '<option value=""></option>';
+
+	let customerList = $edit_customer.customers
+
+//	customer_html = "<option value=\"\">&ndash; Choose Customer &ndash;</option>";
+//	customer_html += "<option value=\"\" disabled=\"disabled\"></option>";
+
+	// update list
+	if(data)
+	{
+		let reorder = false
+		let found = false
+		for(let i = 0; i < customerList.length; i++)
+		{
+
+			if(customerList[i].id == data.id)
+			{
+				if(customerList[i].display_name != data.display_name || customerList[i].use_company != data.use_company)
+				{
+					reorder = true
+				}
+				customerList[i] = data
+				found = true
+				break
+			}
+		}
+		if(!found)
+		{
+			customerList.push(data)
+			reorder = true
+		}
+
+		if(reorder)
+		{
+			customerList.sort((a,b) => {
+				if(a.display_name < b.display_name)
+					return -1
+				if(a.display_name < b.display_name)
+					return 0
+			})
+			$edit_customer.customers = customerList
+
+		} else
+			return
+
+	}
+	
+	for(let i = 0; i < customerList.length; i++)
+		customer_html += `<option value="${customerList[i].id}">${customerList[i].display_name}</option>`
+
+		
+	$edit_customer.customer_sel.html(customer_html);
+
 
 }
 /*
@@ -484,22 +527,12 @@ function load_customer_list(options)
 				.then( (response) => 
 			{
 				document.getElementById('customer_dialog').style.display = 'block';
+
+						
+				$edit_customer.customers = response.data.customers
 				
-				let customer_html = '<option value=""></option>';
+				syncCustomerListChanges()
 
-				let customerList = response.data.customers
-
-			//	customer_html = "<option value=\"\">&ndash; Choose Customer &ndash;</option>";
-			//	customer_html += "<option value=\"\" disabled=\"disabled\"></option>";
-				
-				for(let i = 0; i < customerList.length; i++)
-				{
-
-					customer_html += `<option value="${customerList[i].id}">${customerList[i].display_name}</option>`
-
-				}
-					
-				$edit_customer.customer_sel.html(customer_html);
 				$edit_customer.customer_sel.show();			
 
 				//$edit_customer.customer_sel.val($edit_customer.editing_customer_id.val());
