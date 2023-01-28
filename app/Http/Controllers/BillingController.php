@@ -120,7 +120,7 @@ class BillingController extends Controller
                $where[] = ['payment_type', '!=', 'VOID'];
                 break;
             case 'charges':
-                $where[] = ['payment_type', 'account'];
+                $where[] = ['payment_type', 'acct'];
                 $where[] = ['payment_type', '!=', 'VOID']; 
                 break; 
             case 'voids':
