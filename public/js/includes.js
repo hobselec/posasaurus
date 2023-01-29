@@ -563,7 +563,7 @@ function clear_ticket(ticketId = '', displayTicketId = '', customerName = '')
 			const getData = async() => {
 
 				try {
-					const response = await axios.delete('/pos/ticket/' + ticketId)
+					const response = await axios.delete('/pos/ticket/void/' + ticketId)
 
 					if(!response)
 						throw new Error()
