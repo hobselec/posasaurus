@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import ConfirmPassword from './ConfirmPassword'
+import ConfirmPassword from './ConfirmPassword.vue'
 
 export default {
     components: {

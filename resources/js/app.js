@@ -7,7 +7,7 @@ window.Alpine = Alpine;
 Alpine.start();
 
 import { createApp } from 'vue'
-import TwoFactorAuth from './components/TwoFactorAuth'
+import TwoFactorAuth from './components/TwoFactorAuth.vue'
 
 
 const app = createApp({})

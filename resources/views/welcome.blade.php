@@ -13,9 +13,8 @@
 <link rel="stylesheet" href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap">
 
         <!-- Scripts -->
-        @vite(['resources/js/app.js'])
+        @vite(['resources/js/app.js', 'resources/scss/app-pos.scss'])
 
-<script type="text/javascript" src="/pos/js/bootstrap.bundle.min.js"></script>
 
 <script type="text/javascript" src="/pos/js/jquery-3.6.1.min.js"></script>
 
@@ -36,7 +35,6 @@
 <script  src="/pos/js/catalog.js" type="text/javascript"></script>
 <script  src="/pos/js/context_menu_actions.js" type="text/javascript"></script>
  
-<link rel="stylesheet" type="text/css" href="/pos/css/bootstrap/bootstrap.min.css" />
 
 <link rel="stylesheet" type="text/css" href="/pos/css/pos.css" />
 <link rel="stylesheet" type="text/css" href="/pos/css/checkboxes.css" />
