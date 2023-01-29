@@ -198,6 +198,8 @@ class TicketController extends Controller
 
         $curBalance = BillingHelper::getCustomerBalance($ticket->customer_id);
 
+        UpdateAccount::dispatch(['customerId' => $ticket->customer_id]);
+
         return response()->json(['status' => true, 'balance' => $curBalance]);
     }
 

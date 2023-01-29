@@ -63,6 +63,7 @@ $(function() {
 	email : $('#edit_email'),
 	customer_sel : $('#customer_listing'),
 	customer_job_listing : $('#customer_job_listing'),
+	customers : [],
 	customer_edit_cell : $('#customer_edit_cell'),
 	customer_jobs_cell : $('#customer_jobs_cell'),
 	customer_job_edit : $('#customer_job_edit'),

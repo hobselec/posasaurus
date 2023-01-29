@@ -12,6 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 
 use App\Helpers\BillingHelper;
+use App\Events\UpdateBilling;
 
 class UpdateAccount implements ShouldQueue
 {
@@ -51,5 +52,8 @@ class UpdateAccount implements ShouldQueue
         $cache[$itemIndex] = $balanceData;
 
         Cache::put('balances', $cache);
+
+        $balanceData['jobs'] = null; // not needed
+        event (new UpdateBilling($balanceData));
     }
 }
