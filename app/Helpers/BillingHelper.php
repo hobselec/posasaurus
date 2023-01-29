@@ -28,7 +28,7 @@ class BillingHelper {
         return round($debts - $payments - $returns, 2);
     }
 
-    public static function getCustomerBalanceData(int $customerId)
+    public static function getCustomerBalanceData(int $customerId) : array
     {
         $c = Customer::with(['debts','payments','returns','jobs'])->where('id', $customerId)->first();
 
