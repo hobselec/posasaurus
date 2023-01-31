@@ -54,6 +54,8 @@ class CustomerController extends Controller
 
         $endDate = Carbon::now();
 
+        $balanceData = [];
+        
         if($showBalance)
             $balanceData = Cache::get('balances');
         else
