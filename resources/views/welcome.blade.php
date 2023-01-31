@@ -90,7 +90,7 @@
 
         <li class="nav-item">
           <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">
-		  <img src="img/bookOrangeClear.png" style="height: 42px; cursor: pointer" title="Product Catalog" onclick="show_catalog()" alt="Product Catalog" />  &nbsp;
+		  <img src="img/bookOrangeClear.png" style="height: 42px; cursor: pointer" title="Product Catalog" onclick="chgView($catalog.dialog); show_catalog()" alt="Product Catalog" />  &nbsp;
    
 			</a>
         </li>
