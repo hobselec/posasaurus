@@ -59,4 +59,5 @@ window.Echo = new Echo({
      forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
      enabledTransports: ['ws', 'wss'],
      cluster:import.meta.env.VITE_PUSHER_APP_CLUSTER,
+     authEndpoint: '/pos/broadcasting/auth'
 });
