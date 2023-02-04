@@ -42,8 +42,7 @@ $(function() {
 	Echo.private('channel-billing')
 	.listen('UpdateBilling', (e) => {
 
-		console.log(e.balance);
-		$billing.dataRows.foreach(item => {
+		$billing.dataRows.forEach(item => {
 			if(item.id == e.balance.id)
 				item.balance = e.balance
 		})
