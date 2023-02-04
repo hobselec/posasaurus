@@ -39,6 +39,15 @@ $(function() {
 			}
 	})
 
+	Echo.private('channel-billing')
+	.listen('UpdateBilling', (e) => {
+
+		$billing.dataRows.forEach(item => {
+			if(item.id == e.balance.id)
+				item.balance = e.balance
+		})
+	})
+
 
   window.$edit_customer =
   {

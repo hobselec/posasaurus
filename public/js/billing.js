@@ -21,7 +21,11 @@ This file is part of Primitive Point of Sale.
 
 function show_billing_dialog()
 {
-
+	if($billing.dataRows > 0)
+	{
+		updateBillingDialog()
+		return
+	}
 
 //	$pos.open_transactions.prop('disabled', true);
 	$pos.barcode.prop('disabled', true);
@@ -30,50 +34,9 @@ function show_billing_dialog()
 	axios.get('/pos/billing/list/' + $billing.billing_display_types.val() + '?endDate=' + $billing.billing_list_end_date.val()).then((response) => {
 
 		let rows = response.data;
-
-		let billingTableRows = ''
-		let checked
-
 		$billing.dataRows = rows
-		let isCredit = '', displayClass = ''
 
-		for(let i = 0; i < rows.length; i++)
-		{
-			rows[i].print_statement ? checked = 'checked' : checked = ''
-
-			if(rows[i].rawBalance < 0)
-			{
-				isCredit = `CR `
-				displayClass = 'text-success'
-			} else
-			{
-				isCredit = ''
-				displayClass = 'text-danger'
-			}
-
-			billingTableRows += `<tr id="printAcct_${rows[i].id}" data-customerid="${rows[i].id}" onclick="view_customer_bills(${rows[i].id}, '', event)">
-								<td>
-								<input id="billing${i}" type="checkbox" ${checked} />
-								<label for="billing${i}" class="nice-label"></label>
-								&nbsp; ${rows[i].name}
-								</td>
-								<td style="text-align: right; padding-right: 10px" class="${displayClass}">
-									<div style="display: inline">${isCredit}$ </div>
-									<div style="display: inline; text-align: right">${rows[i].balance}</div>
-								</td>
-								</tr>`
-		}
-
-		$billing.list.html(billingTableRows);
-
-
-//		$('#billing_list_end_date').datepicker({'duration' : 0});
-
-		$("#billing_list tbody>tr").each(function() {
-	
-			$(this).vscontext({menuBlock: 'vs-context-menu', menuType : 'balances'});
-
-		});	
+		updateBillingDialog()
 
 		
 	})
@@ -499,5 +462,55 @@ function saveBillingAdjustment()
 	}).catch(() => {
 		show_note("Error adding adjustment")
 	})
+
+}
+
+function updateBillingDialog()
+{
+	let billingTableRows = ''
+	let checked
+
+
+	let isCredit = '', displayClass = ''
+
+	let rows = $billing.dataRows
+
+	for(let i = 0; i < rows.length; i++)
+	{
+		rows[i].print_statement ? checked = 'checked' : checked = ''
+
+		if(rows[i].rawBalance < 0)
+		{
+			isCredit = `CR `
+			displayClass = 'text-success'
+		} else
+		{
+			isCredit = ''
+			displayClass = 'text-danger'
+		}
+
+		billingTableRows += `<tr id="printAcct_${rows[i].id}" data-customerid="${rows[i].id}" onclick="view_customer_bills(${rows[i].id}, '', event)">
+							<td>
+							<input id="billing${i}" type="checkbox" ${checked} />
+							<label for="billing${i}" class="nice-label"></label>
+							&nbsp; ${rows[i].name}
+							</td>
+							<td style="text-align: right; padding-right: 10px" class="${displayClass}">
+								<div style="display: inline">${isCredit}$ </div>
+								<div style="display: inline; text-align: right">${rows[i].balance}</div>
+							</td>
+							</tr>`
+	}
+
+	$billing.list.html(billingTableRows);
+
+
+//		$('#billing_list_end_date').datepicker({'duration' : 0});
+
+	$("#billing_list tbody>tr").each(function() {
+
+		$(this).vscontext({menuBlock: 'vs-context-menu', menuType : 'balances'});
+
+	});	
 
 }
