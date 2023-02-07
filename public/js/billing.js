@@ -67,13 +67,7 @@ function close_customer_bill_dialog()
 //
 function viewTicket(id, evt)
 {
-	if(window.event) // IE
-		keynum = evt.keyCode;
-	else if(evt.which) // Netscape/Firefox/Opera
-		keynum = evt.which;
-
-	
-	if(keynum != 13)
+	if(evt.key != 'Enter')
 		return;
 
 	// limit the search to the customer currently viewing
@@ -513,4 +507,63 @@ function updateBillingDialog()
 
 	});	
 
+}
+
+
+// start the function by delaying the printing so the indicator can load
+// and the control can be hidden
+function printAllStatements()
+{
+    $billing.printAllStatementsIndicator.show();
+    $billing.printAllStatementsCtrl.hide();
+
+    window.setTimeout("printAllStatementsStart()", 200);
+
+}
+
+function printAllStatementsStart()
+{
+	let i = 0;
+	let printIds = []
+
+    $('#billing_list tr').each(function() {
+
+		var tmp = $(this).attr('id');
+		var parts = tmp.split('_');
+
+		try {
+			if(!parts[1])
+				return false;
+			
+			} catch(e) { return false; }
+
+		var customer_id = parts[1];
+
+		tmp = $(this).find('input:checkbox');
+
+
+		if(tmp.prop('checked'))
+			printIds.push(customer_id);
+
+		// we should get the response back from the server and deselect then
+		tmp.prop('checked', false);
+
+
+    });
+
+	
+	axios.post('/pos/billing/print-statements', { customers : printIds,  endDate : $billing.billing_list_end_date.val() }).then((response) => {
+
+
+		
+	}).catch(() => {
+		show_note("An error occurred")
+	})
+
+	//console.log(print_ids);
+	
+
+    $billing.printAllStatementsIndicator.hide();
+    $billing.printAllStatementsCtrl.show();
+ 
 }
