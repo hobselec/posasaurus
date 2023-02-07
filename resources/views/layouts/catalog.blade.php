@@ -53,7 +53,7 @@
 		Item Name<br />
 		<input type="text" class="form-control" id="new_item_name" size="30" maxlength="30" /><br />
 		Price<br />
-		<input type="text" class="form-control" id="new_item_price" size="10" maxlength="7" onkeyup="add_decimals(this, event, false)" /><br />
+		<input type="text" class="form-control" id="new_item_price" size="10" maxlength="7" /><br />
 
 		<!--
 		<select id="new_item_category">

@@ -42,7 +42,7 @@ t= '';
 
 function search_catalog(v = '')
 {
-console.log(v)
+
 	$catalog.open_record = 0; // unset the open records
 	var use_ws = 0; // use wholesaler, can switch data ranges in the database if desired
 	

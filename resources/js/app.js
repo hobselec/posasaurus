@@ -60,3 +60,24 @@ window.Echo = new Echo({
     cluster:import.meta.env.VITE_PUSHER_APP_CLUSTER,
     authEndpoint: '/pos/broadcasting/auth'
 });
+
+import { setupGlobals } from './PosGlobals.js'
+import { startUp } from './PosStartup.js'
+import { ticketDialogs } from './TicketDialogs';
+import { billingDialogs } from './BillingDialogs';
+import { paymentDialogs } from './PaymentDialogs';
+import { catalogDialogs } from './CatalogDialogs'
+
+
+setupGlobals()
+startUp()
+
+ticketDialogs()
+billingDialogs()
+catalogDialogs()
+paymentDialogs()
+
+import * as Reports from './Reports';
+Object.assign(window, Reports)
+import * as Helpers from './Helpers';
+Object.assign(window, Helpers)

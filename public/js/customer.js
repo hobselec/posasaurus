@@ -18,64 +18,6 @@ This file is part of Primitive Point of Sale.
 
 */
 
-$(function() {
-
-//	var height = screen.height - 240 + 'px';
-
-//	$('#main_container').css('height',height);
-
-	// finalize transaction with amount given
-	$('#cash_given').keyup(function(evt) {
-
-	if(window.event) // IE
-		keynum = evt.keyCode;
-	else if(evt.which) // Netscape/Firefox/Opera
-		keynum = evt.which;
-		
-		add_decimals(this, evt, false);
-
-		if(keynum == 13)
-		{
-			$(this).blur(); // prevent double submitting
-			
-			$pos.cancel_button.prop('disabled', true);
-		// .replace(/^\s+/,"")
-			var display_total = parseFloat($('#display_total').html());
-			//display_total = display_total.replace(/^0+/,"");
-			amt_given = $(this).val().replace(/^0+/,"");
-		
-			//alert(amt_given + ' ad ' + display_total);
-		
-			if(amt_given < display_total)
-			{
-				$pos.cancel_button.prop('disabled', false);
-				show_note("Amount given must be at least equal to the total");
-			}
-			else
-				post_transaction();
-			
-			
-		}
-			
-	});
-
-	
-	// advance to next box on enter key
-	$('#payment_take .trans_info').keyup(function(evt) {
-
-	if(window.event) // IE
-		keynum = evt.keyCode;
-	else if(evt.which) // Netscape/Firefox/Opera
-		keynum = evt.which;
-
-		if(keynum == 13)
-			$('#cash_given').focus();
-			
-	});
-
-
-});
-
 function add_customer_form()
 {
 	clear_customer_inputs(); // clears inputs

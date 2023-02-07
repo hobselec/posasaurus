@@ -25,14 +25,14 @@
 
 <script  src="/pos/js/vscontext.js" type="text/javascript"></script>
 
-<script  src="/pos/js/core.js" type="text/javascript"></script>
-<script  src="/pos/js/includes.js" type="text/javascript"></script>
+
 <script  src="/pos/js/customer.js" type="text/javascript"></script>
 <script  src="/pos/js/transaction.js" type="text/javascript"></script>
 <script  src="/pos/js/payments.js" type="text/javascript"></script>
 <script  src="/pos/js/cart.js" type="text/javascript"></script>
 <script  src="/pos/js/billing.js" type="text/javascript"></script>
 <script  src="/pos/js/catalog.js" type="text/javascript"></script>
+
 <script  src="/pos/js/context_menu_actions.js" type="text/javascript"></script>
  
 
@@ -259,7 +259,7 @@
 		<label for="lbl_disc_num"><input id="lbl_disc_num" type="radio" name="discount_type_selector" value="number" onclick="$pos.disc_pct.prop('disabled', true); $pos.disc_num').removeProp('disabled')" /> &nbsp; 
 		-->
 
-		Price: &nbsp;<input style="padding: 3px" size="7" maxlength="11" type="text" id="discount_number" value="" onkeyup="add_decimals(this, event, false)" /> <br />
+		Price: &nbsp;<input style="padding: 3px" size="7" maxlength="11" type="text" id="discount_number" value="" /> <br />
 
 		<!-- percent is disabled
 		<label for="lbl_disc_pct"><input onclick="$pos.disc_num.prop('disabled', true); $pos.disc_pct.removeProp('disabled')"  id="lbl_disc_pct" type="radio" name="discount_type_selector" value="percentage" /> &nbsp; &nbsp; &nbsp; &nbsp; %:</label> <input style="padding: 3px; text-align: right" size="7" maxlength="2" type="text" id="discount_percentage" value="" onkeyup="calculate_discount_number()" />
@@ -269,8 +269,8 @@
 			<div style="padding-bottom: 4px; text-align: center;"><b>Other</b></div>
 			&nbsp; &nbsp;<input type="checkbox" id="is_resale" /> <label for="is_resale" class="nice-label"> Resale: </label><br />
 
-			Freight: <input size="7" type="text" id="freight_number" maxlength="11" onkeyup="add_decimals(this, event, false)" />
-			<p style="margin-top: 5px">Labor: &nbsp;&nbsp; <input size="7" type="text" id="labor_number" maxlength="11" onkeyup="add_decimals(this, event, false)" /></p>
+			Freight: <input size="7" type="text" id="freight_number" maxlength="11" />
+			<p style="margin-top: 5px">Labor: &nbsp;&nbsp; <input size="7" type="text" id="labor_number" maxlength="11" /></p>
 			</div>
 			Received by: <input id="recv_by_input" type="text" maxlength="24" size="24"/>
 		</div>
@@ -403,7 +403,7 @@
 			<option value="cc">Credit Card</option>
 			</select>
 		</p>
-		<p>Amount: &nbsp; <input type="text" class="form-control" id="payment_recv_amt" size="11" maxlength="11" onkeyup="add_decimals(this, event, 'save_payment_recv')" /></p>
+		<p>Amount: &nbsp; <input type="text" class="form-control" id="payment_recv_amt" size="11" maxlength="11" /></p>
 		<p>Check or Trans # &nbsp; <input type="text" class="form-control" id="payment_recv_extra_info" size="11" maxlength="11" /></p>
 
 

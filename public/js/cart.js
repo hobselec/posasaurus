@@ -18,7 +18,6 @@ This file is part of Primitive Point of Sale.
 
 */
 
-//const { default: axios } = require("axios");
 
 // EDITABLE QTY FUNCTIONS
 //
@@ -225,7 +224,7 @@ function edit_price(cell_obj, item_id)
 
 	$editable_price.cur_cell = cell_obj; // store this for reference later
 
-	$editable_price.edit_contents = "<input id=\"cur_edit_item_price\" maxlength=\"11\" type=\"text\" style=\"width: 50px\" value=\"" + $editable_price.cur_price + "\" onkeyup=\"add_decimals(this, event, false); check_update_price(event, this.value)\" />";
+	$editable_price.edit_contents = "<input id=\"cur_edit_item_price\" maxlength=\"11\" type=\"text\" style=\"width: 50px\" value=\"" + $editable_price.cur_price + "\" onkeyup=\"check_update_price(event, this.value)\" />";
 
 	cell_obj.html($editable_price.edit_contents);
 	
@@ -311,4 +310,305 @@ function save_cart_item_description()
 		$('#item_description_dialog').modal('hide')
 	})
 
+}
+
+
+function clear_pos() {
+
+	$pos.cart.html('');
+	$pos.subtotal.html('');
+	$pos.tax.html('');
+	$pos.ticket_display_id.html('');
+	$pos.ticket_id.val('');
+	$pos.customer_display_name.html('');
+	$pos.customer_id.val('');
+	$pos.display_total.html('');
+	$pos.paymentDialogTotal.html('')
+	$pos.cash_given.val('');
+	$pos.check_no.val('');
+	$pos.cc_trans_no.val('');
+	$pos.tax_exempt.val('0');
+	$pos.pay_button.prop('disabled', false);
+	$pos.cancel_button.prop('disabled', false);
+	$pos.refund_switch.prop('checked', false);
+	$pos.open_transactions.val('').prop('disabled', false);
+	$pos.check_no.prop('disabled', false);
+	$edit_customer.customer_job_edit.val('');
+	$pos.allow_credit.val('0');
+	$pos.discount.val('0');
+	$pos.freight.val('0');
+	$pos.labor.val('0');
+	
+	$pos.pay_job_id.val('');
+	$pos.customer_job_display_name.html('');
+
+	$catalog.add_item_dialog.hide();
+	$catalog.new_item_name.val('');
+	$catalog.new_item_price.val('');
+	
+	$pos.printReceiptChkbox.prop('checked', true);
+	$pos.refund_indicator.html('');
+
+	$pos.recv_by_name.html('')
+	$pos.recv_by_container.hide()
+	$pos.recv_by_input.val('')
+
+	$pos.pause_button.prop('disabled', false);
+
+	$pos.jobs = []
+
+	cancel_payment(1);
+
+	//$pos.barcode.focus();
+	$pos.paymentMethodDisplay.html('')
+	$pos.paymentMethod = ''
+	$pos.postPaymentButton.attr('disabled', true)
+//alert($pos.customer_display_name.html());	
+
+}
+
+
+function chg_ticket(ticket_id)
+{
+	clear_pos()
+	
+	axios.get('/pos/ticket/' + ticket_id).then((responsePayload) => {
+
+
+		let response = responsePayload.data
+
+				cancel_payment(1);
+				
+				$pos.subtotal.html(response.subtotal.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				$pos.tax.html(response.tax.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				$pos.display_total.html(response.total.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				$pos.paymentDialogTotal.html($pos.display_total.html())
+				
+				//var tmp_subtotal = response.subtotal.replace(',', '');
+				
+				add_to_cart(response.items);
+				
+				$pos.ticket_id.val(response.id);
+				$pos.ticket_display_id.html(response.display_id);
+				if(response.job)
+				{
+					$pos.pay_job_id.val(response.job.id)
+					$pos.customer_job_display_name.html(response.job.name);
+				}
+				
+				$pos.open_transactions.val('');
+				$pos.pay_button.removeClass('disabled')
+				$pos.special_options_button.removeClass('disabled')
+				
+				// set the inputs used to modify the discount/freight/resale
+				/*
+				if(response.discount > 0)
+					var tmppct = 100 - ((parseFloat(tmp_subtotal) - parseFloat(response.discount))/parseFloat(tmp_subtotal)) * 100;
+				else
+					var tmppct = 0;
+					
+				//	alert(parseFloat(response.subtotal) - parseFloat(response.discount));
+		//alert(tmppct);
+
+				
+				if(tmppct == 100)
+					tmppct = '';
+				else
+					tmppct = tmppct.toFixed(0);
+
+				$('#discount_percentage').val(tmppct);
+				*/
+		
+				$pos.discount.val(response.discount.toFixed(2));
+				
+				$('#freight_number').val(response.freight.toFixed(2));
+				$('#labor_number').val(response.labor.toFixed(2));
+
+				// show discount in main totals				
+				if(response.discount > 0)
+				{
+
+					$pos.discount_icon.show();
+					$pos.discount_display_total.html("$ -" + response.discount.toLocaleString('en-US', { minimumFractionDigits: 2}));
+			
+				}
+			
+				if(response.freight > 0)
+				{
+					$pos.freight_icon.show();
+					$pos.freight_display_total.html("$ " + response.freight.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				}
+				if(response.labor > 0)
+				{
+					$pos.labor_icon.show();
+					$pos.labor_display_total.html("$ " + response.labor.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				}
+				
+				if(response.resale == 1)
+					$('#is_resale').prop('checked', true);
+				else
+					$('#is_resale').prop('checked', false);
+
+				if(response.refund == 1)
+				{
+				    $pos.refund_switch.prop('checked', true);
+				    $pos.refund_indicator.html('- Refund');
+				} else
+ 			 	    $pos.refund_indicator.html('');
+
+				// these will be set from the db eventually i think
+				$pos.customer_display_name.html(response.customer.display_name);
+				$pos.customer_id.val(response.customer.id);
+				$pos.tax_exempt.val(response.customer.tax_exempt);
+				$pos.allow_credit.val(response.customer.credit);
+				$pos.cash_given.val('');
+				$pos.check_no.val('');
+				$pos.cc_trans_no.val('');
+
+				$pos.recv_by_input.val(response.recv_by);
+
+				//$item_descriptions = response.item_descriptions;
+
+				if(response.recv_by != '' && response.recv_by != null)
+				{
+					$pos.recv_by_container.show()
+				    $pos.recv_by_name.html(response.recv_by)
+
+				}
+			
+
+			//$pos.barcode.focus();
+		}).catch(() => {  
+			show_note("Cannot load ticket")
+		});	
+	
+	//add_to_cart(subtotal, cart);
+	
+	//$('#barcode').focus(); // seems to get focus back on its own...
+
+}
+
+
+
+
+	
+function lookup_item() {
+	
+	
+	if($pos.barcode.val() == '')
+		return false;
+		
+	//  barcode lookup
+
+	axios.put('/pos/ticket/add-item', { itemId : $pos.curItemId, ticketId : $pos.ticket_id.val() }).then((response) => {
+
+				$pos.subtotal.html(response.data.ticket.subtotal.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				$pos.tax.html(response.data.ticket.tax.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				$pos.display_total.html(response.data.ticket.total.toLocaleString('en-US', { minimumFractionDigits: 2}));
+				$pos.paymentDialogTotal.html($pos.display_total.html())
+			
+				if($pos.ticket_id.val() == '')
+				{
+					// new ticket
+					$pos.ticket_id.val(response.data.ticket.id);
+					//$pos.ticket_display_id.html(response.data.ticket[0].display_id);
+
+					let optionRow = `<option value="${response.data.ticket.id}">#${response.data.ticket.display_id} - NONAME</option>`
+						
+					$pos.open_transactions.append(optionRow);
+
+					chg_ticket(response.data.ticket.id)
+						
+				} else // else if($pos.ticket_id.val() != response.ticket_id)
+					add_to_cart(response.data.ticket.items);
+				//chg_ticket($pos.ticket_id.val());
+				
+				$pos.barcode.val('');
+
+
+		}).catch(() => {
+			show_note("Item not found");
+	})
+		
+}
+
+function clear_ticket(ticketId = '', displayTicketId = '', customerName = '')
+{
+	var clear_pos_vars = false;
+	let forNameString = ''
+
+	if(ticketId == '')
+	{
+		// ticket_id is the currently open ticket, as opposed to voiding through the billing page
+
+		ticketId = $pos.ticket_id.val()
+		displayTicketId = $pos.ticket_display_id.html()
+		clearPos = true
+	}
+	
+	if(customerName  != '')
+		forNameString = ` for ${customerName}`
+	
+	Swal.fire({
+		title: 'Please Confirm',
+		text: `Void ticket #${displayTicketId}${forNameString}?`,
+		icon: 'warning',
+		showCancelButton: true
+	}).then((result) => {
+	
+		if(result.isConfirmed) {
+
+			
+			const getData = async() => {
+
+				try {
+					const response = await axios.delete('/pos/ticket/void/' + ticketId)
+
+					if(!response)
+						throw new Error()
+					
+					if(response.data.status)
+					{
+						show_note("Ticket Voided");
+
+						// remove from select box
+						$('#open_transactions option').each(function() {
+							
+							if($(this).val() == $pos.ticket_id.val())
+								$(this).remove()
+						});
+
+						$billing.ticket_tbody.find('tr').each(function() {
+
+							if($(this).data('ticketid') == ticketId)
+							{
+								let cell = $(this).find('td').eq(5)
+								cell.html('VOID')
+							}
+						})
+
+						// clear display
+						if(clear_pos_vars)
+							clear_pos()
+
+					} else
+						show_note("Problem", "Cannot void ticket!", "warning")
+
+					return response
+			
+				} catch(e) {
+					show_note("Error", "Cannot void ticket!", "error")
+				
+				}
+			} 
+			getData()
+
+
+		}
+	}).catch(e => {
+
+
+	})
+
+	
 }

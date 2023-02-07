@@ -13,17 +13,17 @@
 
 <!-- opening balance-->
 <div id="startup_dialog" style="display: none; font-size: 12pt" class="posdlg">
-Opening cash: &nbsp; <input type="text" class="currency" autocomplete="off" onkeyup="add_decimals(this, event, 'save_opening_balance')" size="8" maxlength="8" id="open_cash" />
+Opening cash: &nbsp; <input type="text" class="currency" autocomplete="off" onkeyup="save_opening_balance()" size="8" maxlength="8" id="open_cash" />
 <div id="debug_container"></div>
 </div>
 
 <!-- shutdown dialog -->
 <div id="shutdown_dialog" style="display: none; font-size: 12pt" class="posdlg">
 <div class="mt-2">
-    Closing cash: &nbsp; <input type="text" size="8" maxlength="8" id="closing_cash" onkeyup="add_decimals(this, event, false)" />
+    Closing cash: &nbsp; <input type="text" size="8" maxlength="8" id="closing_cash" />
 </div>
 <div class="mt-2">
-Closing checks: &nbsp; <input type="text" size="8" maxlength="8" id="closing_checks" onkeyup="add_decimals(this, event, 'print_end_report')" />
+Closing checks: &nbsp; <input type="text" size="8" maxlength="8" id="closing_checks" />
 </div>
 
 <p style="margin-left: auto ;margin-right: auto"><button class='btn btn-light' type="button" onclick="print_end_report()">Print Report</button></p>
@@ -101,7 +101,7 @@ Closing checks: &nbsp; <input type="text" size="8" maxlength="8" id="closing_che
     </p>
 
     <p class="mt-2">Amount: &nbsp; </p>
-    <input type="text" class="currency form-control" onkeyup="add_decimals(this, event, 'save_service_charge')" size="8" maxlength="8" id="billing_adjustment_amount" />
+    <input type="text" class="currency form-control" size="8" maxlength="8" id="billing_adjustment_amount" />
 
 
     <p class="mt-2">
