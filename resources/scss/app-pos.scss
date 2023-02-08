@@ -3,3 +3,8 @@
 */
 
 @import "~bootstrap/scss/bootstrap";
+
+// bootstrap 4 to bootstrap 5
+.sr-only {
+    @extend .visually-hidden
+}
