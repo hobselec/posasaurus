@@ -228,7 +228,7 @@ export function load_ticket_transactions(ticketId, parent_row)
 		{
 			let ticketItemsHtml = ''
 
-			for(j = 0; j < $billing.tickets[i].items.length; j++)
+			for(let j = 0; j < $billing.tickets[i].items.length; j++)
 			{
 				let item = $billing.tickets[i].items[j]
 				let total = item.price * item.qty
@@ -319,6 +319,7 @@ export function view_customer_statement()
 //
 export function show_reports_dialog()
 {
+	let only_show_balances = 0
 	$('#only_show_balances').is(':checked') ? only_show_balances = 1 : only_show_balances = 0;
 
     axios.get(`/pos/billing/aging-report?onlyShowBalances=${only_show_balances}&endDate=${$billing.billing_list_end_date.val()}`
@@ -413,7 +414,9 @@ export function formatTicketRow(ticket)
 	let typeIndicator = '';
 
 	let ticketTotal = ticket.total.toLocaleString('en-US', { minimumFractionDigits: 2})
-	ticket.job ? ticketJob = ticket.job.name : ticketJob = ''
+	let ticketJob = ''
+	if(ticket.job)
+		ticketJob = ticket.job.name
 
 	if(ticket.display_type == 'PAYMENT' || ticket.display_type == 'discount')
 		typeIndicator = ' &ndash; '
