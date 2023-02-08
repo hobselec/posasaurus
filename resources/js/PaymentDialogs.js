@@ -35,6 +35,7 @@ export function paymentDialogs() {
                     let cdata = response.data
     
                     let myarr = new Array(cdata.length);
+                    let tmpobj
                     
                     for(let i = 0; i < cdata.length; i++)
                     {
