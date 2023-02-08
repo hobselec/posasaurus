@@ -30,7 +30,7 @@
 <script  src="/pos/js/transaction.js" type="text/javascript"></script>
 <script  src="/pos/js/payments.js" type="text/javascript"></script>
 <script  src="/pos/js/cart.js" type="text/javascript"></script>
-<script  src="/pos/js/billing.js" type="text/javascript"></script>
+
 <script  src="/pos/js/catalog.js" type="text/javascript"></script>
 
 <script  src="/pos/js/context_menu_actions.js" type="text/javascript"></script>

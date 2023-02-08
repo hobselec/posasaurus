@@ -21,10 +21,16 @@ const app = createApp({})
 
 app.component('two-factor-auth', TwoFactorAuth)
 app.mount('#app')
-//window.app = new Vue({
- //   el: '#app',
-//})
 
+import VueBootstrapAutocomplete from 'vue3-bootstrap-autocomplete'
+import SearchBox from './components/SearchBox.vue'
+/*
+const customerSearchApp = createApp({})
+
+customerSearchApp.component('vue-bootstrap-autocomplete', VueBootstrapAutocomplete)
+customerSearchApp.component('search-box', SearchBox)
+customerSearchApp.mount('#customerApp')
+*/
 import _ from 'lodash';
 window._ = _;
 
@@ -81,3 +87,6 @@ import * as Reports from './Reports';
 Object.assign(window, Reports)
 import * as Helpers from './Helpers';
 Object.assign(window, Helpers)
+
+import * as Billing from './pos_functions/billing.js';
+Object.assign(window, Billing)
