@@ -2,8 +2,8 @@
     
 export function save_opening_balance()
 {
-    amt = $('#open_cash').val();
-    tmpamt = amt.toString();
+    let amt = $('#open_cash').val();
+    let tmpamt = amt.toString();
 
     
     if(tmpamt.indexOf('.') == '-1' && $pos.useAutoDecimal)

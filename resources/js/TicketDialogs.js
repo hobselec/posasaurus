@@ -89,6 +89,7 @@ export function ticketDialogs() {
                     let cdata = response.data
 
                     let myarr = [];
+                    let tmpobj
 
                     for(let i = 0; i < cdata.length; i++)
                     {

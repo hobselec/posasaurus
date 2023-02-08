@@ -47,9 +47,10 @@ export function startUp() {
                 {
                     let cdata = response.data
     
-                    myarr = new Array(cdata.length);
+                    let myarr = new Array(cdata.length);
                     
                     let name = ''
+                    let tmpobj
     
                     for(let i = 0; i < cdata.length; i++)
                     {
