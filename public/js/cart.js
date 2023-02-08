@@ -62,30 +62,25 @@ function edit_qty(cell_obj, item_id)
 // update the cell qty we are editing on enter key press
 function check_update_qty(evt, qty)
 {
-	if(window.event) // IE
-		keynum = evt.keyCode;
-	else if(evt.which) // Netscape/Firefox/Opera
-		keynum = evt.which;
 
-		if(keynum == 13)
-		{
-			//alert('update');
-			// do update
-			
-			if(qty >= 1)
-			{
-				$editable_item.cur_qty = qty;
-			
-				modify_item($editable_item.cur_item_id, 'chg', qty)
-			} else
-			{
+	if(evt.key != 'Enter')
+		return
 
-				show_note("Cannot set quantity less than 1.  Use the remove item button or adjust the price.");
-			}
 			
-			restore_qty();
-			$pos.barcode.focus();
-		}
+	if(qty >= 1)
+	{
+		$editable_item.cur_qty = qty;
+	
+		modify_item($editable_item.cur_item_id, 'chg', qty)
+	} else
+	{
+
+		show_note("Cannot set quantity less than 1.  Use the remove item button or adjust the price.");
+	}
+	
+	restore_qty();
+	$pos.barcode.focus();
+
 }
 
 // remove, increment, decrement item quantity 0in cart
@@ -239,12 +234,8 @@ function edit_price(cell_obj, item_id)
 // update the cell qty we are editing on enter key press
 function check_update_price(evt, price)
 {
-	if(window.event) // IE
-		keynum = evt.keyCode;
-	else if(evt.which) // Firefox/Opera
-		keynum = evt.which;
 
-	if(keynum != 13)
+	if(evt.key != 'Enter')
 		return
 
 	// so event doesn't propogate on 'enter key'
