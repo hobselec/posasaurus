@@ -5,7 +5,7 @@
 
 	<select id="billing_display_types" onchange="show_billing_dialog()">
 	<option value="all">All Accounts</option>
-	<option value="balances">Only Balances</option>
+	<option value="balances" selected="selected">Only Balances</option>
 	</select>
 
 	<span style="padding-left: 50px">
