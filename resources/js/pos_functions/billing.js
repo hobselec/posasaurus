@@ -1,4 +1,4 @@
-
+ 
 /*
 
 This file is part of Primitive Point of Sale.
@@ -19,7 +19,7 @@ This file is part of Primitive Point of Sale.
 */
 
 
-function show_billing_dialog()
+export function show_billing_dialog()
 {
 	if($billing.dataRows > 0)
 	{
@@ -44,7 +44,7 @@ function show_billing_dialog()
 }
 
 
-function close_billing_dialog()
+export function close_billing_dialog()
 {
 
 	$billing.dialog.hide();
@@ -54,7 +54,7 @@ function close_billing_dialog()
 
 }
 
-function close_customer_bill_dialog()
+export function close_customer_bill_dialog()
 {
 
 	$billing.customer_bill_dialog.hide();
@@ -65,7 +65,7 @@ function close_customer_bill_dialog()
 
 // load a single ticket ID
 //
-function viewTicket(id, evt)
+export function viewTicket(id, evt)
 {
 	if(evt.key != 'Enter')
 		return;
@@ -96,7 +96,7 @@ function viewTicket(id, evt)
 
 // show tickets under a customer name 
 //
-function view_customer_bills(customer_id = '', sort_type = '', evt)
+export function view_customer_bills(customer_id = '', sort_type = '', evt)
 {
 	//$billing.customer_tickets_container.html('');
 	$('#customer_activity_indicator').show();
@@ -210,7 +210,7 @@ function view_customer_bills(customer_id = '', sort_type = '', evt)
 }
 
 
-function load_ticket_transactions(ticketId, parent_row)
+export function load_ticket_transactions(ticketId, parent_row)
 {
 	// reset onclick highlighting
 	$('#ticket_tbody tr').each(function() {
@@ -286,7 +286,7 @@ function load_ticket_transactions(ticketId, parent_row)
 
 
 // show the bill html on the screen
-function view_customer_statement()
+export function view_customer_statement()
 {
 	$('#customer_activity_indicator').show();
 	
@@ -317,7 +317,7 @@ function view_customer_statement()
 }
 
 //
-function show_reports_dialog()
+export function show_reports_dialog()
 {
 	$('#only_show_balances').is(':checked') ? only_show_balances = 1 : only_show_balances = 0;
 
@@ -332,7 +332,7 @@ function show_reports_dialog()
 
 }
 
-function print_aging_report()
+export function print_aging_report()
 {
     $.get('aging.php', { print : 1 });
 }
@@ -340,7 +340,7 @@ function print_aging_report()
 
 //
 // update the billing listing totals next to the provided customer_id
-function refresh_listing_total(customer_id, new_balance)
+export function refresh_listing_total(customer_id, new_balance)
 {
    var searchId = 'printAcct_' + customer_id;
 
@@ -374,7 +374,7 @@ function refresh_listing_total(customer_id, new_balance)
 
 }
 
-function closeTicket()
+export function closeTicket()
 {
 	$('#ticket_tbody tr').each(function() {
 		$(this).removeClass('bg-info')
@@ -387,7 +387,7 @@ function closeTicket()
 }
 
 // print_tickets = 1|0 to print tickets along with statement
-function printCustomerStatement(print_tickets = 0)
+export function printCustomerStatement(print_tickets = 0)
 {
 
 //	$('#customer_activity_indicator').show();
@@ -408,7 +408,7 @@ function printCustomerStatement(print_tickets = 0)
 
 // helper function used for loading tickets and searching tickets
 
-function formatTicketRow(ticket)
+export function formatTicketRow(ticket)
 {
 	let typeIndicator = '';
 
@@ -432,7 +432,7 @@ function formatTicketRow(ticket)
 }
 
 // for service charge, discount, or cash refunds
-function saveBillingAdjustment()
+export function saveBillingAdjustment()
 {
 	let customerId = $billing.adjustment.customerId
 
@@ -459,7 +459,7 @@ function saveBillingAdjustment()
 
 }
 
-function updateBillingDialog()
+export function updateBillingDialog()
 {
 	let billingTableRows = ''
 	let checked
@@ -512,7 +512,7 @@ function updateBillingDialog()
 
 // start the function by delaying the printing so the indicator can load
 // and the control can be hidden
-function printAllStatements()
+export function printAllStatements()
 {
     $billing.printAllStatementsIndicator.show();
     $billing.printAllStatementsCtrl.hide();
@@ -521,7 +521,7 @@ function printAllStatements()
 
 }
 
-function printAllStatementsStart()
+export function printAllStatementsStart()
 {
 	let i = 0;
 	let printIds = []
