@@ -138,8 +138,8 @@ class JournalController extends Controller
         }
 
         // COMPARE to opening balance
-        $over_shortcash_prefix = '';
-        $over_shortchecks_prefix = '';
+        $overShortCashPrefix = '';
+        $overShortChecksPrefix = '';
 
         $result = DB::select("SELECT * FROM log WHERE date >= '$startOfDay' AND date <= '$endOfDay'");
 
@@ -153,7 +153,7 @@ class JournalController extends Controller
             (float) $over_short = (float) $counted_cash - (float) $calc_balance;
             
             if($over_short > 0)
-                $over_shortcash_prefix = '+';
+                $overShortCashPrefix = '+';
 
             $openingDrawer = number_format($log->drawer_balance, 2);
 
@@ -163,15 +163,15 @@ class JournalController extends Controller
         $overShortChecks = number_format($request->counted_checks - $request->total_checks, 2);	
 
         if($overShortChecks > 0)
-            $overShortchecksPrefix = '+';
+            $overShortChecksPrefix = '+';
 
 
         $totals = (object) ['total_cash' => number_format($total_cash, 2),
                  'total_checks' => number_format($total_checks, 2), 
                  'opening_drawer' => $openingDrawer, 
                 'total_sales' => number_format($total_sales, 2), 
-                'os_cash' => $overShortcashPrefix . $overShort,
-                 'os_checks' => $overShortchecksPrefix . $overShortChecks
+                'os_cash' => $overShortCashPrefix . $overShort,
+                 'os_checks' => $overShortChecksPrefix . $overShortChecks
             ];
 
         $report = Blade::render("@include('layouts.closing_journal')", ['date' => $startOfDay->format('m/d/Y g:i a'), 'tickets' => $tickets, 'totals' => $totals]);
