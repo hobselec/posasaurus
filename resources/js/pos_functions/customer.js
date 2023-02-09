@@ -18,6 +18,8 @@ This file is part of Primitive Point of Sale.
 
 */
 
+import { show_note } from "../Helpers";
+
 export function add_customer_form()
 {
 	clear_customer_inputs(); // clears inputs
@@ -346,6 +348,8 @@ export function save_job_edit()
 		}
 	
 	
+	}).catch(() => {
+		show_note("Could not save the job")
 	})
 
 }
