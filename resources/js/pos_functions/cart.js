@@ -22,7 +22,7 @@ This file is part of Primitive Point of Sale.
 // EDITABLE QTY FUNCTIONS
 //
 // change a qty input box back to a text qty
-function restore_qty()
+export function restore_qty()
 {
 
 	$editable_item.cur_cell.html($editable_item.cur_qty);
@@ -35,7 +35,7 @@ function restore_qty()
 
 }
 
-function edit_qty(cell_obj, item_id)
+export function edit_qty(cell_obj, item_id)
 {
 	// check that the cell is not a number, 
 	//item id is not currently stored, and this is only editable field open
@@ -60,7 +60,7 @@ function edit_qty(cell_obj, item_id)
 }
 
 // update the cell qty we are editing on enter key press
-function check_update_qty(evt, qty)
+export function check_update_qty(evt, qty)
 {
 
 	if(evt.key != 'Enter')
@@ -83,8 +83,8 @@ function check_update_qty(evt, qty)
 
 }
 
-// remove, increment, decrement item quantity 0in cart
-function modify_item(item_id, action, qty = '', price = '')
+// remove, increment, decrement item quantity in cart
+export function modify_item(item_id, action, qty = '', price = '')
 {
 	let method = 'put'
 	if(action == 'del')
@@ -123,7 +123,7 @@ function modify_item(item_id, action, qty = '', price = '')
 
 
 
-function add_to_cart(cart)
+export function add_to_cart(cart)
 {
 
 	$pos.cart.html('');
@@ -185,7 +185,7 @@ function add_to_cart(cart)
 // EDITABLE PRICE FUNCTIONS
 //
 // change a qty input box back to a text qty
-function restore_price()
+export function restore_price()
 {
 
 	$editable_price.cur_cell.html($editable_price.cur_price);
@@ -201,7 +201,7 @@ function restore_price()
 //
 // edit_price of items in the cart
 //
-function edit_price(cell_obj, item_id)
+export function edit_price(cell_obj, item_id)
 {
 
 	//	$editable_price.pre_auth_cell = cell_obj;
@@ -232,7 +232,7 @@ function edit_price(cell_obj, item_id)
 }
 
 // update the cell qty we are editing on enter key press
-function check_update_price(evt, price)
+export function check_update_price(evt, price)
 {
 
 	if(evt.key != 'Enter')
@@ -264,7 +264,7 @@ function check_update_price(evt, price)
 
 }
 
-function save_cart_item_description()
+export function save_cart_item_description()
 {
 	$pos.save_cart_item_description_button.prop('disabled', true);
 
@@ -304,7 +304,7 @@ function save_cart_item_description()
 }
 
 
-function clear_pos() {
+export function clear_pos() {
 
 	$pos.cart.html('');
 	$pos.subtotal.html('');
@@ -359,7 +359,7 @@ function clear_pos() {
 }
 
 
-function chg_ticket(ticket_id)
+export function chg_ticket(ticket_id)
 {
 	clear_pos()
 	
@@ -483,7 +483,7 @@ function chg_ticket(ticket_id)
 
 
 	
-function lookup_item() {
+export function lookup_item() {
 	
 	
 	if($pos.barcode.val() == '')
@@ -523,7 +523,7 @@ function lookup_item() {
 		
 }
 
-function clear_ticket(ticketId = '', displayTicketId = '', customerName = '')
+export function clear_ticket(ticketId = '', displayTicketId = '', customerName = '')
 {
 	var clear_pos_vars = false;
 	let forNameString = ''

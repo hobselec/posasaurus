@@ -90,3 +90,5 @@ Object.assign(window, Helpers)
 
 import * as Billing from './pos_functions/billing.js';
 Object.assign(window, Billing)
+import * as Cart from './pos_functions/cart.js';
+Object.assign(window, Cart)
