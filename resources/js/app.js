@@ -24,15 +24,15 @@ app.mount('#app')
 
 import VueBootstrapAutocomplete from 'vue3-bootstrap-autocomplete'
 import SearchBox from './components/SearchBox.vue'
-/*
+
 const customerSearchApp = createApp({})
 
 customerSearchApp.component('vue-bootstrap-autocomplete', VueBootstrapAutocomplete)
 customerSearchApp.component('search-box', SearchBox)
 customerSearchApp.mount('#customerApp')
-*/
-import _ from 'lodash';
-window._ = _;
+
+//import _ from 'lodash';
+//window._ = _;
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests

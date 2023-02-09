@@ -39,16 +39,14 @@ export function ticketDialogs() {
         
             }, select: function( event, ui ) {
     
-                //alert(event.which);
-    
+
                 //$pos.barcode.val(ui.item.value);
                 $pos.curItemId = ui.item.value
     
             //	event.stopPropagation(); // so enter key doesn't fire evet twice!
-    
-            //console.log(event.which);
+
                 // don't need for 13 since check_enter() already handles that
-                if(event.which == 1 || event.which == 0 ) //|| event.which == 13) // m
+                if(event.button == 1 || event.button == 0 ) //|| event.which == 13) // m
                     lookup_item();
     
     

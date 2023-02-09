@@ -1,6 +1,6 @@
 
     
-export function save_opening_balance()
+export function save_opening_balance(event = null)
 {
     let amt = $('#open_cash').val();
     let tmpamt = amt.toString();
@@ -8,7 +8,12 @@ export function save_opening_balance()
     
     if(tmpamt.indexOf('.') == '-1' && $pos.useAutoDecimal)
         amt /= 100;
-        
+    
+    if(event)
+    {
+        if(event.key != 'Enter')
+            return
+    }
 
     axios.post('/pos/journal/open', { amount : amt }).then((response) => {
         

@@ -24,7 +24,7 @@ This file is part of Primitive Point of Sale.
 // to avoid this, since this function will be needed if a barcode scanner is hooked up
 export function check_enter(sku, evt)
 {
-	if(evt.which == 13)			//alert(evt.target);
+	if(evt.key == 'Enter')			//alert(evt.target);
 		lookup_item();
 	
 		return false;

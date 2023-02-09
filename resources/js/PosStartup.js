@@ -28,10 +28,10 @@ export function startUp() {
                     return false;
     
             }
-    
+
             // should be mousedown event with button == 2?
-            //if(evt.which != 3) 
-            //    $('.vs-context-menu').hide();
+            if(evt.button != 3) 
+                $('.vs-context-menu').hide();
     
 
 
