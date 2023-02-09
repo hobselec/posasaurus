@@ -114,7 +114,7 @@ class CustomerController extends Controller
 
     public function saveJob(Request $request)
     {
-        if($request->id == 'new')
+        if($request->job_id == 'new')
             $job = new CustomerJob();
         else
             $job = CustomerJob::find($request->job_id);
