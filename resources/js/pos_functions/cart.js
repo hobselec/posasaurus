@@ -525,7 +525,7 @@ export function lookup_item() {
 
 export function clear_ticket(ticketId = '', displayTicketId = '', customerName = '')
 {
-	var clear_pos_vars = false;
+	var clearPosVars = false;
 	let forNameString = ''
 
 	if(ticketId == '')
@@ -534,7 +534,7 @@ export function clear_ticket(ticketId = '', displayTicketId = '', customerName =
 
 		ticketId = $pos.ticket_id.val()
 		displayTicketId = $pos.ticket_display_id.html()
-		clearPos = true
+		clearPosVars = true
 	}
 	
 	if(customerName  != '')
@@ -579,7 +579,7 @@ export function clear_ticket(ticketId = '', displayTicketId = '', customerName =
 						})
 
 						// clear display
-						if(clear_pos_vars)
+						if(clearPosVars)
 							clear_pos()
 
 					} else
