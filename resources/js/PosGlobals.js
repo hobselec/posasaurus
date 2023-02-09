@@ -105,6 +105,7 @@ export function setupGlobals() {
 	customer_edit_cell : $('#customer_edit_cell'),
 	customer_jobs_cell : $('#customer_jobs_cell'),
 	customer_job_edit : $('#customer_job_edit'),
+	customer_job_save_button : $('#customer_job_save_button'),
 	phone : $('#phone'),
 	phone_ext : $('#phone_ext'),
 	show_inactive : 0,
