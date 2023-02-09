@@ -92,3 +92,7 @@ import * as Billing from './pos_functions/billing.js';
 Object.assign(window, Billing)
 import * as Cart from './pos_functions/cart.js';
 Object.assign(window, Cart)
+import * as Payments from './pos_functions/payments.js';
+Object.assign(window, Payments)
+import * as Customer from './pos_functions/customer.js';
+Object.assign(window, Customer)

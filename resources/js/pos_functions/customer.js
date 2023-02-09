@@ -18,7 +18,7 @@ This file is part of Primitive Point of Sale.
 
 */
 
-function add_customer_form()
+export function add_customer_form()
 {
 	clear_customer_inputs(); // clears inputs
 	$edit_customer.save_customer_button.prop('disabled', false);
@@ -50,7 +50,7 @@ function add_customer_form()
 //
 // load the customer info in the input boxes for editing
 //
-function edit_customer_info(id)
+export function edit_customer_info(id)
 {
 	clear_customer_inputs()
 
@@ -135,7 +135,7 @@ function edit_customer_info(id)
 
 // SAVE INFO
 //
-function save_customer_info()
+export function save_customer_info()
 {
 	var data = new Object();
 	var tmp_label = '';
@@ -216,11 +216,12 @@ function save_customer_info()
 
 }
 
-function customerDialog(options)
+export function customerDialog(options)
 {
 	if(options == 'reload')
 	{
 		load_customer_list(options);
+		clear_customer_inputs()
 		return false;
 	}
 	
@@ -251,7 +252,7 @@ function customerDialog(options)
 
 }
 
-function customer_jobs_dialog()
+export function customer_jobs_dialog()
 {
 
 	var cur_cust_id = $edit_customer.customer_sel.val();
@@ -269,14 +270,14 @@ function customer_jobs_dialog()
 }
 
 // edit customer jobs available
-function load_customer_job_list(customer_id)
+export function load_customer_job_list(customer_id)
 {
 	$edit_customer.customer_job_edit.val('').prop('disabled', true);
 	$edit_customer.customer_job_edit.css('background', '#ffffff');
 
 	axios.get('/pos/customer/jobs/' + customer_id).then((response) => {
 	
-		customer_html = "<option value=\"\"> - Choose Job -</option>";
+		let customer_html = "<option value=\"\"> - Choose Job -</option>";
 
 				
 		for(let i = 0; i < response.data.length; i++)
@@ -294,7 +295,7 @@ function load_customer_job_list(customer_id)
 
 }
 
-function load_edit_job()
+export function load_edit_job()
 {
 	var option = document.getElementById('customer_job_listing');
 
@@ -315,7 +316,7 @@ function load_edit_job()
 
 }
 
-function save_job_edit()
+export function save_job_edit()
 {
 	var job_name = $edit_customer.customer_job_edit.val();
 
@@ -350,7 +351,7 @@ function save_job_edit()
 }
 
 // set the customer list or update if given data of a customer
-function syncCustomerListChanges(data = null)
+export function syncCustomerListChanges(data = null)
 {
 	
 	let customer_html = '<option value=""></option>';
@@ -409,7 +410,7 @@ function syncCustomerListChanges(data = null)
 
 }
 /*
-function close_customerdialog()
+export function close_customerdialog()
 {
 	clear_customer_inputs();
 	document.getElementById('customer_dialog').style.display = 'none';
@@ -433,7 +434,7 @@ function close_customerdialog()
 
 }*/
 
-function clear_customer_inputs() 
+export function clear_customer_inputs() 
 {
 	$edit_customer.edit_last_name.val('');
 	$edit_customer.edit_first_name.val('');
@@ -455,7 +456,7 @@ function clear_customer_inputs()
 	$edit_customer.id = ''
 }
 
-function load_customer_list(options)
+export function load_customer_list(options)
 {
 		$edit_customer.customer_sel.html(`<option value="">Loading . . .</option>`)
 

@@ -20,7 +20,7 @@ This file is part of Primitive Point of Sale.
 
 
 
-function save_payment_recv()
+export function save_payment_recv()
 {
 
 	var datePaid = $payments.payment_recv_date.val()
