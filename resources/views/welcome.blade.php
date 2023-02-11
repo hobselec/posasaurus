@@ -25,12 +25,7 @@
 
 <script  src="/pos/js/vscontext.js" type="text/javascript"></script>
 
-
-<script  src="/pos/js/customer.js" type="text/javascript"></script>
 <script  src="/pos/js/transaction.js" type="text/javascript"></script>
-<script  src="/pos/js/payments.js" type="text/javascript"></script>
-
-<script  src="/pos/js/catalog.js" type="text/javascript"></script>
 
 <script  src="/pos/js/context_menu_actions.js" type="text/javascript"></script>
  

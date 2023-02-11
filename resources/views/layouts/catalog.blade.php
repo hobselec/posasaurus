@@ -4,44 +4,8 @@
 <h2>Catalog</h2>
 
 
-
-	<div style="margin-left: 150px; font-size: 130%"><label>Search &nbsp; 
-    <input type="search" class="form-control" id="catalog_search_name" size="25" maxlength="30" oninput="search_catalog()" /> 
-    </label> &nbsp;<img src="img/search.gif" onclick="search_catalog('go')" style="cursor: pointer; vertical-align: bottom" alt="Search Catalog" /> &nbsp; &nbsp; 
-    <img title="Add new item" src="img/addnew.gif" style="width: 32px; height: 32px; vertical-align: bottom; cursor: pointer" onclick="$catalog.add_item_dialog.dialog('open')" alt="Add new item" />
-	<br />
-
-
-	@if(Config::get('pos.use_catalog_filter')) 
-
-	<input type="checkbox" id="catalog_use_wholesaler" /> &nbsp; <label for="catalog_use_wholesaler" class="nice-label"> <small>Search Principal Wholesaler Only   &nbsp;</small></label>
-
-	@else
-	<input type="hidden" id="catalog_use_wholesaler" />
-	@endif
-
-	</div>
-
-	<div style="margin-top: 2px; height: 600px; overflow-x: hidden; overflow-y: scroll; border-top: 1px solid #000000">
-		<table id="catalog_table" class="table table-striped">
-            <thead class="bg-light sticky-top" style="z-index: 1">
-                <tr>
-                    <th></th>
-                    <th>SKU</th>
-                    <th>Name</th>
-                    <th>Vendor</th>
-                    <th>Barcode</th>
-                    <th>Product ID</th>
-                    <th>Price</th>
-                    <th>Qty</th>
-                </tr>
-
-            </thead>
-			<tbody>
-
-            </tbody>
-		</table>
-	</div>
+	<item-catalog></item-catalog>
+	
 
 </div>
 

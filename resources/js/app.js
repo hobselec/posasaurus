@@ -31,6 +31,11 @@ customerSearchApp.component('vue-bootstrap-autocomplete', VueBootstrapAutocomple
 customerSearchApp.component('search-box', SearchBox)
 customerSearchApp.mount('#customerApp')
 
+import ItemCatalog from './components/ItemCatalog.vue'
+const itemCatalogApp = createApp({})
+itemCatalogApp
+.component('item-catalog', ItemCatalog)
+.mount('#catalog_dialog')
 //import _ from 'lodash';
 //window._ = _;
 
@@ -96,3 +101,5 @@ import * as Payments from './pos_functions/payments.js';
 Object.assign(window, Payments)
 import * as Customer from './pos_functions/customer.js';
 Object.assign(window, Customer)
+import * as Catalog from './pos_functions/catalog.js';
+Object.assign(window, Catalog)

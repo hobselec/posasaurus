@@ -126,12 +126,7 @@ export function setupGlobals() {
 	newItemSaveButton : $('#new_item_save_button'),
 	icon : $('#catalog_icon'),
 	dialog : $('#catalog_dialog'),
-	search_name : $('#catalog_search_name'),
-	catalog_table : $('#catalog_table tbody'),
-	use_ws : $('#catalog_use_wholesaler'),
 	open_record : 0,
-	pre_auth_button_obj : '',
-	pre_auth_barcode : ''
   };
   
   window.$payments =
