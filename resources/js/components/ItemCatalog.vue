@@ -30,21 +30,21 @@
 
                     <template v-if="state.editItem.id == row.id">
                         <td>
-						<button type="button" @click="saveItem()">Save</button>
+						<button :disabled="state.saving" type="button" @click="saveItem()">Save</button>
                         </td>
-                        <td><input type="text" v-model="state.editItem.barcode" class="col-sm-10" /></td>
-                        <td><input type="text" v-model="state.editItem.name" /></td>
-                        <td><input type="text" v-model="state.editItem.vendor_name" /></td>
-                        <td><input type="text" v-model="state.editItem.product_id" /></td>
-                        <td><input type="text" v-model="state.editItem.manufacturer_id" /></td>
-                        <td><input type="text" v-model="state.editItem.price" class="col-sm-5" /></td>
-                        <td><input type="text" v-model="state.editItem.qty" class="col-sm-5" /></td>
+                        <td><input :disabled="state.saving" type="text" v-model="state.editItem.barcode" class="col-sm-10" /></td>
+                        <td><input :disabled="state.saving" type="text" v-model="state.editItem.name" /></td>
+                        <td><input :disabled="state.saving" type="text" v-model="state.editItem.vendor_name" /></td>
+                        <td><input :disabled="state.saving" type="text" v-model="state.editItem.product_id" /></td>
+                        <td><input :disabled="state.saving" type="text" v-model="state.editItem.manufacturer_id" /></td>
+                        <td><input :disabled="state.saving" type="text" v-model="state.editItem.price" class="col-sm-5" /></td>
+                        <td><input :disabled="state.saving" type="text" v-model="state.editItem.qty" class="col-sm-5" /></td>
                     </template>
 
                     <template v-else>
                     
                         <td>
-                            <button type="button" @click="editItem(row)">Edit</button>
+                            <button :disabled="state.saving" type="button" @click="editItem(row)">Edit</button>
                         </td>
                         <td>{{ row.barcode }}</td>
                         <td>{{ row.name }}</td>
@@ -67,7 +67,7 @@ import { debounce } from "lodash"
 const state = reactive({ 
         query : '', results : [], useWholesaler: true, editRow : '', 
         editItem : {barcode : '', name : '', vendor_name : '', product_id : '', manufacturer_id : '', price: 0, qty: ''},
-
+        saving : false,
         itemOriginal : {}
     })
 
@@ -87,8 +87,11 @@ function editItem(row)
 
 function saveItem()
 {
+    state.saving = true
 
-    if(!(state.editItem.price.indexOf('.') == state.editItem.price.length - 1 - 2))
+    let priceStr = state.editItem.price.toString()
+
+    if(!(priceStr.indexOf('.') == priceStr.length - 1 - 2))
     {
         alert("Please include the decimal and cents for the item");
         return false;
@@ -101,18 +104,18 @@ function saveItem()
     }
     
 
-
     axios.put('/pos/catalog/item', {item : state.editItem }).then((response) => {
 		
+        state.saving = false
 
-        //	show_note("Could not save item!");
         state.editItem = {barcode : '', name : '', vendor_name : '', product_id : '', manufacturer_id : '', price: 0, qty: ''}
         state.itemOriginal = {}
     
         if(response.product_id_conflict)
             alert("A duplicate item exists under this UPC");
     
-    }).catch((error) => {
+    }).catch(() => {
+        state.saving = false
         show_note("An error occurred saving the item")
     })
 }
