@@ -9,6 +9,7 @@ import Alpine from 'alpinejs';
 //import * as core from '../../public/js/core.js'
 
 window.Alpine = Alpine;
+window.Modal = Modal
 
 Alpine.start();
 
@@ -61,6 +62,9 @@ import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 window.Pusher = Pusher;
 
+import Swal from 'sweetalert2'
+window.Swal = Swal
+
 window.Echo = new Echo({
     broadcaster: 'pusher',
     key: import.meta.env.VITE_ABLY_PUBLIC_KEY,
@@ -103,3 +107,5 @@ import * as Customer from './pos_functions/customer.js';
 Object.assign(window, Customer)
 import * as Catalog from './pos_functions/catalog.js';
 Object.assign(window, Catalog)
+import * as Transaction from './pos_functions/transaction.js';
+Object.assign(window, Transaction)

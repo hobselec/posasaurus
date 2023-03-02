@@ -34,7 +34,7 @@ function show_payment_methods()
 }*/
 
 
-function apply_payment_specialoptions()
+export function apply_payment_specialoptions()
 {
 //	is_resale : 
 // freight_number : $('#freight_number'),
@@ -248,7 +248,7 @@ function calculate_discount_number()
 }
 */
 
-function choose_pay_job_id()
+export function choose_pay_job_id()
 {
 	// need to save this to the server when selected as well as show up on the screen
 
@@ -286,7 +286,7 @@ function choose_pay_job_id()
 
 }
 
-function show_payment(type)
+export function show_payment(type)
 {
 
 	$pos.postPaymentButton.attr('disabled', true)
@@ -365,7 +365,7 @@ function show_payment(type)
 
 // accepts argument whether to clear the special options
 
-function cancel_payment(clear_special)
+export function cancel_payment(clear_special)
 {
 	$('#payment_methods').hide();
 	$('#payment_take').hide();
@@ -411,7 +411,7 @@ function cancel_payment(clear_special)
 }
 
 
-function post_transaction()
+export function post_transaction()
 {
 	var check_no = $pos.check_no.val();
 
