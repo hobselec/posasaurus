@@ -483,15 +483,23 @@ export function chg_ticket(ticket_id)
 
 
 	
-export function lookup_item() {
+export function lookup_item(item = {}) {
 	
 	
 	if($pos.barcode.val() == '')
 		return false;
 		
-	//  barcode lookup
+	//  barcode lookup instead of results from search
+	if(Object.keys(item).length == 0)
+	{
+		if($pos.barcode.val().length == 6) // doit best 6 digit barcode
+			item = { 'type' : 'wholesaler_barcode', 'id' : $pos.barcode.val() }
+		else if($pos.barcode.val().length > 6)
+			item = { 'type' : 'sku', 'id' : $pos.barcode.val() }
+	}
 
-	axios.put('/pos/ticket/add-item', { itemId : $pos.curItemId, ticketId : $pos.ticket_id.val() }).then((response) => {
+
+	axios.put('/pos/ticket/add-item', { item : item, ticketId : $pos.ticket_id.val() }).then((response) => {
 
 				$pos.subtotal.html(response.data.ticket.subtotal.toLocaleString('en-US', { minimumFractionDigits: 2}));
 				$pos.tax.html(response.data.ticket.tax.toLocaleString('en-US', { minimumFractionDigits: 2}));

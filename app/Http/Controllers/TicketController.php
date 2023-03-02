@@ -46,9 +46,27 @@ class TicketController extends Controller
         return response()->json($ticket);
     }
 
+    /**
+     * add item to new or open ticket
+     * 
+     * @param $request ['item' => array['type' => wholesaler_barcode | upc | catalog_id, 'id' => number ]]
+     */
     public function addItemToTicket(Request $request)
     {
-        $catalogItem = CatalogItem::where('id', $request->itemId)->first();
+
+        if($request->item['type'] == 'wholesaler_barcode')
+            $col = 'barcode';
+        else if($request->item['type'] == 'catalog_id')
+            $col = 'id';
+        else if($request->item['type'] == 'sku')
+            $col = 'product_id';
+
+        $where = [[$col, $request->item['id']]];
+
+        $catalogItem = CatalogItem::where($where)->first();
+
+        if(!$catalogItem)
+            abort(404);
 
         if($request->ticketId == '')
         {

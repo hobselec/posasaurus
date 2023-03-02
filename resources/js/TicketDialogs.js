@@ -41,13 +41,13 @@ export function ticketDialogs() {
     
 
                 //$pos.barcode.val(ui.item.value);
-                $pos.curItemId = ui.item.value
+                //$pos.curItemId = ui.item.value
     
             //	event.stopPropagation(); // so enter key doesn't fire evet twice!
 
                 // don't need for 13 since check_enter() already handles that
                 if(event.button == 1 || event.button == 0 ) //|| event.which == 13) // m
-                    lookup_item();
+                    lookup_item({type: 'catalog_id', id : ui.item.value });
     
     
             }, focus: function( event, ui ) {
@@ -185,7 +185,7 @@ export function ticketDialogs() {
                                         $pos.pay_job_id.html(htmlline).show();
                                     //else // if no jobs, then let the search box re-appear
                                 //	{
-                                        $pos.customer_ticket_search.css('color', '#999999').show();
+                                        $pos.customer_ticket_search.show();
                                 //	}
 
                                 //}, 'json');
