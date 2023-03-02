@@ -136,13 +136,13 @@ export function ticketDialogs() {
                                     
                                     // get total, remove comma and parse as float
                                     var tmp = $pos.display_total.html();
-                                    cur_total = parseFloat(tmp.replace(',', ''));
+                                    let cur_total = parseFloat(tmp.replace(',', ''));
                                     
                                     tmp = $pos.tax.html();
-                                    cur_tax = parseFloat(tmp.replace(',', ''));
+                                    let cur_tax = parseFloat(tmp.replace(',', ''));
                                     
                                     // subtract tax from total
-                                    new_total = cur_total - cur_tax;
+                                    let new_total = cur_total - cur_tax;
                                     new_total = new_total.toFixed(2);
 
                                     // tax to 0 and display new total
