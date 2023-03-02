@@ -25,8 +25,6 @@
 
 <script  src="/pos/js/vscontext.js" type="text/javascript"></script>
 
-<script  src="/pos/js/transaction.js" type="text/javascript"></script>
-
 <script  src="/pos/js/context_menu_actions.js" type="text/javascript"></script>
  
 
@@ -456,28 +454,8 @@ $result = DB::select("SELECT * FROM log WHERE date >= '$date' AND action='open'"
 
 	$(function() {
 		
-		// startup dialog for recording the opening balance
-		
-		$('#startup_dialog').dialog({ title : 'POS Startup', autoOpen: true, modal : true, resizable : false, draggable : false, width: 300, height: 250, buttons : { 'OK' : function() {
-		
-		var open_val = $('#open_cash').val(); 
-		
-		// check input is valid
-		if(isNaN(open_val) || open_val == '' || open_val < 0)
-		{
-			alert("Please enter the opening cash value");
-			return false;
-		}
-		
-		save_opening_balance();
-		
-		}}, open: function(event, ui) {
-				$(".ui-dialog-titlebar-close").hide();
-				$(".ui-button ").css('margin-left' , 'auto').css('margin-right','auto').css('text-align','center');
-
-			}
-		});
-		
+		window.openingBalanceModal = new Modal(document.getElementById('startup_dialog'))
+		openingBalanceModal.show()
 
 	});
 </script>
