@@ -43,7 +43,7 @@ class CustomerController extends Controller
 
     public function searchCustomer(Request $request) {
 
-        $q = $request->q;
+        $q = '%' . $request->q . '%';
 
         $showBalance = $request->showBalances ?? false;
 
