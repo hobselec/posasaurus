@@ -1,8 +1,8 @@
 <template>
     <div style="margin-left: 150px; font-size: 130%"><label>Search &nbsp; 
     <input type="search" class="form-control" size="25" maxlength="30" v-model="state.query" /> 
-    </label> &nbsp;<img src="img/search.gif"  style="cursor: pointer; vertical-align: bottom" alt="Search Catalog" /> &nbsp; &nbsp; 
-    <img title="Add new item" src="img/addnew.gif" style="width: 32px; height: 32px; vertical-align: bottom; cursor: pointer" onclick="$catalog.add_item_dialog.dialog('open')" alt="Add new item" />
+    </label> &nbsp;<img src="./assets/search.gif"  style="cursor: pointer; vertical-align: bottom" alt="Search Catalog" @click="getResults" /> &nbsp; &nbsp; 
+    <img title="Add new item" src="./assets/addnew.gif" style="width: 32px; height: 32px; vertical-align: bottom; cursor: pointer" onclick="$catalog.add_item_dialog.dialog('open')" alt="Add new item" />
 	<br />
 
 	<input type="checkbox" v-model="state.useWholesaler" id="catalog_use_wholesaler" /> &nbsp; <label for="catalog_use_wholesaler" class="nice-label"> <small>Search Principal Wholesaler Only   &nbsp;</small></label>
