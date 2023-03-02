@@ -12,10 +12,28 @@
 </div>
 
 <!-- opening balance-->
-<div id="startup_dialog" style="display: none" class="posdlg">
-Opening cash: &nbsp; <input type="text" class="currency" autocomplete="off" onkeyup="save_opening_balance(event)" size="8" maxlength="8" id="open_cash" class="form-control" />
-<div id="debug_container"></div>
+<!--<div id="startup_dialog" style="display: none" class="posdlg">-->
+
+<div class="modal" tabindex="-1" id="startup_dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Startup</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+     <div class="container">
+            Opening cash: &nbsp; <input type="text" class="currency" autocomplete="off" onkeyup="saveOpeningBalance(event)" size="8" maxlength="8" id="open_cash" class="form-control" />
+
+
+      </div>
+      <div class="modal-footer">
+
+		<button type="button" id="save_item_description_button" class="btn btn-primary" onclick="saveOpeningBalance()">Save</button>
+      </div>
+    </div>
+  </div>
 </div>
+
 
 <!-- shutdown dialog -->
 <div id="shutdown_dialog" style="display: none; font-size: 12pt" class="posdlg">
