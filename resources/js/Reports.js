@@ -1,13 +1,21 @@
 
     
-export function save_opening_balance(event = null)
+export function saveOpeningBalance(event = null)
 {
-    let amt = $('#open_cash').val();
-    let tmpamt = amt.toString();
+    var open_val = $('#open_cash').val(); 
+		
+    // check input is valid
+    if(isNaN(open_val) || open_val == '' || open_val < 0)
+    {
+        alert("Please enter the opening cash value");
+        return false;
+    }
+
+    let tmpamt = open_val.toString();
 
     
     if(tmpamt.indexOf('.') == '-1' && $pos.useAutoDecimal)
-        amt /= 100;
+        open_val /= 100;
     
     if(event)
     {
@@ -15,28 +23,10 @@ export function save_opening_balance(event = null)
             return
     }
 
-    axios.post('/pos/journal/open', { amount : amt }).then((response) => {
-        
-                /*
-                $.get('print_opening_journal.php', { amount : amt, printLabel : $pos.useLabelPrinter }, function(data_xml) {
-                
-                    if($pos.useLabelPrinter) // print is done internally
-                    {
-                        //var printers = dymo.label.framework.getPrinters();
-                        //printer_index = find_dymo_printer();
-                    
-                        //label = dymo.label.framework.openLabelXml(data_xml);
-            
-                        //label.print(printers[printer_index].name);
-                    } else
-                        alert(data_xml);			
-                
-                });
-                */
-                
-            $('#startup_dialog').dialog('close');
-            $(".ui-dialog-titlebar-close").show(); // add back the close button
-        
+    axios.post('/pos/journal/open', { amount : open_val }).then((response) => {
+
+		openingBalanceModal.hide()
+
             
         }).catch(() => {
             show_note("An error occurred")
@@ -102,4 +92,3 @@ export function print_weekly_report()
 
     });
 }
-
