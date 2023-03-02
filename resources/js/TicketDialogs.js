@@ -149,6 +149,10 @@ export function ticketDialogs() {
                                     $pos.tax.html('0.00');
                                     $pos.display_total.html(new_total);
 
+                                } else
+                                { // set tax in case we previously had set to tax-exempt customer
+                                    $pos.tax.html(response.data.ticket.tax.toLocaleString('en-US', { minimumFractionDigits: 2}));
+                                    $pos.display_total.html(response.data.ticket.total.toLocaleString('en-US', { minimumFractionDigits: 2}));
                                 }
                                 
                                 // update the change-ticket select box with customer's name
