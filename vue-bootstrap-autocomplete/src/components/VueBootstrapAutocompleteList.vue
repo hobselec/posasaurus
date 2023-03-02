@@ -48,7 +48,7 @@
 <script>
 import VueBootstrapAutocompleteListItem from './VueBootstrapAutocompleteListItem.vue'
 
-import { clone, includes, isEmpty, reject, reverse, findIndex } from 'lodash'
+import { clone, includes, isEmpty, reject, reverse, findIndex } from 'lodash-es'
 
 const BEFORE_LIST_INDEX = -1
 
