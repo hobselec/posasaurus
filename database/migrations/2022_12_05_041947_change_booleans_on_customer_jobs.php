@@ -17,7 +17,7 @@ return new class extends Migration
             $table->boolean('active')->default(false)->change();
 
             $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 

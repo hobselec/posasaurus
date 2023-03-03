@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('catalog_id')->index();
 
             $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
 
         Artisan::call('db:seed', ['--class' => 'ChangeCatalogIdSeeder']);
