@@ -301,7 +301,7 @@ export function show_payment(type)
 	{
 		show_note("Please enter the customer's name");
 		return false;
-	} else if(type == 'acct' && !$pos.allow_credit.val())
+	} else if(type == 'acct' && !$pos.allow_credit)
 	{
 
 		show_note("The customer is not setup for credit");
@@ -397,7 +397,7 @@ export function cancel_payment(clear_special)
 
 	if(clear_special)
 	{
-		$pos.tax_exempt.val('0');
+		$pos.tax_exempt = false
 
 		$pos.refund_switch.prop('checked', false); //show();
 		$pos.discount_icon.hide();
@@ -415,6 +415,7 @@ export function post_transaction()
 {
 	var check_no = $pos.check_no.val();
 
+	// check, cash, cc, acct
 	let paymentType = $pos.paymentMethod
 	
 	var amt_given_str = $pos.cash_given.val();
@@ -433,22 +434,30 @@ export function post_transaction()
 	var total_sale = parseFloat(total_sale_str);
 	
 	var recv_by = $pos.recv_by_name.html();
-	
-	//alert(total_sale);
-//	alert($pos.refund_switch.prop('checked'));
+
 	
 	$pos.refund_switch.prop('checked') ? refund = true : refund = false;
 
+	if(paymentType != 'acct')
+	{
+		if(isNaN(amt_given_str) || amt_given_str == '')
+		{
+			show_note("Invalid amount");
+			$pos.cancel_button.attr('disabled', false);			
+			return false;
+		}
+	} else
+		amt_given_str = total_sale_str
 
 	if(amt_given_str.indexOf('.') == '-1' && $pos.useAutoDecimal)
 		amt_given = parseFloat(amt_given_str) / 100;
 	else
 		amt_given = parseFloat(amt_given_str);
 
-	// verify amount received for refund
+
 	if(amt_given != total_sale)
 	{
-		if(refund == 1 && paymentType != 'acct') // 
+		if(paymentType != 'cash' || (refund && paymentType != 'acct')) 
 		{
 			$pos.cancel_button.attr('disabled', false);
 			show_note("Amount given must equal sale total");
@@ -465,53 +474,13 @@ export function post_transaction()
 	}
 
 	// determine payment type
-	if($('#take_cc').is(':visible')) // CC
+	 if(paymentType == 'cash')
 	{
-		if(amt_given != total_sale)
-		{
-			show_note("Amount charged must equal sale total");
-			$pos.cancel_button.attr('disabled', false);
-			return false;
-		}
-	
-		//show_note("cc");
-		//payment_type = 'cc';
-	
-	} else if(!$('#take_check').is(':visible') && paymentType != 'acct') // cash
-	{
-		// add decimals if only a two digit number'
-
-	
-		if(isNaN(amt_given))
-		{
-			show_note("Invalid amount");
-			$pos.cancel_button.attr('disabled', false);			
-			return false;
-		} else if(amt_given < total_sale)
-		{
-			show_note("Amount given is less than the total"); // + ' ' + amt_given + ' and  ' + total_sale);
-			$pos.cancel_button.attr('disabled', false);
-			return false;
-		
-		}
-		
 		cash_back = amt_given - total_sale;
 		cash_back = cash_back.toFixed(2)
-		
-		//paymentType = 'cash';
-		// insert into document, the cash back
-		//show_note(cash_back);
 	
-	
-	} else if($('#take_check').is(':visible')) // check
+	} else if(paymentType == 'check')
 	{
-		if(amt_given != total_sale)
-		{
-			show_note("Check amount must equal sale total");
-			$pos.cancel_button.attr('disabled', false);
-			return false;
-		}
-		
 		
 		if(check_no == '' && !refund)
 		{
@@ -520,19 +489,16 @@ export function post_transaction()
 			return false;
 		}
 	
-	
 		if(refund)
 			check_no = 0;
 	
-
 	}
 	// check again since they can select customer after choosing payment method
-	if($pos.paymentMethod == 'acct' && !$pos.allow_credit.val())
+	if(paymentType == 'acct' && !$pos.allow_credit)
 	{
 		show_note("The customer is not setup for credit");
 		return false;
 	}
-
 
 	axios.post('/pos/ticket/submit',
 	 { id : $pos.ticket_id.val(), 

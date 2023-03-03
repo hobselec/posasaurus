@@ -318,14 +318,14 @@ export function clear_pos() {
 	$pos.cash_given.val('');
 	$pos.check_no.val('');
 	$pos.cc_trans_no.val('');
-	$pos.tax_exempt.val('0');
+	$pos.tax_exempt = false;
 	$pos.pay_button.prop('disabled', false);
 	$pos.cancel_button.prop('disabled', false);
 	$pos.refund_switch.prop('checked', false);
 	$pos.open_transactions.val('').prop('disabled', false);
 	$pos.check_no.prop('disabled', false);
 	$edit_customer.customer_job_edit.val('');
-	$pos.allow_credit.val('0');
+	$pos.allow_credit = false
 	$pos.discount.val('0');
 	$pos.freight.val('0');
 	$pos.labor.val('0');
@@ -450,8 +450,8 @@ export function chg_ticket(ticket_id)
 				// these will be set from the db eventually i think
 				$pos.customer_display_name.html(response.customer.display_name);
 				$pos.customer_id.val(response.customer.id);
-				$pos.tax_exempt.val(response.customer.tax_exempt);
-				$pos.allow_credit.val(response.customer.credit);
+				$pos.tax_exempt = response.customer.tax_exempt;
+				$pos.allow_credit = response.customer.credit;
 				$pos.cash_given.val('');
 				$pos.check_no.val('');
 				$pos.cc_trans_no.val('');

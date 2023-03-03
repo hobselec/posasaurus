@@ -21,7 +21,7 @@ export function setupGlobals() {
 	customer_job_id : $("#customer_job_id"),
 	customer_display_name : $("#customer_display_name"),
 	ticket_display_id : $("#ticket_display_id"),
-	tax_exempt : $('#tax_exempt'),
+	tax_exempt : false,
 	discount : $('#discount_number'),
 	freight : $('#freight_number'),
 	labor : $('#labor_number'),
@@ -48,7 +48,7 @@ export function setupGlobals() {
 	take_cash : $('#take_cash'),
 	pay_job_id : $('#pay_job_id'),
 	customer_job_display_name : $('#customer_job_display_name'),
-	allow_credit : $('#allow_credit'),
+	allow_credit : false,
 	previous_value : '', // for auto setting the decimal
 	previous_decimal : 0, // binary if last value had the decimal
 	closing_cash : $('#closing_cash'),

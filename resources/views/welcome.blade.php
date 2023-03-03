@@ -48,8 +48,6 @@
 <input type="hidden" id="ticket_id" value="" />
 <input type="hidden" id="customer_id" value="" />
 <input type="hidden" id="customer_job_id" value="" />
-<input type="hidden" id="tax_exempt" value="0" />
-<input type="hidden" id="allow_credit" value="0" />
 
 <input type="hidden" id="tax_rate" value="" />
 </div>
