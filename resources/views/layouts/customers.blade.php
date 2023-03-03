@@ -36,7 +36,13 @@
 	
 		<select id="customer_job_listing" class="form-select" onchange="load_edit_job()"></select>
 		<p><input type="text" id="customer_job_edit" maxlength="64" /></p><br />
-		<p><button type="button" onclick="save_job_edit()">Save</button></p>
+		<p><button type="button" id="customer_job_save_button" onclick="save_job_edit()">Save</button></p>
+	</div>
+
+	<div id="customerApp">
+
+		<search-box></search-box>
+
 	</div>
 
 	<div style="vertical-align: top; display: none" id="customer_edit_cell">
