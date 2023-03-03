@@ -549,7 +549,7 @@ export function post_transaction()
 		if(cash_back > 0)
 			extraMsg = " Cash back: $" + cash_back
 				
-		if(refund && payment_type != 'acct') // if refund to acct, say nothing
+		if(refund && $pos.paymentMethod != 'acct') // if refund to acct, say nothing
 			extraMsg = " Customer Refund: $" + total_sale
 		
 		show_note("Transaction Complete!", extraMsg, 'success')
