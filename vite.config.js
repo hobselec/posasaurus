@@ -4,6 +4,16 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue'
 
+import { dependencies } from './package.json';
+function renderChunks(deps) {
+  let chunks = {};
+  Object.keys(deps).forEach((key) => {
+    if (['vue','sweetalert2','axios'].includes(key)) return;
+    chunks[key] = [key];
+  });
+  return chunks;
+}
+
 
 export default defineConfig({
     plugins: [
@@ -32,5 +42,16 @@ export default defineConfig({
 
         },
  
-	 }
+	 },
+     build : {
+        base: "/pos",
+        rollupOptions: {
+            output: {
+              manualChunks: {
+                vendor: ['vue','sweetalert2','axios'],
+                ...renderChunks(dependencies),
+              },
+            },
+          },
+     }
 });
