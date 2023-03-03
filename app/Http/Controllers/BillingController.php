@@ -411,14 +411,15 @@ class BillingController extends Controller
             $ticket->job_id = $request->jobId;
 
         if($request->type == 'discount' || $request->type == 'svc_charge')
-            $ticket->payment_type == $request->type;
+            $ticket->payment_type = $request->type;
         else if($request->type == 'refund')
             $ticket->payment_type = 'acct_' . $request->format;
-        
+
         $ticket->date = Carbon::now();
         $ticket->subtotal = $request->amount;
         $ticket->total = $request->amount;
         $ticket->customer_id = $request->customerId;
+        $ticket->user_id = auth()->user()->id;
 
         $ticket->save();
 
