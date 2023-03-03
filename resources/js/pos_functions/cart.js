@@ -320,7 +320,6 @@ export function clear_pos() {
 	$pos.cc_trans_no.val('');
 	$pos.tax_exempt = false;
 	$pos.pay_button.prop('disabled', false);
-	$pos.cancel_button.prop('disabled', false);
 	$pos.refund_switch.prop('checked', false);
 	$pos.open_transactions.val('').prop('disabled', false);
 	$pos.check_no.prop('disabled', false);

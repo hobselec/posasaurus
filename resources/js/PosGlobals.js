@@ -31,7 +31,6 @@ export function setupGlobals() {
 	cart : $('#cart tbody'),
 	cart_container : $('#cart_container'),
 	cash_given : $('#cash_given'),
-	cancel_button : $('#cancel_pay_button'),
 	cc_trans_no : $('#cc_trans_no'),
 	check_no : $('#check_no'),
 	customer_ticket_search : $('#customer_ticket_search'),

@@ -459,7 +459,7 @@ export function post_transaction()
 	{
 		if(paymentType != 'cash' || (refund && paymentType != 'acct')) 
 		{
-			$pos.cancel_button.attr('disabled', false);
+
 			show_note("Amount given must equal sale total");
 			return false;
 		}
@@ -468,7 +468,6 @@ export function post_transaction()
 	if(total_sale >= 1000000)
 	{
 		alert("The total sale must be under $1,000,000.  If you need a higher limit you must enlarge the total field in the database table.");
-		$pos.cancel_button.attr('disabled', false);
 		return false;
 	
 	}
@@ -485,7 +484,6 @@ export function post_transaction()
 		if(check_no == '' && !refund)
 		{
 			show_note("Please enter the check number");
-			$pos.cancel_button.attr('disabled', false);
 			return false;
 		}
 	
@@ -499,6 +497,8 @@ export function post_transaction()
 		show_note("The customer is not setup for credit");
 		return false;
 	}
+
+	$pos.postPaymentButton.attr('disabled', true)
 
 	axios.post('/pos/ticket/submit',
 	 { id : $pos.ticket_id.val(), 
@@ -537,7 +537,8 @@ export function post_transaction()
 
 	})
 	.catch((error) => {
-		show_note("Could not finalize the transaction");
+		show_note("Could not finalize the transaction")
+		$pos.postPaymentButton.attr('disabled', false)
 	})
 
 }
