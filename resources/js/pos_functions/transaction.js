@@ -33,6 +33,8 @@ function show_payment_methods()
 
 }*/
 
+import { show_note } from "../Helpers";
+
 
 export function apply_payment_specialoptions()
 {
@@ -438,12 +440,17 @@ export function post_transaction()
 	
 	$pos.refund_switch.prop('checked') ? refund = true : refund = false;
 
+	if(total_sale <= 0)
+	{
+		show_note("Total sale must be greater than zero.")
+		return false
+	}
+
 	if(paymentType != 'acct')
 	{
 		if(isNaN(amt_given_str) || amt_given_str == '')
 		{
-			show_note("Invalid amount");
-			$pos.cancel_button.attr('disabled', false);			
+			show_note("Invalid amount");	
 			return false;
 		}
 	} else
