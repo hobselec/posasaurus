@@ -7,6 +7,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\AdminController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -77,6 +78,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/catalog/search/{term}', [CatalogController::class, 'search']);
     Route::put('/catalog/item', [CatalogController::class, 'editItem']);
     Route::post('/catalog/item', [CatalogController::class, 'addItem']);
+
+    Route::get('/admin/sales-tax', [AdminController::class, 'getSalesTax']);
 
 });
 
