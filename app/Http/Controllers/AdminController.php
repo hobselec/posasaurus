@@ -15,6 +15,9 @@ class AdminController extends Controller
     {
         $SALES_TAX_RATE = Config::get('pos.sales_tax');
 
+		if(!$request->has('start'))
+			abort(400);
+
         $start = Carbon::parse($request->start);
         $end = $start->copy()->addMonths(1);
 
