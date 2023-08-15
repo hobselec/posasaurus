@@ -37,7 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 */
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth','actionLog'])->group(function () {
     Route::get('/ticket', [TicketController::class, 'getOpenTickets']);
     Route::get('/ticket/{id}', [TicketController::class, 'loadTicket']);
     Route::put('/ticket/add-item', [TicketController::class, 'addItemToTicket']);
