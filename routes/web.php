@@ -80,6 +80,8 @@ Route::middleware(['auth','actionLog'])->group(function () {
     Route::post('/catalog/item', [CatalogController::class, 'addItem']);
 
     Route::get('/admin/sales-tax', [AdminController::class, 'getSalesTax']);
+    Route::get('/admin/', [AdminController::class, 'home']);
+    
 
 });
 

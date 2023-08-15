@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\User;
 use Carbon\Carbon;
 use DB;
 use Config;
@@ -233,5 +234,12 @@ EOF;
 	
 
     }
+
+	public function home() 
+	{
+		$users = User::get();
+
+		return view('home')->with(['users' => $users]);
+	}
 
 }
