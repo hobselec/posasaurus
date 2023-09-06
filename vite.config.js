@@ -43,8 +43,9 @@ export default defineConfig({
         },
  
 	 },
+     base: "/pos",
      build : {
-        base: "/pos",
+
         rollupOptions: {
             output: {
               manualChunks: {

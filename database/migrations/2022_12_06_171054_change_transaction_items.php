@@ -21,7 +21,7 @@ return new class extends Migration
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
 
-        Artisan::call('db:seed', ['--class' => 'ChangeCatalogIdSeeder']);
+        //Artisan::call('db:seed', ['--class' => 'ChangeCatalogIdSeeder']);
     }
 
     /**
