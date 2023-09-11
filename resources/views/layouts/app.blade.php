@@ -5,6 +5,6 @@
             @yield('content')
         </div>
 
-        <script src="/pos{{ mix('js/app.js') }}"></script>
+        @vite(['resources/js/app.js', 'resources/scss/app-pos.scss'])
     </body>
 </html>
