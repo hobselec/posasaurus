@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
+use Illuminate\Support\Facades\Route;
+use Laravel\Fortify\Contracts\LoginResponse;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -22,6 +24,22 @@ class FortifyServiceProvider extends ServiceProvider
     public function register()
     {
         //
+        Fortify::ignoreRoutes();
+
+        $this->app->instance(LoginResponse::class, new class implements LoginResponse {
+            public function toResponse($request)
+            {
+                /**
+                 * @var User $user
+                 */
+                $user = $request->user();
+                $user->touch();
+                
+                return $request->wantsJson()
+                    ? response()->json(['two_factor' => false, 'email' => $user->email ])
+                    : redirect()->intended(Fortify::redirects('login'));
+            }
+        });
     }
 
     /**
@@ -66,6 +84,24 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::resetPasswordView(function ($request) {
             return view('auth.reset-password', ['request' => $request]);
         });
+
+        $this->configureRoutes();
+    }
+
+        /**
+     * Configure the routes offered by the application.
+     *
+     * @return void
+     */
+    protected function configureRoutes()
+    {
+		Route::group([
+                'namespace' => 'Laravel\Fortify\Http\Controllers',
+                'domain' => config('fortify.domain', null),
+                'prefix' => config('fortify.prefix')
+            ], function () {
+                $this->loadRoutesFrom(base_path('routes/fortify.php'));
+            });       
     }
 
 }
