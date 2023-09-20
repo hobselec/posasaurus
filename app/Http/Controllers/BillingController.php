@@ -22,6 +22,7 @@ use App\Jobs\UpdateAccount;
 
 use App\Mail\ReceiptEmail;
 use Illuminate\Support\Facades\Mail;
+use Auth;
 
 
 class BillingController extends Controller
@@ -327,7 +328,7 @@ class BillingController extends Controller
 
         // todo: multiple accounts need a page break before next customer
 
-        PrintStatements::dispatch(['customers' => $customers, 'endDate' => $endDate]);
+        PrintStatements::dispatch(['customers' => $customers, 'endDate' => $endDate, 'sendTo' => Auth::user()->email]);
 
         return response()->json(['status' => true]);
     }

@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Mail\Mailables\Address;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Queue\SerializesModels;
 
 use Illuminate\Support\Facades\Mail;
@@ -20,17 +21,19 @@ class ReceiptEmail extends Mailable implements ShouldQueue
 
     private string $msgHtml;
     private string $msgSubject;
+    private string $attachment;
 
     /**
      * Create a new message instance.
      *
-     * @param object {subject : string, message : string}
+     * @param object {subject : string, message : string, attachment : string}
      * @return void
      */
     public function __construct(object $params)
     {
         $this->msgHtml = $params->message;
         $this->msgSubject = $params->subject;
+        $this->attachment = $params->attachment ?? '';
     }
 
     /**
@@ -66,6 +69,11 @@ class ReceiptEmail extends Mailable implements ShouldQueue
      */
     public function attachments()
     {
-        return [];
+        if($this->attachment == '')
+            return [];
+
+        return [
+            Attachment::fromPath(storage_path('app/' . $this->attachment)),
+        ];
     }
 }

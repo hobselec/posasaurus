@@ -15,6 +15,8 @@ use Config;
 use Dompdf\Dompdf;
 
 use Storage;
+use App\Mail\ReceiptEmail;
+use Illuminate\Support\Facades\Mail;
 
 
 class PrintStatements implements ShouldQueue
@@ -29,6 +31,7 @@ class PrintStatements implements ShouldQueue
     /**
      * Create a new job instance.
      *
+     * @param array $jobParams ['sendTo' => string email, 'endDate' => date, 'customers' => array of customer ids]
      * @return void
      */
     public function __construct(array $jobParams)
@@ -74,6 +77,11 @@ class PrintStatements implements ShouldQueue
         $filename = 'statement_' . date("YmdHis") . '.pdf';
 
         Storage::disk('local')->put($filename, $pdf);
+
+        // e-mail
+        $email = $this->params['sendTo'];
+        $obj = (object) ['message' => 'Statement is attached', 'subject' => 'Statement from Point of Sale', 'attachment' => $filename];
+        Mail::to($email)->send(new ReceiptEmail($obj));
 
     }
 }
