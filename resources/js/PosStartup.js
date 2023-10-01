@@ -118,6 +118,7 @@ export function startUp() {
                         
                 // stop the response
              }
+             return Promise.reject(error);
         })
     
         
