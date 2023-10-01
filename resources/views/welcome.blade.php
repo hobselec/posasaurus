@@ -400,7 +400,7 @@
 	  </div>
       <div class="modal-footer">
 
-	  <button type="button" class="btn btn-primary" onclick="save_payment_recv()" data-bs-dismiss="modal">Save Payment</button>
+	  <button type="button" class="btn btn-primary" onclick="save_payment_recv()">Save Payment</button>
       </div>
     </div>
   </div>

@@ -14,15 +14,7 @@ export function paymentDialogs() {
             $payments.payment_recv_search_name.focus();
         })
         document.getElementById('recv_payment_screen').addEventListener('hide.bs.modal', function(event) {
-            $payments.payment_recv_customer_id.val('');
-            $payments.payment_recv_search_name.val('');
-    
-            $payments.payment_recv_search_name.show();
-    
-            $payments.payment_recv_display_name.html('');
-            $payments.payment_recv_display_balance.html('')
-            $payments.payment_recv_job_id.html('');
-            $payments.payment_recv_job_id.hide()
+
         })
     
     
@@ -62,7 +54,7 @@ export function paymentDialogs() {
             }, select: function( event, ui ) {
     
                     $payments.customerSelection = ui.item
-    
+  
                     $payments.payment_recv_customer_id.val(ui.item.value);
                     $payments.payment_recv_search_name.val(ui.item.label);
     

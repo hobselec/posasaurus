@@ -44,7 +44,6 @@ export function save_payment_recv()
 		show_note("Please enter the type of payment")
 		return false
 	}
-	
 	if(customer_id == '')
 	{
 		show_note("Please choose a customer")
@@ -87,10 +86,31 @@ export function save_payment_recv()
 			//print_receipt(response.ticket_id, amount, '');
 			
 			//$('#recv_payment_screen').dialog('close')
+			closePaymentModal()
 			
 	}).catch(() => {
 		show_note("Could not save payment.  Verify the form was completed correctly.")
 	})	
+
+
+}
+
+export function closePaymentModal() {
+		
+	$payments.payment_recv_customer_id.val('');
+	$payments.payment_recv_search_name.val('');
+
+	$payments.payment_recv_search_name.show();
+
+	$payments.payment_recv_display_name.html('');
+	$payments.payment_recv_display_balance.html('')
+	$payments.payment_recv_job_id.html('');
+	$payments.payment_recv_job_id.hide()
+
+	const div = document.querySelector('#recv_payment_screen');
+    const modal = Modal.getInstance(div);    
+  
+	modal.hide()
 
 
 }
