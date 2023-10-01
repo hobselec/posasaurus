@@ -364,6 +364,7 @@ class BillingController extends Controller
         $extra_info = $request->extra_info;
 
         $ticket = new Ticket();
+        $ticket->user_id = Auth::user()->id;
 
         $ticket->save() or abort(500);
 
