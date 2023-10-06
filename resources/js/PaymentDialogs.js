@@ -14,7 +14,7 @@ export function paymentDialogs() {
             $payments.payment_recv_search_name.focus();
         })
         document.getElementById('recv_payment_screen').addEventListener('hide.bs.modal', function(event) {
-
+            closePaymentModal()
         })
     
     
