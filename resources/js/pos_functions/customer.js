@@ -473,7 +473,7 @@ export function load_customer_list(options)
 			axios.get('/pos/customer/list?show_inactive=' + $edit_customer.show_inactive)
 				.then( (response) => 
 			{
-				document.getElementById('customer_dialog').style.display = 'block';
+				//document.getElementById('customer_dialog').style.display = 'block';
 
 						
 				$edit_customer.customers = response.data.customers
