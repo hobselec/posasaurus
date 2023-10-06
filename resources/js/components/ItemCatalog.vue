@@ -37,8 +37,8 @@
                         <td><input :disabled="state.saving" type="text" v-model="state.editItem.vendor_name" /></td>
                         <td><input :disabled="state.saving" type="text" v-model="state.editItem.product_id" /></td>
                         <td><input :disabled="state.saving" type="text" v-model="state.editItem.manufacturer_id" /></td>
-                        <td><input :disabled="state.saving" type="text" v-model="state.editItem.price" class="col-sm-5" /></td>
-                        <td><input :disabled="state.saving" type="text" v-model="state.editItem.qty" class="col-sm-5" /></td>
+                        <td><input :disabled="state.saving" type="text" v-model="state.editItem.price" class="col-sm-11" /></td>
+                        <td><input :disabled="state.saving" type="text" v-model="state.editItem.qty" class="col-sm-11" /></td>
                     </template>
 
                     <template v-else>
