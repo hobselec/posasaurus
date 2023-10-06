@@ -106,10 +106,30 @@ class CatalogController extends Controller
 		$item->name = $request->name;
 		$item->price = $request->price;
 		$item->qty = $request->qty ?? 0;
+		$item->barcode = 1;
 
-		if(!is_numeric($request->barcode))
-			$item->barcode = $request->barcode;
-		
+		//if(!is_numeric($request->barcode))
+		//	$item->barcode = $request->barcode;
+		if($request->skn != '')
+		{
+			$skn = $request->skn;
+			$padding = Config::get('pos.skuPadding');
+			// pad skn since catalog import of skn's have left zeros in front
+			while(strlen($skn) < $padding)
+				$skn = '0' . $skn;
+
+			$existingItem = CatalogItem::where('product_id', $skn)->first();
+
+			if($existingItem)
+				abort(422, "The item with UPC $skn already exists.");
+
+			$item->product_id = $skn;
+		}
+
+		$lastItem = DB::select("select max(barcode)+1 AS barcode from catalog where barcode < 100000")[0];
+		if($lastItem->barcode)
+			$item->barcode = $lastItem->barcode;
+
 		$item->save();
 
 		return response()->json($item);
