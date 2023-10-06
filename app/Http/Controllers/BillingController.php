@@ -359,6 +359,9 @@ class BillingController extends Controller
      */
     public function savePayment(Request $request)
     {
+        $request->validate([
+            'date' => 'date'
+        ]);
 
         $amount = $request->amount;
         $extra_info = $request->extra_info;
