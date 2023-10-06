@@ -65,7 +65,7 @@ return [
 	// the system for some reason was initially designed to use a different id to display to 
 	// the customer than the 
 	// primary key, which would be too much trouble to change now
-	'display_id_offset' => 9,
+	'display_id_offset' => -9,
 
 	'valid_users' => explode(',', env('ALLOWED_EMAIL_LOGINS')),
 
