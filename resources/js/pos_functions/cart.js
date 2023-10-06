@@ -491,7 +491,7 @@ export function lookup_item(item = {}) {
 	//  barcode lookup instead of results from search
 	if(Object.keys(item).length == 0)
 	{
-		if($pos.barcode.val().length == 6) // doit best 6 digit barcode
+		if($pos.barcode.val().length <= 6) // doit best 6 digit barcode
 			item = { 'type' : 'wholesaler_barcode', 'id' : $pos.barcode.val() }
 		else if($pos.barcode.val().length > 6)
 			item = { 'type' : 'sku', 'id' : $pos.barcode.val() }
