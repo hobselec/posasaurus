@@ -49,6 +49,11 @@ export function save_payment_recv()
 		show_note("Please choose a customer")
 		return false
 	}
+	if(datePaid == '')
+	{
+		show_note("Please provide the date")
+		return false
+	}
 
 /*
 	if(amount.length - amount.indexOf('.') != 3 || isNaN(amount))
