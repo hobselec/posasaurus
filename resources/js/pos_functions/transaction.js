@@ -316,7 +316,7 @@ export function show_payment(type)
 	$pos.paymentMethod = type
 
 
-	$pos.barcode.attr('disabled',true); // interferes with the focus
+	//$pos.barcode.attr('disabled',true); // interferes with the focus
 
 	//$('#postpayment_button').show();
 
