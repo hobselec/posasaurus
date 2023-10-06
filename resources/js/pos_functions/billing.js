@@ -236,7 +236,7 @@ export function load_ticket_transactions(ticketId, parent_row)
 
 				ticketItemsHtml += `<tr>
 				<td>${ticketId}</td>
-				<td>${item.id}</td>
+				<td>${item.catalog.barcode}</td>
 				<td>${item.qty}</td>
 				<td>${item.name}</td>
 				<td>${item.price.toLocaleString('en-US', { minimumFractionDigits: 2})}</td>

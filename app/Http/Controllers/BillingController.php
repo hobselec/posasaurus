@@ -133,7 +133,9 @@ class BillingController extends Controller
 
         $tickets = Ticket::where($where)
                             ->whereNotNull('payment_type')
-                            ->with(['customer','job','items'])
+                            ->with(['customer','job','items','items.catalog'=>function($q) {
+                                $q->select(['id', 'barcode']);
+                            }])
                             ->orderByDesc('date')
                             ->get();
 
