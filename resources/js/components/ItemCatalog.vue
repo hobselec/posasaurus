@@ -10,8 +10,8 @@
 
 	</div>
 
-	<div style="margin-top: 2px; height: 600px; overflow-x: hidden; overflow-y: scroll; border-top: 1px solid #000000">
-		<table id="catalog_table" class="table table-striped">
+	<div style="margin-top: 2px; height: 600px;  overflow-y: scroll; border-top: 1px solid #000000">
+		<table class="table table-striped">
             <thead class="bg-light sticky-top" style="z-index: 1">
                 <tr>
                     <th></th>
@@ -87,7 +87,6 @@ function editItem(row)
 
 function saveItem()
 {
-    state.saving = true
 
     let priceStr = state.editItem.price.toString()
 
@@ -102,21 +101,23 @@ function saveItem()
         alert("Please enter a valid number with decimal point and cents");
         return false;
     }
-    
+    state.saving = true
 
     axios.put('/pos/catalog/item', {item : state.editItem }).then((response) => {
 		
         state.saving = false
 
+        state.editItem.price = Number(state.editItem.price)
         state.editItem = {barcode : '', name : '', vendor_name : '', product_id : '', manufacturer_id : '', price: 0, qty: ''}
         state.itemOriginal = {}
     
-        if(response.product_id_conflict)
-            alert("A duplicate item exists under this UPC");
+        // not implemented, throws a 422
+       // if(response.product_id_conflict)
+        //    alert("A duplicate item exists under this UPC");
     
     }).catch(() => {
         state.saving = false
-        show_note("An error occurred saving the item")
+        show_note("An error occurred saving the item.  Might be a duplicate UPC.")
     })
 }
 
