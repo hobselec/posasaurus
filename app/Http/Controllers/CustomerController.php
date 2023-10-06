@@ -75,7 +75,7 @@ class CustomerController extends Controller
                 {
                     $itemIndex = array_search($c->id, array_column($balanceData, 'id'));
 
-                    $itemIndex ? $balance = $balanceData[$itemIndex]['balance'] : $balance = null;
+                    $itemIndex ? $balance = $balanceData[$itemIndex]['balance'] : $balance = 0;
                 } else
                     $balance = null;
 
