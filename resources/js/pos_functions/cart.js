@@ -108,7 +108,7 @@ export function modify_item(item_id, action, qty = '', price = '')
 			$pos.subtotal.html(response.subtotal.toLocaleString('en-US', { minimumFractionDigits: 2}));
 			$pos.tax.html(response.tax.toLocaleString('en-US', { minimumFractionDigits: 2}));
 			$pos.display_total.html(response.total.toLocaleString('en-US', { minimumFractionDigits: 2}));
-			
+			$pos.paymentDialogTotal.html($pos.display_total.html())
 
 			add_to_cart(response.items);
 
