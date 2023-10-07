@@ -433,7 +433,11 @@ export function post_transaction()
 	total_sale_str = total_sale_str.replace(',', '');
 	total_sale_str = total_sale_str.replace(/^0+/,"");
 	
-	var total_sale = parseFloat(total_sale_str);
+	const total_sale = parseFloat(total_sale_str);
+
+
+	const subtotal = $pos.subtotal.html().replace(/^\s+/,"").replace(',', '')
+	const tax = $pos.tax.html().replace(/^\s+/,"").replace(',', '')
 	
 	var recv_by = $pos.recv_by_name.html();
 
@@ -513,8 +517,8 @@ export function post_transaction()
 	 check_no : check_no,
 	  cc_trans_no : $pos.cc_trans_no.val(), 
 	  payment_type : $pos.paymentMethod, 
-	  subtotal : $pos.subtotal.html(), 
-	  tax : $pos.tax.html(),
+	  subtotal : subtotal, 
+	  tax : tax,
 	   total : total_sale, 
 	}).then((response) => {
 
