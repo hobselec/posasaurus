@@ -25,7 +25,7 @@
 
 <script  src="/pos/js/vscontext.js" type="text/javascript"></script>
 
-<script  src="/pos/js/context_menu_actions.js" type="text/javascript"></script>
+<script  src="/pos/js/context_menu_actions.js?v2" type="text/javascript"></script>
  
 
 <link rel="stylesheet" type="text/css" href="/pos/css/pos.css" />
