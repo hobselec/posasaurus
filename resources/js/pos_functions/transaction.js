@@ -259,8 +259,8 @@ export function choose_pay_job_id()
 	var job_name = option.options[option.selectedIndex].text;
 	var job_id = option.value;
 	
-	if(job_id == '')
-		return false;
+	//if(job_id == '')
+	//	return false;
 
 	// save the chosen job id
 	axios.put('/pos/ticket/set-customer', { 
