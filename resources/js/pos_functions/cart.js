@@ -219,7 +219,7 @@ export function edit_price(cell_obj, item_id)
 
 	$editable_price.cur_cell = cell_obj; // store this for reference later
 
-	$editable_price.edit_contents = "<input id=\"cur_edit_item_price\" maxlength=\"11\" type=\"text\" style=\"width: 50px\" value=\"" + $editable_price.cur_price + "\" onkeyup=\"check_update_price(event, this.value)\" />";
+	$editable_price.edit_contents = "<input id=\"cur_edit_item_price\" maxlength=\"11\" type=\"text\" style=\"width: 50px\" value=\"" + $editable_price.cur_price.trim() + "\" onkeyup=\"check_update_price(event, this.value)\" />";
 
 	cell_obj.html($editable_price.edit_contents);
 	
