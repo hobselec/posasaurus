@@ -15,6 +15,8 @@ class CatalogController extends Controller
 
         $term = $request->term;
 
+		$searchWholesaler = filter_var($request->use_ws, FILTER_VALIDATE_BOOLEAN);
+
 		$results = null;
 
         if(!is_numeric($term))
@@ -22,9 +24,13 @@ class CatalogController extends Controller
 	
 		// enable this to divide up the database, since no categories have been implemented or 
 		// ways to group search data
-		if($request->use_ws) //Config::get('pos.use_catalog_filter'))
-			$results = CatalogItem::whereNotNull('barcode');
+		//if($request->use_ws) //Config::get('pos.use_catalog_filter'))
+		//	$results = CatalogItem::whereNotNull('barcode');
 
+		if($searchWholesaler)
+			$whereWholesaler = [['barcode', '>=', 100000]];
+		else
+			$whereWholesaler = [['barcode', '<', 100000]];
 		//	($use_ws_only) ? $ws_switch = ' AND barcode > 100000' : $ws_switch = ' AND barcode < 100000';
 		// else
 		//	$ws_switch = '';
@@ -35,8 +41,6 @@ class CatalogController extends Controller
 		$dimension_regex = "/^[1-9][1-9]?x[1-9][1-9]?.*$/";
 		//$cmpd_fraction_regex = "/^
 
-
-		//if(!$resul)
 
 		if(preg_match($fraction_regex, $term) || preg_match($dimension_regex, $term))
 			$likeQuery = "{$term}%";
@@ -52,7 +56,7 @@ class CatalogController extends Controller
 		else
 			$results = CatalogItem::where('name', 'like', $likeQuery);
 		
-
+		$results = $results->where($whereWholesaler);
 		//$query .= "$ws_switch ORDER BY name DESC LIMIT " . Config::get('pos.catalog_limit');
 
 
