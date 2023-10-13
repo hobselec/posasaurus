@@ -5,7 +5,8 @@
     <img title="Add new item" src="./assets/addnew.gif" style="width: 32px; height: 32px; vertical-align: bottom; cursor: pointer" onclick="$catalog.add_item_dialog.dialog('open')" alt="Add new item" />
 	<br />
 
-	<input type="checkbox" v-model="state.useWholesaler" id="catalog_use_wholesaler" /> &nbsp; <label for="catalog_use_wholesaler" class="nice-label"> <small>Search Principal Wholesaler Only   &nbsp;</small></label>
+	<input type="checkbox" v-model="state.useWholesaler" id="catalog_use_wholesaler" /> &nbsp; <label for="catalog_use_wholesaler" class="nice-label"> <small>Search Principal Wholesaler  &nbsp;</small></label>
+	<input type="checkbox" v-model="state.useCustom" id="catalog_use_custom" /> &nbsp; <label for="catalog_use_custom" class="nice-label"> <small>Search Custom Items   &nbsp;</small></label>
 
 
 	</div>
@@ -65,7 +66,7 @@ import { reactive, onMounted, computed, watch} from 'vue'
 import { debounce } from "lodash"
 
 const state = reactive({ 
-        query : '', results : [], useWholesaler: true, editRow : '', 
+        query : '', results : [], useWholesaler: true, useCustom : true, editRow : '', 
         editItem : {barcode : '', name : '', vendor_name : '', product_id : '', manufacturer_id : '', price: 0, qty: ''},
         saving : false,
         itemOriginal : {}
@@ -124,7 +125,7 @@ function saveItem()
 function getResults()
 {
 
-    axios.get('/pos/catalog/search/' + state.query + '?use_ws=' + state.useWholesaler).then((response) => {
+    axios.get('/pos/catalog/search/' + state.query + '?use_ws=' + state.useWholesaler + '&use_custom=' + state.useCustom).then((response) => {
 
         state.editItem = {barcode : '', name : '', vendor_name : '', product_id : '', manufacturer_id : '', price: 0, qty: ''},
         state.itemOriginal = {}

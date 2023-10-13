@@ -15,7 +15,12 @@ class CatalogController extends Controller
 
         $term = $request->term;
 
-		$searchWholesaler = filter_var($request->use_ws, FILTER_VALIDATE_BOOLEAN);
+		// search all if not provided this
+		$request->has('use_ws') ? $useWs = $request->use_ws : $useWs = true;
+		$request->has('use_custom') ? $useCustom = $request->use_custom : $useCustom = true;
+
+		$searchWholesaler = filter_var($useWs, FILTER_VALIDATE_BOOLEAN);
+		$searchCustomItems = filter_var($useCustom, FILTER_VALIDATE_BOOLEAN);
 
 		$results = null;
 
@@ -27,10 +32,15 @@ class CatalogController extends Controller
 		//if($request->use_ws) //Config::get('pos.use_catalog_filter'))
 		//	$results = CatalogItem::whereNotNull('barcode');
 
-		if($searchWholesaler)
-			$whereWholesaler = [['barcode', '>=', 100000]];
-		else
-			$whereWholesaler = [['barcode', '<', 100000]];
+		$whereWholesaler = null;
+		if($searchCustomItems xor $searchWholesaler)
+		{
+			if($searchWholesaler)
+				$whereWholesaler = [['barcode', '>=', 100000]];
+			else
+				$whereWholesaler = [['barcode', '<', 100000]];
+		}
+
 		//	($use_ws_only) ? $ws_switch = ' AND barcode > 100000' : $ws_switch = ' AND barcode < 100000';
 		// else
 		//	$ws_switch = '';
@@ -56,7 +66,8 @@ class CatalogController extends Controller
 		else
 			$results = CatalogItem::where('name', 'like', $likeQuery);
 		
-		$results = $results->where($whereWholesaler);
+		if($whereWholesaler)
+			$results = $results->where($whereWholesaler);
 		//$query .= "$ws_switch ORDER BY name DESC LIMIT " . Config::get('pos.catalog_limit');
 
 
@@ -85,7 +96,7 @@ class CatalogController extends Controller
 
 	}
 
-		$results = $results->orderBy('name', 'desc');
+		$results = $results->orderBy('name', 'asc');
 
 		$limit = Config::get('pos.catalog_limit');
 		if($limit != '')
