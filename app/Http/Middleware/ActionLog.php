@@ -37,8 +37,8 @@ class ActionLog
       
       if(in_array($action, $blackListActions))
         $loggedFields = [];
-      else if(count($params) > 3)
-      {
+     // else if(count($params) > 3)
+     // {
         // log select fields, this could be buried deep so using iterator
 /*        $iterator  = new \RecursiveArrayIterator($params);
         $recursive = new \RecursiveIteratorIterator($iterator,\RecursiveIteratorIterator::SELF_FIRST);
@@ -49,7 +49,7 @@ class ActionLog
             if($key == 'id')
                 $loggedFields['id'] = $value;
         }*/
-      }
+   //   }
       else if(count($params) > 0)
         $loggedFields = $params;
       else
