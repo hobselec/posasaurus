@@ -23,7 +23,7 @@ export function ticketDialogs() {
                 
                         tmpobj.label = items[i].name;
                         tmpobj.value = items[i].id;
-                        tmpobj.extra = `${items[i].product_id} ${items[i].vendor_name} &ndash; ${items[i].manufacturer_id} &ndash; Qty: ${items[i].qty}`
+                        tmpobj.extra = `${items[i].barcode} ${items[i].vendor_name} &ndash; ${items[i].manufacturer_id} &ndash; Qty: ${items[i].qty}`
                     
                         myarr[i] = tmpobj
                     }
