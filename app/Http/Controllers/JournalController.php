@@ -36,7 +36,7 @@ class JournalController extends Controller
 
         $endOfDay = $startOfDay->copy()->endOfDay();
 
-        $tickets = Ticket::where('date', '>=', $startOfDay->format('n/d/Y'))
+        $tickets = Ticket::where('date', '>=', $startOfDay->format('Y-m-d'))
                         ->where([['payment_type', '!=', 'VOID'], ['payment_type', '!=', 'discount']])
                         ->whereNotNull('payment_type')
                         ->with(['customer','job'])
@@ -144,21 +144,28 @@ class JournalController extends Controller
         $result = DB::select("SELECT * FROM log WHERE date >= '$startOfDay' AND date <= '$endOfDay'");
 
         if(!$result || count($result) == 0)
+        {
             $over_short = 'ERR';
-        else {
-            $log = $result[0];
-
-            $calc_balance = (float) ($log->drawer_balance + $total_cash);
-    
-            (float) $over_short = (float) $counted_cash - (float) $calc_balance;
+            $drawerBalance = 0;
             
-            if($over_short > 0)
-                $overShortCashPrefix = '+';
-
-            $openingDrawer = number_format($log->drawer_balance, 2);
-
-            $overShort = number_format($over_short, 2);
         }
+        else
+        {
+            $log = $result[0];
+            $drawerBalance = $log->drawer_balance;
+        }
+
+        $calc_balance = (float) ($drawerBalance + $total_cash);
+
+        (float) $over_short = (float) $counted_cash - (float) $calc_balance;
+        
+        if($over_short > 0)
+            $overShortCashPrefix = '+';
+
+        $openingDrawer = number_format($drawerBalance, 2);
+
+        $overShort = number_format($over_short, 2);
+        
 
         $overShortChecks = number_format($request->counted_checks - $request->total_checks, 2);	
 
