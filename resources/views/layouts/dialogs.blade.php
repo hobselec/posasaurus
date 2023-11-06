@@ -45,9 +45,13 @@ Closing checks: &nbsp; <input type="text" size="8" maxlength="8" id="closing_che
 </div>
 
 <p style="margin-left: auto ;margin-right: auto"><button class='btn btn-light' type="button" onclick="print_end_report()">Print Report</button></p>
-<p style="margin-left: auto ;margin-right: auto"><button class='btn btn-light' type="button" onclick="print_weekly_report()">Print Weekly Report</button></p>
-<span id="weekly_report_fields" style="display: none"><input type="text" id="report_start_date" size="10" maxlength="10" /> &ndash; <input type="text" value="<?php echo date("n/d/Y"); ?>" id="report_end_date" size="10" maxlength="10" /></span>
 
+<!-- not implemented
+  <p style="margin-left: auto ;margin-right: auto"><button class='btn btn-light' type="button" onclick="print_weekly_report()">Print Weekly Report</button></p>
+-->
+
+<span id="weekly_report_fields" style="display: none"><input type="date" id="report_start_date" size="10" maxlength="10" /> &ndash; <input type="date" value="<?php echo date("Y-m-d"); ?>" id="report_end_date" size="10" maxlength="10" /></span>
+<p>
 Tax Reports: 
 @php
 $startMonth = Carbon\Carbon::now()->startOfMonth()->addMonths(-2);
@@ -56,6 +60,7 @@ $months = [$startMonth, $startMonth->clone()->addMonths(1), $startMonth->clone()
 @foreach($months as $month)
 <a class="p-2" href="/pos/admin/sales-tax?start={{ $month->format('Y-m-d') }}">{{ $month->format('M') }}</a>
 @endforeach
+</p>
 
 <button type="button" class="btn btn-link" onclick="event.preventDefault();document.getElementById('logout-form').submit();">Log out</button>
 
