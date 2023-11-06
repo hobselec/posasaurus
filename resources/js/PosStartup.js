@@ -94,7 +94,7 @@ export function startUp() {
     
         $('#shutdown_dialog').dialog({ title : 'POS Shutdown', 
             autoOpen: false, modal : true, resizable : false, 
-            draggable : false, width: 330, height: 400
+            draggable : false, width: 350, height: 420
         });
 
           
