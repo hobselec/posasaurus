@@ -17,6 +17,7 @@ use Dompdf\Dompdf;
 use Storage;
 use App\Mail\ReceiptEmail;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Blade;
 
 
 class PrintStatements implements ShouldQueue
@@ -54,7 +55,7 @@ class PrintStatements implements ShouldQueue
         if(count($this->params['customers']) == 0)
             return;
 
-        $statementHtml = '';
+        $statementHtml = Blade::render("@include('layouts.statementHeader')", []);	
 
         foreach($this->params['customers'] as $i => $customerId)
         {
@@ -70,12 +71,14 @@ class PrintStatements implements ShouldQueue
     
         }
 
+        $statementHtml .= "</body></html>";
+
         $dompdf->loadHtml($statementHtml);
         $dompdf->render();
 
         $pdf = $dompdf->output();
         $filename = 'statement_' . date("YmdHis") . '.pdf';
-
+        //Storage::disk('local')->put($filename . '.txt', $statementHtml);
         Storage::disk('local')->put($filename, $pdf);
 
         // e-mail

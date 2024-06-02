@@ -168,7 +168,7 @@ class StatementHelper {
      * 
      * @param integer $customerId
      * @param array $invoices (id of ticket.id)
-     * @param bool $breakPage used when adding to statement
+     * @param bool $breakPage used when adding to statement to change html formatting
      * @return array of html invoices
      */
     public static function getInvoice(int $customerId, array $invoices, bool $breakPage = false) : array
